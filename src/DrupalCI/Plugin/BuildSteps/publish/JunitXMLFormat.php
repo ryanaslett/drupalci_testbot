@@ -213,6 +213,9 @@ class JunitXMLFormat extends PluginBase {
               }
             }
             elseif (($assertion['status'] == 'debug')) {
+              if ($assertion['type'] == 'Duration') {
+                $test_case->setAttribute('time', $assertion['message']);
+              }
               $test_output .= $assertion_result;
             }
 
