@@ -178,4 +178,45 @@ class SimpletestJob extends JobBase {
     // array('run_tests_verbose', 'TODO: Locate', 'directory'),
   );
 
+  /**
+   * Overrides JobBase->getDefaultDefinitionTemplate().
+   *
+   * @param $job_type
+   *   The name of the job type, used to select the appropriate subdirectory
+   *
+   * @return string
+   *   The location of the default job definition template
+   */
+  public function getDefaultDefinitionTemplate($job_type) {
+    // Ensure this is a Drupal test, and determine version
+    $codebase = $this->getJobCodeBase();
+    $version_major = $codebase->getCoreMajorVersion();
+
+    // Remove unused DCI_* parameters by version
+    $this->update_DCI_vars($version_major);
+
+    return __DIR__ . "/drupalci_$version_major.yml";
+  }
+
+  /**
+   * Filters out unsupported DCI_* parameters based on core major version.
+   */
+  protected function update_DCI_vars($version_major) {
+    $job_definition = $this->getJobDefinition();
+    $dci_variables = $job_definition->getDCIVariables();
+    switch ($version_major) {
+      case '7':
+      case '6':
+        // D6/7 do not support the '--sqlite' or '--keep-results' parameters
+        $job_definition->unsetDCIVariable('DCI_SQLite');
+        if (!empty($dci_variables['DCI_RunOptions'])) {
+          $job_definition->setDCIVariable('DCI_RunOptions', preg_replace("/keep-results;?/", "", $dci_variables['DCI_RunOptions']));
+       }
+        // Adjust run-tests.sh source directory
+        if ($dci_variables['DCI_RunScript'] == "/var/www/html/core/scripts/run-tests.sh ") {
+          $job_definition->setDCIVariable('DCI_RunScript', "/var/www/html/scripts/run-tests.sh ");
+        }
+        break;
+    }
+  }
 }

@@ -29,6 +29,11 @@ class JobDefinition {
   public function getDCIVariable($dci_variable) {
     return (!empty($this->dci_variables[$dci_variable])) ? $this->dci_variables[$dci_variable] : NULL;
   }
+  public function unsetDCIVariable($dci_variable) {
+    $vars = $this->getDCIVariables();
+    unset($vars[$dci_variable]);
+    $this->setDCIVariables($vars);
+  }
 
   // Contains the parsed job definition
   protected $definition = array();
