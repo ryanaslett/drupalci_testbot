@@ -30,9 +30,9 @@ setup:
 install:
 execute:
   command:
-    - php -v
-    - php %DCI_RunScript% --list --php /opt/phpenv/shims/php > /var/www/html/artifacts/testgroups.txt
-    - cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% %DCI_TestGroups%
+    - %DCI_PHPInterpreter% -v
+    - %DCI_PHPInterpreter% %DCI_RunScript% --list --php %DCI_PHPInterpreter% > /var/www/html/artifacts/testgroups.txt
+    - cd /var/www/html && sudo -u www-data %DCI_PHPInterpreter% %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% %DCI_TestGroups%
 publish:
   gather_artifacts: /var/www/html/artifacts
   # archive: /var/www/html/results/artifacts.zip
