@@ -5,7 +5,7 @@
  * Base command class for Drupal CI.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Drupal;
 
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;

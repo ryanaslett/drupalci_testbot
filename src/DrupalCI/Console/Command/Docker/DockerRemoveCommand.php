@@ -5,7 +5,7 @@
  * Command class for docker remove.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Docker;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Console\Helpers\ContainerHelper;
@@ -128,7 +128,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec($cmd_docker_psa, $remove_check);
 
       if (!empty($remove_check)) {
-        Output::writeln('<error>Error:</error>'); 
+        Output::writeln('<error>Error:</error>');
         Output::writeln($remove_check);
       }
       else {

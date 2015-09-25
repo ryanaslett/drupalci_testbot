@@ -5,7 +5,7 @@
  * Command class for Run.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Run;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;

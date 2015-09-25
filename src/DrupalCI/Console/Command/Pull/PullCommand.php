@@ -5,7 +5,7 @@
  * Command class for pull.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Pull;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Console\Helpers\ContainerHelper;
