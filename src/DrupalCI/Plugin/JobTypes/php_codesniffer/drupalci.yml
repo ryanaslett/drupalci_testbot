@@ -1,0 +1,26 @@
+# Job Definition Template for the DrupalCI 'PHPCodeSniffer' Job Type.
+environment:
+  web:
+    - %DCI_PHPVersion%
+setup:
+  checkout:
+    # DCI_UseLocalCodebase plugin can override the checkout array to look like:
+    # - protocol: local
+    #   source_dir: %DCI_SourceDirectory%
+    - protocol: git
+      repo: %DCI_CoreRepository%
+      branch: %DCI_CoreBranch%
+      depth: %DCI_GitCheckoutDepth%
+      checkout_dir: .
+    - protocol: git
+      repo: %DCI_CoderRepository%
+      branch: %DCI_CoderBranch%
+      depth: %DCI_GitCheckoutDepth%
+      checkout_dir: %DCI_CoderCheckoutDir%
+  command:
+    - cp /var/www/html/core/phpcs.xml.dist /var/www/html/core/phpcs.xml
+  composer:
+    - --working-dir="/var/www/html/%DCI_CoderCheckoutDir%" install
+execute:
+  command:
+    - %DCI_RunScript% %DCI_RunOptions% %DCI_RunTarget%
