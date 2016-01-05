@@ -56,7 +56,6 @@ RUN apt-get clean && apt-get update && \
     make \
     mysql-client \
     ncurses-dev \
-    phantomjs \
     php5-dev \
     postgresql-client \
     postgresql-client-common \
@@ -66,9 +65,24 @@ RUN apt-get clean && apt-get update && \
     sudo \
     unixODBC-dev \
     unzip \
-    sqlite3 && \
-   apt-get clean && apt-get autoremove -y && \
+    sqlite3 \
+    libicu52 \
+    libjpeg8 \
+    libfontconfig \
+    libwebp5 \
+    unzip && \
+    apt-get clean && apt-get autoremove -y && \
     rm /etc/cron.d/php5
+
+##
+# PhantomJS
+##
+RUN curl -L https://github.com/bprodoehl/phantomjs/releases/download/v2.0.0-20150528/phantomjs-2.0.0-20150528-u1404-x86_64.zip -o ~/phantomjs-2.0.zip && \
+    unzip -j ~/phantomjs-2.0.zip -d ~/phantomjs && \
+    mv ~/phantomjs/phantomjs /usr/bin/phantomjs && \
+    rm -f ~/phantomjs-2.0.zip && \
+    rm -rf ~/phantomjs && \
+    chmod 755 /usr/bin/phantomjs
 
 ##
 # PHPENV.
