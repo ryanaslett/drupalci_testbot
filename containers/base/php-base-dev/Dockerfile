@@ -56,7 +56,6 @@ RUN apt-get clean && apt-get update && \
     make \
     mysql-client \
     ncurses-dev \
-    phantomjs \
     php5-dev \
     postgresql-client \
     postgresql-client-common \
@@ -66,9 +65,24 @@ RUN apt-get clean && apt-get update && \
     sudo \
     unixODBC-dev \
     unzip \
-    sqlite3 && \
-   apt-get clean && apt-get autoremove -y && \
+    sqlite3 \
+    libicu52 \
+    libjpeg8 \
+    libfontconfig \
+    libwebp5 \
+    unzip && \
+    apt-get clean && apt-get autoremove -y && \
     rm /etc/cron.d/php5
+
+##
+# PhantomJS
+##
+RUN curl -L https://github.com/bprodoehl/phantomjs/releases/download/v2.0.0-20150528/phantomjs-2.0.0-20150528-u1404-x86_64.zip -o ~/phantomjs-2.0.zip && \
+    unzip -j ~/phantomjs-2.0.zip -d ~/phantomjs && \
+    mv ~/phantomjs/phantomjs /usr/bin/phantomjs && \
+    rm -f ~/phantomjs-2.0.zip && \
+    rm -rf ~/phantomjs && \
+    chmod 755 /usr/bin/phantomjs
 
 ##
 # PHPENV.
@@ -78,7 +92,9 @@ RUN git clone --depth 1 https://github.com/CHH/phpenv.git /tmp/phpenv && \
     PHPENV_ROOT="/opt/phpenv" /tmp/phpenv/bin/phpenv-install.sh && \
     scp /tmp/phpenv/extensions/* /opt/phpenv/libexec/ && \
     echo 'eval "$(phpenv init -)"' >> /root/.bashrc && \
-    git clone --depth 1 https://github.com/CHH/php-build.git /opt/phpenv/plugins/php-build
+    git clone https://github.com/php-build/php-build.git /opt/phpenv/plugins/php-build
+WORKDIR /opt/phpenv/plugins/php-build
+RUN    git reset --hard 2b1928b7ef7b3def9966db12eaf56d7966f834cd
 ENV PATH /opt/phpenv/shims:/opt/phpenv/bin:$PATH
 
 
