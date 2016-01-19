@@ -8,6 +8,8 @@ namespace DrupalCI\Plugin\JobTypes;
 
 use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use DrupalCI\Injectable;
+use DrupalCI\InjectableTrait;
 use DrupalCI\Console\Output;
 use DrupalCI\Job\Results\Artifacts\BuildArtifact;
 use DrupalCI\Job\Results\Artifacts\BuildArtifactList;
@@ -23,11 +25,14 @@ use Docker\Docker;
 use Docker\Http\DockerClient as Client;
 use Symfony\Component\Yaml\Yaml;
 use Docker\Container;
+use Pimple\Container as PimpleContainer;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
 
-class JobBase extends ContainerBase implements JobInterface {
+class JobBase extends ContainerBase implements JobInterface, Injectable {
+
+  use InjectableTrait;
 
   /**
    * Stores the job type
@@ -62,7 +67,10 @@ class JobBase extends ContainerBase implements JobInterface {
    */
   protected $jobDefinition = NULL;
   public function getJobDefinition() {  return $this->jobDefinition;  }
-  public function setJobDefinition(JobDefinition $job_definition) {  $this->jobDefinition = $job_definition; }
+  public function setJobDefinition(JobDefinition $job_definition) {
+    $job_definition->setContainer($this->container);
+    $this->jobDefinition = $job_definition;
+  }
 
   /**
    * Stores the codebase object for this job

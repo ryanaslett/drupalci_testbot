@@ -7,6 +7,7 @@
 
 namespace DrupalCI\Console;
 
+use DrupalCI\InjectableTrait;
 use DrupalCI\Console\Command\Init\InitBaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitDatabaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitDependenciesCommand;
@@ -28,19 +29,22 @@ use DrupalCI\Console\Command\Config\ConfigSetCommand;
 use DrupalCI\Console\Command\Config\ConfigShowCommand;
 use DrupalCI\Console\Command\Config\ConfigClearCommand;
 use DrupalCI\Console\Command\Status\StatusCommand;
+use Pimple\Container;
 use PrivateTravis\PrivateTravisCommand;
 
 class DrupalCIConsoleApp extends Application {
 
+  use InjectableTrait;
+
   /**
    * Constructor.
    *
-   * We just add our commands here. We don't do any discovery or a container/
-   * service model for simplicity.
-   * TODO: Add a container/service model.
+   * We'll store the injected container so that code with access to the app can
+   * access it as needed.
    */
-  public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN') {
+  public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN', Container $container) {
     parent::__construct($name, $version);
+    $this->container = $container;
     $commands = [
       new BuildCommand(),
       new PullCommand(),
@@ -65,6 +69,15 @@ class DrupalCIConsoleApp extends Application {
       new PrivateTravisCommand('travis'),
     ];
     $this->addCommands($commands);
+  }
+
+  /**
+   * Access the application object's container.
+   *
+   * @return \Pimple\Container
+   */
+  public function getContainer() {
+    return $this->container;
   }
 
 }

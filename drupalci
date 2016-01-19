@@ -9,7 +9,11 @@ $loader = require_once __DIR__ . '/vendor/autoload.php';
 // Sets the socket timeout to a very long time so that
 // Guzzle requests to docker have enough time to wait for output.
 ini_set("default_socket_timeout", "1000");
-use DrupalCI\Console\DrupalCIConsoleApp;
 
-$app = new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.1');
-$app->run();
+use DrupalCI\DrupalCIServiceProvider;
+use Pimple\Container;
+
+$c = new Container();
+$c->register(new DrupalCIServiceProvider());
+
+$c['console']->run();

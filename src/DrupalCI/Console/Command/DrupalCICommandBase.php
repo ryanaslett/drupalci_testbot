@@ -7,19 +7,37 @@
 
 namespace DrupalCI\Console\Command;
 
+use Docker\Docker;
+use Docker\Http\DockerClient as Client;
+use DrupalCI\Console\Command\CommandOutputServiceProvider;
+use DrupalCI\ConsoleOutputServiceProvider;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Docker\Docker;
-use Docker\Http\DockerClient as Client;
 
 /**
  * Just some helpful debugging stuff for now.
  */
 class DrupalCICommandBase extends SymfonyCommand {
-    // Defaults for the underlying commands i.e. when commands run with --no-interaction or
+
+  /**
+   * The container object.
+   *
+   * @var \Pimple\Container
+   */
+  protected $container;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function initialize(InputInterface $input, OutputInterface $output) {
+    parent::initialize($input, $output);
+    // Perform some container set-up before command execution.
+    $this->container = $this->getApplication()->getContainer();
+    $this->container->register(new CommandOutputServiceProvider($output));
+  }
+
+  // Defaults for the underlying commands i.e. when commands run with --no-interaction or
     // when we are given options to setup containers.
     protected $default_build = array(
       'base'     => 'all',
