@@ -176,7 +176,7 @@ class SimpletestJob extends JobBase {
     // array('php_error_log', 'TODO: Locate'),  // STDERR
     array('apache_access_log', '/var/log/apache2/test.apache.access.log'),
     array('apache_error_log', '/var/log/apache2/test.apache.error.log'),
-    array('run_tests_verbose', '/var/www/html/sites/default/files/simpletest/verbose', 'directory'),
+    array('run_tests_verbose', '/var/www/html/sites/default/files/simpletest/verbose', 'archive'),
   );
 
 }

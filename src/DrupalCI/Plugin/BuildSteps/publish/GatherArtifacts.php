@@ -73,6 +73,14 @@ class GatherArtifacts extends PluginBase {
           Output::writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
         }
       }
+      elseif (strtolower($artifact->getType()) == 'archive') {
+        // Create a zip archive of the file/directory within the build artifacts directory
+        $file = $artifact->getValue();
+        $dest = $target_directory . DIRECTORY_SEPARATOR . basename($file);
+        $command = new ContainerCommand();
+        $cmd = "tar -zcvf $dest.tar.gz $file";
+        $command->run($job, $cmd);
+      }
       elseif (strtolower($artifact->getType) == 'string') {
         // Write string to new file with filename based on the string's key
         $dest = $target_directory . DIRECTORY_SEPARATOR . $key;
