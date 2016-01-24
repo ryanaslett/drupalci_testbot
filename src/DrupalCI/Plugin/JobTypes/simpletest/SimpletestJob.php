@@ -46,7 +46,7 @@ class SimpletestJob extends JobBase {
     'DCI_GitCommitHash' => '',
     // 'DCI_XMLOutput' => '/var/www/html/results/xml',
     'DCI_PHPInterpreter' => '/opt/phpenv/shims/php',
-    'DCI_RunOptions' => 'color;keep-results',
+    'DCI_RunOptions' => 'color;keep-results;verbose',
     'DCI_SyntaxCheck' => TRUE,
   );
 
@@ -173,10 +173,10 @@ class SimpletestJob extends JobBase {
     array('testgroups', '/var/www/html/artifacts/testgroups.txt'),
     // array('run_tests_xml', '/var/www/html/results/xml', 'directory'),
     array('sqlite_test_db', '/var/www/html/results/simpletest.sqlite'),
-    // array('php_error_log', 'TODO: Locate'),
-    // array('apache_access_log', 'TODO: Locate'),
-    // array('apache_error_log', 'TODO: Locate'),
-    // array('run_tests_verbose', 'TODO: Locate', 'directory'),
+    // array('php_error_log', 'TODO: Locate'),  // STDERR
+    array('apache_access_log', '/var/log/apache2/test.apache.access.log'),
+    array('apache_error_log', '/var/log/apache2/test.apache.error.log'),
+    array('run_tests_verbose', '/var/www/html/sites/default/files/simpletest/verbose', 'directory'),
   );
 
 }
