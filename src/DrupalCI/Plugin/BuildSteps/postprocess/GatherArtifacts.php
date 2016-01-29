@@ -7,7 +7,7 @@
  * Generates job build artifact files in a common directory.
  */
 
-namespace DrupalCI\Plugin\BuildSteps\publish;
+namespace DrupalCI\Plugin\BuildSteps\postprocess;
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginBase;

@@ -7,7 +7,7 @@
  * Gathers the resulting job artifacts and generates a zip file.
  */
 
-namespace DrupalCI\Plugin\BuildSteps\publish;
+namespace DrupalCI\Plugin\BuildSteps\postprocess;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;

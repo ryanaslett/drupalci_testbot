@@ -8,7 +8,7 @@
  * DrupalCI Results server.
  */
 
-namespace DrupalCI\Plugin\BuildSteps\publish;
+namespace DrupalCI\Plugin\BuildSteps\postprocess;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCIResultsApi\Api;

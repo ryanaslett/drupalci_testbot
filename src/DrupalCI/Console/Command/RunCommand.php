@@ -129,6 +129,11 @@ class RunCommand extends DrupalCICommandBase {
 
     // Iterate over the build stages
     foreach ($definition as $build_stage => $steps) {
+      // Post-processing needs to happen outside of this loop, in case any one
+      // build stage fails and aborts the job.
+      if ($build_stage == "postprocess") {
+        break;
+      }
       if (empty($steps)) {
         $job_results->updateStageStatus($build_stage, 'Skipped');
         continue;
@@ -157,11 +162,27 @@ class RunCommand extends DrupalCICommandBase {
       }
       $job_results->updateStageStatus($build_stage, 'Completed');
     }
-    // TODO: Gather results.
-    // This should be moved out of the 'build steps' logic, as an error in any
-    // build step halts execution of the entire loop, and the artifacts are not
-    // processed.
 
+    // Perform post-processing steps
+    if (empty($definition["postprocess"])) {
+      $job_results->updateStageStatus("postprocess", 'Skipped');
+      return;
+    }
+    foreach ($definition["postprocess"] as $build_step => $data) {
+      // Iterate over build steps
+      $job_results->updateStepStatus("postprocess", $build_step, 'Executing');
+      // Execute the build step
+      $this->buildStepsPluginManager()->getPlugin("postprocess", $build_step)->run($job, $data);
+      // Check for errors / failures after build step execution
+      $status = $job_results->getResultByStep("postprocess", $build_step);
+
+      // Check for errors / failures after build step execution
+      if ($status == 'Error') {
+        // Step returned an error.  Halt execution.
+        Output::error("Execution Error", "Error encountered while executing job build step <options=bold>postprocess:$build_step</options=bold>");
+        break;
+      }
+    }
   }
 
   /**

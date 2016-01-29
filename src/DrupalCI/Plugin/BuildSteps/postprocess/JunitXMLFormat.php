@@ -8,7 +8,7 @@
  * them in a sane manner.  (If there is a sqlite results database!)
  */
 
-namespace DrupalCI\Plugin\BuildSteps\publish;
+namespace DrupalCI\Plugin\BuildSteps\postprocess;
 use Docker\Docker;
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;

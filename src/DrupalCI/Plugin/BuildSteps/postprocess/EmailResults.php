@@ -7,7 +7,7 @@
  * Gathers the resulting job artifacts and pushes them to an email address.
  */
 
-namespace DrupalCI\Plugin\BuildSteps\publish;
+namespace DrupalCI\Plugin\BuildSteps\postprocess;
 use DrupalCI\Plugin\PluginBase;
 
 /**
