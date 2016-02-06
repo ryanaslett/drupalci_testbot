@@ -12,6 +12,167 @@ use DrupalCI\Plugin\JobTypes\JobInterface;
 
 class JobResults {
 
+  // Array of build_steps for this job
+  protected $build_steps;
+
+  // Initalizing/Executing/Error/Complete status (i.e. STATE) by job
+  protected $state;
+
+  // Pass/Fail/XFail/XPass/Error/SystemError result (i.e. OUTCOME) by job
+  protected $result;
+
+  // Human readable summary string describing the job results.
+  protected $summary;
+
+  /**
+   * Build stages and steps
+   * $stages[$stage]['state'] => Waiting/Initalizing/Executing/Completed/Error status (i.e. STATE) by build stage
+   * $stages[$stage]['result'] => Pending/Pass/Fail/XFail/XPass/Error/SystemError result (i.e. OUTCOME) by build stage
+   * $stages[$stage]['summary'] => Human readable summary string describing the build stage results.
+   * $stages[$stage]['steps'][$step]['state'] => Waiting/Initalizing/Executing/Completed/Error status (i.e. STATE) by build step
+   * $stages[$stage]['steps'][$step]['result'] => Pending/Pass/Fail/XFail/XPass/Error/SystemError result (i.e. OUTCOME) by build step
+   * $stages[$stage]['steps'][$step]['summary'] => Human readable summary string describing the build step results.
+   * $stages[$stage]['steps'][$step]['output'] => Console output by build step
+   */
+  protected $stages;
+
+  // Stores a list of build artifacts to be considered part of the final results for this job
+  protected $artifacts;
+
+
+  public function __construct(JobInterface $job) {
+    // Inject the Build Steps array from this job
+    $this->build_steps = $job->getJobDefinition()->getBuildSteps();
+    // Set up our initial $results values
+    $this->initStageResults();
+  }
+
+  protected function initStageResults() {
+    // Retrieve the build step tree from the job definition
+    $build_steps = $this->build_steps;
+    // Set our initial $job_status
+    $this->status = "Initializing";
+    $this->result = "No Result";
+    $this->summary = "No Run";
+    // Set up our initial $stages array
+    $stage_results = [];
+    foreach ($build_steps as $stage => $steps) {
+      $stage_results[$stage] = ['status' => "Waiting", 'result' => "Pending", 'summary' => "Build stage not yet executed."];
+      foreach ($steps as $step => $value) {
+        $stage_results[$stage]['steps'][$step] = ['status' => "Waiting", 'result' => "Pending", 'summary' => "Build step not yet executed.", 'output' => NULL];
+      }
+    }
+    $this->setStageResults($stage_results);
+  }
+
+  // Initalizing/Executing/Error/Complete status (i.e. STATE) by job
+  public function getJobState() {
+    return $this->state;
+  }
+
+  public function setJobState($job_state) {
+    $this->state = $job_state;
+  }
+
+  // Pass/Fail/XFail/XPass/Error/SystemError result (i.e. OUTCOME) by job
+  public function getJobResult() {
+    return $this->result;
+  }
+
+  public function setJobResult($job_result) {
+    $this->result = $job_result;
+  }
+
+  // Human readable Job Outcome Summary message
+  public function getJobSummary() {
+    return $this->summary;
+  }
+
+  public function setJobSummary($job_summary) {
+    $this->summary = $job_summary;
+  }
+
+  // Obtain only the stage results
+  public function getStageResults() {
+    return $this->stages;
+  }
+
+  public function setStageResults(array $stage_results) {
+    $this->stages = $stage_results;
+  }
+
+  // Initializing/Executing/Error/Complete status (i.e. STATE) by build process stage
+  public function getStateByStage($stage) {
+    return $this->stages[$stage]['state'];
+  }
+
+  public function setStateByStage($stage, $state) {
+    $this->stages[$stage]['state'] = $state;
+  }
+
+  // Pass/Fail/XFail/XPass/Error/SystemError result (i.e. OUTCOME) by build process stage
+  public function getResultByStage($stage) {
+    return $this->stages[$stage]['result'];
+  }
+
+  public function setResultByStage($stage, $result) {
+    $this->stages[$stage]['result'] = $result;
+  }
+
+  // Human readable result summary message by build process stage
+  public function getSummaryByStage($stage) {
+    return $this->stages[$stage]['summary'];
+  }
+
+  public function setSummaryByStage($stage, $summary) {
+    $this->stages[$stage]['summary'] = $summary;
+  }
+
+  // Obtain only the step results for a given step
+  public function getStepResults($stage, $step) {
+    return $this->stages[$stage]['steps'][$step];
+  }
+
+  public function setStepResults($stage, $step, $step_results) {
+    $this->stages[$stage]['steps'][$step] = $step_results;
+  }
+
+  // Initializing/Executing/Error/Complete status (i.e. STATE) by build process step
+  public function getStateByStep($stage, $step) {
+    return $this->stages[$stage]['steps'][$step]['state'];
+  }
+
+  public function setStateByStep($stage, $step, $state) {
+    $this->stages[$stage]['steps'][$step]['state'] = $state;
+  }
+
+  // Pass/Fail/XFail/XPass/Error/SystemError result (i.e. OUTCOME) by build process step
+  public function getResultByStep($stage, $step) {
+    return $this->stages[$stage]['steps'][$step]['result'];
+  }
+
+  public function setResultByStep($stage, $step, $result) {
+    $this->stages[$stage]['steps'][$step]['result'] = $result;
+  }
+
+  // Human readable result summary message by build process stage
+  public function getSummaryByStep($stage, $step) {
+    return $this->stages[$stage]['steps'][$step]['summary'];
+  }
+
+  public function setSummaryByStep($stage, $summary) {
+    $this->stages[$stage]['steps'][$step]['summary'] = $summary;
+  }
+
+  // Console output for each build process step within the job
+  public function getOutputByStep($stage, $step) {
+    return $this->stages[$stage]['steps'][$step]['output'];
+  }
+
+  public function setOutputByStep($stage, $step, $output) {
+    $this->stages[$stage]['steps'][$step]['output'] = $output;
+  }
+
   // Tracks which stage of the build process is currently being executed
   protected $current_stage;
 
@@ -21,38 +182,6 @@ class JobResults {
 
   public function setCurrentStage($stage) {
     $this->current_stage = $stage;
-  }
-
-  // Tracks the pass/fail/skipped/error status by job
-  protected $job_results;
-
-  public function getJobResults()
-  {
-    return $this->job_results;
-  }
-
-  public function setJobResults($job_results)
-  {
-    $this->job_results = $job_results;
-  }
-
-  // Tracks the pass/fail/skipped/error status by build process stage
-  protected $stage_results;
-
-  public function getStageResults() {
-    return $this->stage_results;
-  }
-
-  public function setStageResults(array $stage_results) {
-    $this->stage_results = $stage_results;
-  }
-
-  public function getResultByStage($stage) {
-    return $this->stage_results[$stage];
-  }
-
-  public function setResultByStage($stage, $result) {
-    $this->stage_results[$stage] = $result;
   }
 
   // Tracks which step of the current build process stage is currently being executed
@@ -66,47 +195,8 @@ class JobResults {
     $this->current_step = $step;
   }
 
-  // Tracks the pass/fail/skipped/error status for each build process step within the job
-  protected $step_results;
 
-  public function getStepResults() {
-    return $this->step_results;
-  }
-
-  public function setStepResults(array $step_results) {
-    $this->step_results = $step_results;
-  }
-
-  public function getResultByStep($stage, $step) {
-    return $this->step_results[$stage][$step];
-  }
-
-  public function setResultByStep($stage, $step, $result) {
-    $this->step_results[$stage][$step] = $result;
-  }
-
-  // Stores the console output for each build process step within the job
-  protected $step_output;
-
-  public function getStepOutput() {
-    return $this->step_output;
-  }
-
-  public function setStepOutput(array $step_output) {
-    $this->step_output = $step_output;
-  }
-
-  public function getOutputByStep($stage, $step) {
-    return $this->step_output[$stage][$step];
-  }
-
-  public function setOutputByStep($stage, $step, $output) {
-    $this->step_output[$stage][$step] = $output;
-  }
-
-  // Stores a list of job artifacts to be considered part of the final results for this job
-  protected $artifacts;
-
+  // List of build artifacts to be considered part of the final results for this job
   public function setArtifacts($artifacts) {
     $this->artifacts = $artifacts;
   }
@@ -115,51 +205,28 @@ class JobResults {
     return $this->artifacts;
   }
 
-  // Stores a list of publishers which should be notified of the results upon job completion
-  protected $publishers = [];
 
-  public function getPublishers() {
-    return $this->publishers;
-  }
-
-  public function setPublishers($publishers) {
-    $this->publishers = $publishers;
-  }
-
-  public function getPublisher($publisher) {
-    return $this->publishers[$publisher];
-  }
-
-
-  public function __construct(JobInterface $job) {
-    // Set up our initial $step_result values
-    $this->initStepResults($job);
-  }
-
-  protected function initStepResults(JobInterface $job) {
-    // Retrieve the build step tree from the job definition
-    $build_steps = $job->getJobDefinition()->getBuildSteps();
-    // Set up our initial $step_result values
-    $step_results = [];
-    foreach ($build_steps as $stage => $steps) {
-      foreach ($steps as $step => $value) {
-        $step_results[$stage][$step] = ['run status' => 'No run'];
-      }
-    }
-    $this->setStepResults($step_results);
-  }
-
-  public function updateStageStatus($build_stage, $status) {
+  // Convenience functions for updating build progress and results
+  public function updateStageStatus($build_stage, $status, $result = "") {
     $this->setCurrentStage($build_stage);
-    $this->setResultByStage($build_stage, $status);
-    // TODO: Determine if we have any publishers, and progress the build step if we do.
-    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage</comment>");
+    $this->setStateByStage($build_stage, $status);
+    if (!empty($result)) {
+      $this->setResultByStage($build_stage, $result);
+    }
+    // TODO: Determine if we have any publishers, and provide in-progress updates if we do.
+    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage $result</comment>");
   }
 
-  public function updateStepStatus($build_stage, $build_step, $status) {
+  public function updateStepStatus($build_stage, $build_step, $status, $result = "", $output = NULL) {
     $this->setCurrentStep($build_step);
-    $this->setResultByStep($build_stage, $build_step, $status);
-    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
+    $this->setStateByStep($build_stage, $build_step, $status);
+    if (!empty($result)) {
+      $this->setResultByStep($build_stage, $build_step, $result);
+    }
+    if (!empty($output)) {
+      $this->setOutputByStep($build_state, $build_step, $output);
+    }
+    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step $result</comment>");
   }
 
 
@@ -205,5 +272,22 @@ class JobResults {
     }
   }
   */
+
+  /*
+  // Stores a list of publishers which should be notified of the results upon job completion
+  protected $publishers = [];
+
+  public function getPublishers() {
+    return $this->publishers;
+  }
+
+  public function setPublishers($publishers) {
+    $this->publishers = $publishers;
+  }
+
+  public function getPublisher($publisher) {
+    return $this->publishers[$publisher];
+  }
+*/
 
 }
