@@ -11,15 +11,15 @@
 namespace DrupalCI\Plugin\BuildSteps\postprocess;
 use Docker\Docker;
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 use PDO;
 use DOMDocument;
 
 /**
  * @PluginID("junit_xmlformat")
  */
-class JunitXMLFormat extends PluginBase {
+class JunitXMLFormat extends BuildStepBase {
 
   protected $testlist = [];
   public function setTestlist($testlist)  {  $this->testlist = $testlist; }

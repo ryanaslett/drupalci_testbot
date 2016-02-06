@@ -8,13 +8,13 @@ namespace DrupalCI\Plugin\BuildSteps\environment;
 
 use Docker\Exception\ImageNotFoundException;
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 
 /**
  * Base class for 'environment' plugins.
  */
-abstract class EnvironmentBase extends PluginBase {
+abstract class EnvironmentBase extends BuildStepBase {
 
   public function validateImageNames($containers, JobInterface $job) {
     // Verify that the appropriate container images exist

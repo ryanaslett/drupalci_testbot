@@ -8,12 +8,12 @@
  */
 
 namespace DrupalCI\Plugin\BuildSteps\postprocess;
-use DrupalCI\Plugin\PluginBase;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 
 /**
  * @PluginID("email_results")
  */
-class EmailResults extends PluginBase {
+class EmailResults extends BuildStepBase {
 
   /**
    * {@inheritdoc}

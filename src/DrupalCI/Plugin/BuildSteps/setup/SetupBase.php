@@ -8,10 +8,10 @@
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 
-abstract class SetupBase extends PluginBase {
+abstract class SetupBase extends BuildStepBase {
 
   protected function validateDirectory(JobInterface $job, $dir) {
     // Validate target directory.  Must be within workingdir.

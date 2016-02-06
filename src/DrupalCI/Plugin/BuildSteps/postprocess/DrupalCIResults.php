@@ -9,15 +9,15 @@
  */
 
 namespace DrupalCI\Plugin\BuildSteps\postprocess;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 use DrupalCIResultsApi\Api;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @PluginID("drupalci_results")
  */
-class DrupalCIResults extends PluginBase {
+class DrupalCIResults extends BuildStepBase {
 
   /**
    * {@inheritdoc}

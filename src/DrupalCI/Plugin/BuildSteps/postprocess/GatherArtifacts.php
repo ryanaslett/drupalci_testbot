@@ -9,14 +9,14 @@
 
 namespace DrupalCI\Plugin\BuildSteps\postprocess;
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 
 /**
  * @PluginID("gather_artifacts")
  */
-class GatherArtifacts extends PluginBase {
+class GatherArtifacts extends BuildStepBase {
 
   /**
    * {@inheritdoc}

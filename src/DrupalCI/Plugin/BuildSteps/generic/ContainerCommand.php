@@ -9,13 +9,13 @@
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 
 /**
  * @PluginID("command")
  */
-class ContainerCommand extends PluginBase {
+class ContainerCommand extends BuildStepBase {
 
   /**
    * {@inheritdoc}

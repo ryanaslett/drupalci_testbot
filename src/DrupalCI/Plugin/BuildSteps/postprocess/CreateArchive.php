@@ -10,14 +10,14 @@
 namespace DrupalCI\Plugin\BuildSteps\postprocess;
 
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 use ZipArchive;
 
 /**
  * @PluginID("archive")
  */
-class CreateArchive extends PluginBase {
+class CreateArchive extends BuildStepBase {
 
   /**
    * {@inheritdoc}

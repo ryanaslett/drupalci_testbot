@@ -8,14 +8,14 @@
 
 namespace DrupalCI\Plugin\BuildSteps\configure;
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @PluginID("prepare_results_placeholders")
  */
-class PrepResults extends PluginBase {
+class PrepResults extends BuildStepBase {
 
   /**
    * {@inheritdoc}
@@ -67,7 +67,7 @@ class PrepResults extends PluginBase {
   }
 
   /**
-   * @param $source filename
+   * @param $source string
    *   A local source file containing Results Server connectivity information
    * @return array
    *   Array of Results Server information
