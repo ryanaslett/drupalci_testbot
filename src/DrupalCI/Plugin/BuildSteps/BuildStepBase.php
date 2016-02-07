@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \DrupalCI\Plugin\BuildSteps\BuildStepBase
+ * Contains \DrupalCI\Plugin\BuildStepBase
  */
 
 namespace DrupalCI\Plugin\BuildSteps;
@@ -18,7 +18,7 @@ abstract class BuildStepBase extends PluginBase {
    *
    * @var string
    */
-  protected $state;
+  protected $state = "Waiting";
 
   protected function setState($state) {
     $this->state = $state;
@@ -29,11 +29,11 @@ abstract class BuildStepBase extends PluginBase {
   }
 
   /**
-   * The build step execution result (Pending/Pass/Fail/XFail/XPass/Error/SystemError)
+   * The build step execution result (Pending/Pass/Fail/XFail/XPass/Skipped/Warning/Error/SystemError)
    *
    * @var string
    */
-  protected $result;
+  protected $result = "Pending";
 
   protected function setResult($result) {
     $this->result = $result;
@@ -56,4 +56,9 @@ abstract class BuildStepBase extends PluginBase {
     return $this->summary;
   }
 
+  protected function update($state, $result, $summary = "") {
+    $this->setState($state);
+    $this->setResult($result);
+    $this->setSummary($summary);
+  }
 }
