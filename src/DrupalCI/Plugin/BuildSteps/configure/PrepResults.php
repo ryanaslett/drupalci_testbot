@@ -25,6 +25,7 @@ class PrepResults extends BuildStepBase {
     $definition = $job->getJobDefinition->getDefinition();
     // We only need to prep the results site if there is a publish['drupalci_results'] build step.
     if (empty($definition['publish']['drupalci_results'])) {
+      $this->update("Completed", "Skipped");
       return;
     }
 
@@ -51,6 +52,7 @@ class PrepResults extends BuildStepBase {
         // If unable to parse a ResultsServer host out of either variable, then
         // output a warning message.
         Output::writeln('<warning>Unable to determine destination DrupalCI results server. Job results will not be published.</warning>');
+        $this->update("Completed", "Warning", "Unable to determine destination DrupalCI results server.");
         return;
       }
       // Add the Results Node location to our job object so it can be
@@ -58,12 +60,14 @@ class PrepResults extends BuildStepBase {
       $results = $job->getResultsServerID();
       $results[$host] = $upstream_id;
       $job->setResultsServerID($results);
+      $this->update("Completed", "Pass", "Existing Results Node assumed to exist on host $host with node ID $upstream_id");
       return;
     }
 
     // If we get to this point, we don't have an upstream results server or
     // node specified, so we'll generate it here.
     $this->generateResultNode($job, $definition);
+    $this->update("Completed", "Pass", "Upstream Results Node Created");
   }
 
   /**

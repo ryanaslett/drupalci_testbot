@@ -32,13 +32,13 @@ class Fetch extends SetupBase {
     // iii) array(array(...), array(...))
     // Normalize data to the third format, if necessary
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
-    Output::writeLn("<info>Entering setup_fetch().</info>");
     foreach ($data as $details) {
       // URL and target directory
       // TODO: Ensure $details contains all required parameters
       if (empty($details['url'])) {
         Output::error("Fetch error", "No valid target file provided for fetch command.");
         $job->error();
+        $this->update("Error", "Error", "No valid target file provided for fetch command.");
         return;
       }
       $url = $details['url'];
@@ -48,6 +48,7 @@ class Fetch extends SetupBase {
         // Invalid checkout directory
         Output:error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
         $job->error();
+        $this->update("Error", "Error", "The target fetch directory $directory is invalid.");
         return;
       }
       $info = pathinfo($url);
@@ -61,10 +62,16 @@ class Fetch extends SetupBase {
       catch (\Exception $e) {
         Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$directory</info>");
         $job->error();
+        $this->update("Error", "Error", "An error was encountered while attempting to write $url to $directory.");
         return;
       }
       Output::writeLn("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
     }
+    if (empty($data)) {
+      $this->update("Completed", "Skipped");
+      return;
+    }
+    $this->update("Completed", "Pass", "Fetch of $url to $directory complete.");
   }
 
   /**

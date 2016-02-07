@@ -144,13 +144,29 @@ class RunCommand extends DrupalCICommandBase {
       foreach ($steps as $build_step => $data) {
         $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
-        $this->buildStepsPluginManager()->getPlugin($build_stage, $build_step)->run($job, $data);
+        $plugin = $this->buildStepsPluginManager()->getPlugin($build_stage, $build_step);
+        $plugin->run($job, $data);
+        // Update the job results object with build step result information
+        $state = $plugin->getState();
+        $result = $plugin->getResult();
+        $summary = $plugin->getSummary();
+        $job_results->updateStepStatus($build_stage, $build_step, $state, $result, $summary);
 
-        // Check for errors / failures after build step execution
-        $status = $job_results->getResultByStep($build_stage, $build_step);
+        // Build step plugins are responsible for updating their own status.  Failure to do so will result in an error.
+        // Check for build errors after build step execution
+        if ($state != "Completed") {
+          Output::error("Build Error", "Error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>");
+          $job->getJobResults()->setStateByStage($build_stage, "Error");
+          $job->getJobResults()->setResultByStage($build_stage, "Error");
+          $job->getJobResults()->setSummaryByStage($build_stage, "Build error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>.  Step returned state $state.");
+          break 2;
+        }
+
+        $status = $job->getJobResults()->getResultByStep($build_stage, $build_step);
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
           Output::error("Execution Error", "Error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>");
+          $job->getJobResults()->updateStepStatus($build_stage, $build_step, "Error", $status);
           break 2;
         }
         if ($status == 'Fail') {
@@ -161,6 +177,8 @@ class RunCommand extends DrupalCICommandBase {
         $job_results->updateStepStatus($build_stage, $build_step, 'Completed');
       }
       $job_results->updateStageStatus($build_stage, 'Completed');
+      // TODO: Update Stage Result
+      // TODO: Update Stage Summary
     }
 
     // Perform post-processing steps

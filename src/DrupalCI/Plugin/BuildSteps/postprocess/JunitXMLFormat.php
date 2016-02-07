@@ -142,6 +142,7 @@ class JunitXMLFormat extends BuildStepBase {
       }
     }
     $this->_build_xml($classes, $output_directory);
+    $this->update("Completed", "Passed");
   }
 
   private function _build_xml($test_result_data, $output_dir) {

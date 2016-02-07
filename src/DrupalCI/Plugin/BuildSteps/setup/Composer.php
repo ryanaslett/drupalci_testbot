@@ -35,6 +35,7 @@ class Composer extends SetupBase {
       $cmd = $this->buildComposerCommand($data, $workingdir);
       $this->exec($cmd, $cmdoutput, $result);
     }
+    $this->update("Completed", "Pass", "Composer command executed");
   }
 
   /**

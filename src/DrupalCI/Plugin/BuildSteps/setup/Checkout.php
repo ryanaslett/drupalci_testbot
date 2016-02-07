@@ -58,6 +58,7 @@ class Checkout extends SetupBase {
     // Validate source directory
     if (!is_dir($source_dir)) {
       Output::error("Directory error", "The source directory <info>$source_dir</info> does not exist.");
+      $this->update("Error", "SystemError", "The source directory $source_dir does not exist.");
       $job->error();
       return;
     }
@@ -65,6 +66,7 @@ class Checkout extends SetupBase {
     if (!($directory = $this->validateDirectory($job, $checkout_dir))) {
       // Invalidate checkout directory
       Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
+      $this->update("Error", "SystemError", "The checkout directory $directory is invalid.");
       $job->error();
       return;
     }
@@ -75,10 +77,12 @@ class Checkout extends SetupBase {
     $this->exec("rsync -a $exclude_var  $source_dir/. $directory", $cmdoutput, $result);
     if ($result !== 0) {
       Output::error("Copy error", "Error encountered while attempting to copy code to the local checkout directory.");
+      $this->update("Error", "SystemError", "Error encountered while attempting to copy code to the local checkout directory.");
       $job->error();
       return;
     }
     Output::writeLn("<comment>DONE</comment>");
+    $this->update("Completed", "Pass", "Created checkout directory $directory using local source $source_dir");
   }
 
   protected function setupCheckoutGit(JobInterface $job, $details) {
@@ -91,6 +95,7 @@ class Checkout extends SetupBase {
     if (!($directory = $this->validateDirectory($job, $checkout_directory))) {
       // Invalid checkout directory
       Output::error("Directory Error", "The checkout directory <info>$directory</info> is invalid.");
+      $this->update("Error", "SystemError", "The checkout directory $directory is invalid.");
       $job->error();
       return;
     }
@@ -106,10 +111,11 @@ class Checkout extends SetupBase {
     if ($result !==0) {
       // Git threw an error.
       Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result");
+      $this->update("Error", "SystemError", "The git checkout returned an error.  Error Code: $result");
       $job->error();
       return;
     }
-
+    $this->update("Completed", "Pass", "Created checkout directory $directory using branch $git_branch from repo $repo");
     if (!empty($details['commit_hash'])) {
       $cmd =  "cd " . $directory . " && git reset -q --hard " . $details['commit_hash'] . " ";
       Output::writeLn("Git Command: $cmd");
@@ -118,16 +124,18 @@ class Checkout extends SetupBase {
     if ($result !==0) {
       // Git threw an error.
       $job->errorOutput("Checkout failed", "The git checkout returned an error.");
+      $this->update("Error", "SystemError", "An error was returned while attempting to reset to the specified commit hash ({$details['commit_hash']}).  Error Code: $result");
       // TODO: Pass on the actual return value for the git checkout
       return;
     }
-
+    $this->update("Completed", "Pass", "Created checkout directory $directory using commit hash {$details['commit_hash']} from repo $repo");
     $cmd = "cd '$directory' && git log --oneline -n 1 --decorate";
     $this->exec($cmd, $cmdoutput, $result);
     Output::writeLn("<comment>Git commit info:</comment>");
     Output::writeLn("<comment>\t" . implode($cmdoutput));
 
     Output::writeLn("<comment>Checkout complete.</comment>");
+
   }
 
 }

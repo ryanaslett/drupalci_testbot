@@ -28,6 +28,7 @@ class SyntaxCheck extends SetupBase {
       $modified_files = $codebase->getModifiedFiles();
 
       if (empty($modified_files)) {
+        $this->update("Completed", "Skipped", "No modified files identified, so assuming syntax testing not required.");
         return;
       }
 
@@ -52,7 +53,19 @@ class SyntaxCheck extends SetupBase {
         $cmd = "cd /var/www/html && xargs -P $jobconcurrency -a $lintable_files -I {} php -l '{}'";
         $command = new ContainerCommand();
         $command->run($job, $cmd);
+        $exit_code = $command->getExitCode();
+        if ($exit_code !== 0) {
+          $this->update("Error", "Error", "Syntax errors encountered during syntax check.");
+          return;
+        }
+        $this->update("Completed", "Passed", "Syntax Check completed with exit code $exit_code.");
       }
+      else {
+        $this->update("Completed", "Skipped", "No modified files identified as lintable, so syntax testing not required.");
+      }
+    }
+    else {
+      $this->update("Complete", "Skipped");
     }
   }
 }

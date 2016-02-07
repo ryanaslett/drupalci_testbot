@@ -59,6 +59,8 @@ abstract class BuildStepBase extends PluginBase {
   protected function update($state, $result, $summary = "") {
     $this->setState($state);
     $this->setResult($result);
-    $this->setSummary($summary);
+    if (!empty($summary)) {
+      $this->setSummary($summary);
+    }
   }
 }

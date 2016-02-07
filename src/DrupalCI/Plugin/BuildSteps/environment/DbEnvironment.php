@@ -24,6 +24,7 @@ class DbEnvironment extends EnvironmentBase {
   public function run(JobInterface $job, $data) {
     // We don't need to initialize any service container for SQLite.
     if (strpos($job->getBuildVar('DCI_DBVersion'), 'sqlite') === 0) {
+      $this->update("Completed", "Skipped", "No service container required for SQLite");
       return;
     }
 
@@ -39,6 +40,7 @@ class DbEnvironment extends EnvironmentBase {
       $job->setServiceContainers($service_containers);
       $job->startServiceContainerDaemons('db');
     }
+    $this->update("Completed", "Pass", "DB Service Containers started.");
   }
 
   public function buildImageNames($data, JobInterface $job) {

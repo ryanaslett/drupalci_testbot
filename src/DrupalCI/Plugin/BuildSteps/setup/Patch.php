@@ -33,6 +33,7 @@ class Patch extends SetupBase {
       if (empty($details['patch_file'])) {
         Output::error("Patch error", "No valid patch file provided for the patch command.");
         $job->error();
+        $this->update("Error", "Error", "No valid patch file provided for the patch command.");
         return;
       }
       // Create a new patch object
@@ -40,12 +41,14 @@ class Patch extends SetupBase {
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
         $job->error();
+        $this->update("Error", "Error", "Error encountered while validating patch source file and target directory for patch {$details['patch_file']}.");
         return;
       }
 
       // Apply the patch
       if (!$patch->apply()) {
         $job->error();
+        $this->update("Error", "Error", "Patch {$details['patch_file']} does not apply.");
 
         // Hack to create a xml file for processing by Jenkins.
         // TODO: Remove once proper job failure processing is in place
@@ -77,6 +80,12 @@ class Patch extends SetupBase {
       };
       // Update our list of modified files
       $codebase->addModifiedFiles($patch->getModifiedFiles());
+    }
+    if (empty($data)) {
+      $this->update("Completed", "Skipped");
+    }
+    else {
+      $this->update("Completed", "Pass", "Patch(es) applied successfully.");
     }
   }
 }

@@ -45,6 +45,7 @@ class DrupalCIResults extends BuildStepBase {
       // For now, we just set a default message
       $api->summary($results_id[$host], "Test complete");
     }
+    $this->update("Completed", "Passed");
 
   }
 

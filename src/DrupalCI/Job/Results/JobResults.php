@@ -51,15 +51,15 @@ class JobResults {
     // Retrieve the build step tree from the job definition
     $build_steps = $this->build_steps;
     // Set our initial $job_status
-    $this->status = "Initializing";
+    $this->state = "Initializing";
     $this->result = "No Result";
     $this->summary = "No Run";
     // Set up our initial $stages array
     $stage_results = [];
     foreach ($build_steps as $stage => $steps) {
-      $stage_results[$stage] = ['status' => "Waiting", 'result' => "Pending", 'summary' => "Build stage not yet executed."];
+      $stage_results[$stage] = ['state' => "Waiting", 'result' => "Pending", 'summary' => "Build stage not yet executed."];
       foreach ($steps as $step => $value) {
-        $stage_results[$stage]['steps'][$step] = ['status' => "Waiting", 'result' => "Pending", 'summary' => "Build step not yet executed.", 'output' => NULL];
+        $stage_results[$stage]['steps'][$step] = ['state' => "Waiting", 'result' => "Pending", 'summary' => "Build step not yet executed.", 'output' => NULL];
       }
     }
     $this->setStageResults($stage_results);
@@ -160,7 +160,7 @@ class JobResults {
     return $this->stages[$stage]['steps'][$step]['summary'];
   }
 
-  public function setSummaryByStep($stage, $summary) {
+  public function setSummaryByStep($stage, $step, $summary) {
     $this->stages[$stage]['steps'][$step]['summary'] = $summary;
   }
 
@@ -217,14 +217,17 @@ class JobResults {
     Output::writeln("<comment><options=bold>$status</options=bold> $build_stage $result</comment>");
   }
 
-  public function updateStepStatus($build_stage, $build_step, $status, $result = "", $output = NULL) {
+  public function updateStepStatus($build_stage, $build_step, $status, $result = "", $summary = "", $output = NULL) {
     $this->setCurrentStep($build_step);
     $this->setStateByStep($build_stage, $build_step, $status);
     if (!empty($result)) {
       $this->setResultByStep($build_stage, $build_step, $result);
     }
+    if (!empty($summary)) {
+      $this->setSummaryByStep($build_stage, $build_step, $summary);
+    }
     if (!empty($output)) {
-      $this->setOutputByStep($build_state, $build_step, $output);
+      $this->setOutputByStep($build_stage, $build_step, $output);
     }
     Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step $result</comment>");
   }

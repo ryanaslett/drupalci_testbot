@@ -34,6 +34,10 @@ class PhpEnvironment extends EnvironmentBase {
       $job->setExecContainers($containers);
       // Actual creation and configuration of the executable containers occurs
       // in the getExecContainers() method call.
+      $this->update("Completed", "Pass", "Executable container names established.");
+    }
+    else {
+      $this->update("Error", "SystemError", "Error encountered while initializing executable container environment.  No valid executable container names found.");
     }
   }
 

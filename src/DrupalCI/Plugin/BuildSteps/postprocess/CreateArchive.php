@@ -32,6 +32,7 @@ class CreateArchive extends BuildStepBase {
     // Open the zip archive
     if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
       // TODO: Cannot open zip file ... throw an error.
+      $this->update("Error", "Error", "Can not create target archive file.");
       return;
     }
 
@@ -52,6 +53,6 @@ class CreateArchive extends BuildStepBase {
 
     // Store the artifacts filename in the job object for future reference
     $job->setArtifactFilename($data);
-
+    $this->update("Completed", "Passed", "Created artifact archive file.");
   }
 }

@@ -62,7 +62,7 @@ class ContainerCommand extends BuildStepBase {
               }
               else {
                 Output::error('Error', $result);
-                //$this->update("Error", "SystemError", "Unable to execute command on container.");
+                $this->update("Error", "SystemError", "Unable to execute command on container.");
               }
             });
             // Response stream is never read you need to simulate a wait in order to get output
@@ -70,6 +70,7 @@ class ContainerCommand extends BuildStepBase {
             Output::writeLn((string) $result);
             $inspection = $manager->execinspect($exec_id);
             $this->setExitCode($inspection->ExitCode);
+            Output::writeLn("Command Exit Code: " . $this->getExitCode());
 
             if ($this->checkCommandStatus($inspection->ExitCode) !==0) {
               $job->error();
@@ -79,20 +80,20 @@ class ContainerCommand extends BuildStepBase {
         }
       }
       // If no errors encountered, assume passed.
-      //if ($this->getState() == "Executing") {
-        //$this->update("Completed", "Pass", "Command(s) executed on container.");
-      //}
+      if ($this->getState() != "Error") {
+        $this->update("Completed", "Pass", "Command(s) executed on container.");
+      }
     }
-    //else {
-      //$this->update("Completed", "Warning", "No command passed to build step for execution");
-      //return;
-    //}
+    else {
+      $this->update("Completed", "Warning", "No command passed to build step for execution");
+      return;
+    }
   }
 
   protected function checkCommandStatus($signal) {
     if ($signal !==0) {
       Output::error('Error', "Received a non-zero return code from the last command executed on the container.  (Return status: " . $signal . ")");
-      //$this->update("Completed", "Error", "Received a non-zero exit code from last command executed on the container.  (Return status: $signal )");
+      $this->update("Completed", "Error", "Received a non-zero exit code from last command executed on the container.  (Return status: $signal )");
       return 1;
     }
     else {

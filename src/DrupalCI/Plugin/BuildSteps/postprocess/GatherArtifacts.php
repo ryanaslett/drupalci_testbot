@@ -58,6 +58,7 @@ class GatherArtifacts extends BuildStepBase {
         else {
           // TODO: Exception handling
           Output::writeLn('<info>Error generating job definition build artifact.');
+          $this->update("Error", "Error", "Error generating job definition build artifact.");
         }
       }
       elseif (strtolower($artifact->getType()) == 'file' || $artifact->getType() == 'directory') {
@@ -89,6 +90,9 @@ class GatherArtifacts extends BuildStepBase {
         $cmd = "cat >$dest <<EOL \n" . print_r($content, TRUE) . "\nEOL";
         $command->run($job, $cmd);
       }
+    }
+    if ($this->getState() != "Error") {
+      $this->update("Completed", "Passed");
     }
   }
 }

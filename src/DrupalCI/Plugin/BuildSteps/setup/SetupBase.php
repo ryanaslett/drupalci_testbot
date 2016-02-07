@@ -45,6 +45,7 @@ abstract class SetupBase extends BuildStepBase {
       // Invalid checkout directory
       Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
       $job->error();
+      $this->update("Error", "Error", "The checkout directory $directory is invalid.");
       return FALSE;
     }
 
