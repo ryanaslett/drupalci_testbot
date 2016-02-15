@@ -61,7 +61,6 @@ class DrupalCIConsoleApp extends Application {
       new InitPhpContainersCommand(),
       new RunCommand(),
       new StatusCommand(),
-      new PrivateTravisCommand('travis'),
     ];
     $this->addCommands($commands);
   }

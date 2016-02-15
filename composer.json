@@ -36,11 +36,7 @@
         "stage1/docker-php": "dev-ryanaslett-rawstreams-1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~3",
-        "herrera-io/phar-update": "~1.0",
-        "satooshi/php-coveralls": "v0.6.1",
-        "drupalci/results-api": "dev-guzzle4 as master"
-
+        "phpunit/phpunit": "~3"
     },
     "prefer-stable": true
 }
