@@ -1,7 +1,7 @@
 # Job Definition Template for the DrupalCI 'Simpletest' Job Type
 environment:
   db:
-    - %DCI_DBVersion%3
+    - %DCI_DBVersion%
   web:
     - %DCI_PHPVersion%
 setup:
