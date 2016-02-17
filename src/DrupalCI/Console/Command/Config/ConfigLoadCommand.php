@@ -15,6 +15,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Lcobucci\DependencyInjection\ContainerInjector;
+
 
 /**
  *   load <configset>  Clears all DrupalCI namespaced environment variables and
@@ -23,6 +25,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  *                       set, as defined in ~/.drupalci/configs/<configset>.
  */
 class ConfigLoadCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

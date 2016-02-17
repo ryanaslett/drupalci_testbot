@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Lcobucci\DependencyInjection\ContainerInjector;
+
 
 /**
  *   save <configset>  Saves the current set of local testing default overrides
@@ -21,6 +23,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  *                       storing the result in ~/.drupalci/configs/<configset>.
  */
 class ConfigSaveCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

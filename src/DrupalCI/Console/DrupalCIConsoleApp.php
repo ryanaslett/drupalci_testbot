@@ -7,13 +7,19 @@
 
 namespace DrupalCI\Console;
 
+use Lcobucci\DependencyInjection\ContainerConfig;
+use LuisMulinari\Consoleful\Command\ContainerAwareCommand;
+use LuisMulinari\Consoleful\Application;
+use Lcobucci\DependencyInjection\ContainerInjector;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 use DrupalCI\Console\Command\Init\InitBaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitDatabaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitDependenciesCommand;
 use DrupalCI\Console\Command\Init\InitDockerCommand;
 use DrupalCI\Console\Command\Init\InitWebContainersCommand;
 use DrupalCI\Console\Command\Init\InitPhpContainersCommand;
-use Symfony\Component\Console\Application;
 use DrupalCI\Console\Command\Init\InitAllCommand;
 use DrupalCI\Console\Command\Init\InitConfigCommand;
 use DrupalCI\Console\Command\BuildCommand;
@@ -39,8 +45,8 @@ class DrupalCIConsoleApp extends Application {
    * service model for simplicity.
    * TODO: Add a container/service model.
    */
-  public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN') {
-    parent::__construct($name, $version);
+  public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN', $containerConfig) {
+    parent::__construct($name, $version, $containerConfig);
     $commands = [
       new BuildCommand(),
       new PullCommand(),

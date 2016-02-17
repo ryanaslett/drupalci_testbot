@@ -13,12 +13,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Lcobucci\DependencyInjection\ContainerInjector;
 
 /**
  *   clear               Used to remove a configuration variable from the
  *                       current configuration set.
  */
 class ConfigClearCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

@@ -7,18 +7,17 @@
 
 namespace DrupalCI\Console\Command;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Docker\Context\Context;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
-
+use Lcobucci\DependencyInjection\ContainerInjector;
 
 class PullCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

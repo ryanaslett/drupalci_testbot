@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Lcobucci\DependencyInjection\ContainerInjector;
+
 
 /**
  *   show <configset>  Outputs the testing default configuration overrides from
@@ -24,6 +26,8 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
  *                       via the 'set' command).
  */
 class ConfigShowCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

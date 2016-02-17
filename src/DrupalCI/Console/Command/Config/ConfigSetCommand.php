@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Lcobucci\DependencyInjection\ContainerInjector;
+
 
 /**
  *   set <setting=value>
@@ -22,6 +24,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  *                       namespaced environment variable
  */
 class ConfigSetCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

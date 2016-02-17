@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-//use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Console\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -16,8 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Lcobucci\DependencyInjection\ContainerInjector;
 
 class InitDatabaseContainersCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

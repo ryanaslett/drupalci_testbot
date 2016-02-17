@@ -7,7 +7,9 @@
 
 namespace DrupalCI\Console\Command;
 
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use LuisMulinari\Consoleful\Command\ContainerAwareCommand;
+use Lcobucci\DependencyInjection\ContainerInjector;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,7 +20,7 @@ use Docker\Http\DockerClient as Client;
 /**
  * Just some helpful debugging stuff for now.
  */
-class DrupalCICommandBase extends SymfonyCommand {
+class DrupalCICommandBase extends ContainerAwareCommand {
     // Defaults for the underlying commands i.e. when commands run with --no-interaction or
     // when we are given options to setup containers.
     protected $default_build = array(

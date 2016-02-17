@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-
+use Lcobucci\DependencyInjection\ContainerInjector;
 
 /**
  *   reset <setting>   Clears local default overrides by resetting the value of
@@ -22,6 +22,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  *                       defaults.  Also supports 'ALL'.
  */
 class ConfigResetCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

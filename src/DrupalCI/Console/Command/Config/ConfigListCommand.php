@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Lcobucci\DependencyInjection\ContainerInjector;
 
 /**
  *   list              Outputs a list of available configuration sets, which
@@ -21,6 +22,8 @@ use Symfony\Component\Console\Input\InputOption;
  *                       files from ~/.drupalci/configs/*)
  */
 class ConfigListCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * {@inheritdoc}

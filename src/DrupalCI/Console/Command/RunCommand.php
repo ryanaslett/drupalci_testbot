@@ -16,8 +16,11 @@ use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Lcobucci\DependencyInjection\ContainerInjector;
 
 class RunCommand extends DrupalCICommandBase {
+
+  use ContainerInjector;
 
   /**
    * @var \DrupalCI\Plugin\PluginManagerInterface
@@ -44,6 +47,11 @@ class RunCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
+
+    $container = $this->getContainer();
+    // example:  $container->get("my.service");
+    // example:  $container->getParameter("example.parameter");
+
     $arg = $input->getArgument('definition');
 
     $config_helper = new ConfigHelper();
