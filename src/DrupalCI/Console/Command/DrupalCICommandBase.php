@@ -7,6 +7,7 @@
 
 namespace DrupalCI\Console\Command;
 
+use DrupalCI\Console\Output;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Docker\Docker;
 use Docker\Http\DockerClient as Client;
+use DrupalCI\Providers\ConsoleOutputServiceProvider;
 
 /**
  * Just some helpful debugging stuff for now.
@@ -33,6 +35,7 @@ class DrupalCICommandBase extends SymfonyCommand {
     parent::initialize($input, $output);
     // Perform some container set-up before command execution.
     $this->container = $this->getApplication()->getContainer();
+    $this->container->register(new ConsoleOutputServiceProvider($output));
   }
 
 
