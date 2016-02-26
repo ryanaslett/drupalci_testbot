@@ -3,6 +3,7 @@
 namespace DrupalCI\Providers;
 
 use DrupalCI\Console\DrupalCIConsoleApp;
+use DrupalCI\Plugin\PluginManagerFactory;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -19,6 +20,9 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
   public function register(Container $container) {
     $container['console'] = function ($container) {
       return new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.2', $container);
+    };
+    $container['plugin.manager.factory'] = function ($container) {
+      return new PluginManagerFactory($container);
     };
   }
 }

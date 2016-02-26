@@ -19,17 +19,34 @@ use Docker\Http\DockerClient as Client;
  * Just some helpful debugging stuff for now.
  */
 class DrupalCICommandBase extends SymfonyCommand {
-    // Defaults for the underlying commands i.e. when commands run with --no-interaction or
-    // when we are given options to setup containers.
-    protected $default_build = array(
-      'base'     => 'all',
-      'web'      => 'drupalci/web-5.5',
-      'database' => 'drupalci/mysql-5.5',
-      'php'      => 'all'
-    );
 
-    // Holds our Docker container manager
-    protected $docker;
+  /**
+   * The container object.
+   *
+   * @var \Pimple\Container
+   */
+  protected $container;
+  /**
+   * {@inheritdoc}
+   */
+  protected function initialize(InputInterface $input, OutputInterface $output) {
+    parent::initialize($input, $output);
+    // Perform some container set-up before command execution.
+    $this->container = $this->getApplication()->getContainer();
+  }
+
+
+  // Defaults for the underlying commands i.e. when commands run with --no-interaction or
+  // when we are given options to setup containers.
+  protected $default_build = array(
+    'base'     => 'all',
+    'web'      => 'drupalci/web-5.5',
+    'database' => 'drupalci/mysql-5.5',
+    'php'      => 'all'
+  );
+
+  // Holds our Docker container manager
+  protected $docker;
 
   protected function showArguments(InputInterface $input, OutputInterface $output) {
     $output->writeln('<info>Arguments:</info>');
