@@ -45,28 +45,6 @@ class DrupalCIConsoleApp extends Application {
   public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN', Container $container) {
     parent::__construct($name, $version);
     $this->container = $container;
-    $commands = [
-      new BuildCommand(),
-      new PullCommand(),
-      new ConfigListCommand(),
-      new ConfigLoadCommand(),
-      new ConfigResetCommand(),
-      new ConfigSaveCommand(),
-      new ConfigSetCommand(),
-      new ConfigShowCommand(),
-      new ConfigClearCommand(),
-      new DockerRemoveCommand(),
-      new InitAllCommand(),
-      new InitBaseContainersCommand(),
-      new InitDatabaseContainersCommand(),
-      new InitDependenciesCommand(),
-      new InitDockerCommand(),
-      new InitConfigCommand(),
-      new InitWebContainersCommand(),
-      new InitPhpContainersCommand(),
-      new RunCommand(),
-      new PrivateTravisCommand('travis'),
-    ];
     $this->addCommands($container['commands']);
   }
 
