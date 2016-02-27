@@ -5,6 +5,7 @@
  * Drupal CI's console.
  */
 
+use DrupalCI\Providers\ConsoleCommandProvider;
 use DrupalCI\Providers\DrupalCIServiceProvider;
 use Pimple\Container;
 
@@ -16,6 +17,6 @@ $loader = require_once __DIR__ . '/vendor/autoload.php';
 
 $container = new Container();
 $container->register(new DrupalCIServiceProvider());
+$container->register(new ConsoleCommandProvider());
 
 $container['console']->run();
-
