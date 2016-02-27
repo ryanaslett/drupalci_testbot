@@ -36,7 +36,6 @@ class DrupalCICommandBase extends SymfonyCommand {
     // Perform some container set-up before command execution.
     $this->container = $this->getApplication()->getContainer();
     $this->container->register(new ConsoleOutputServiceProvider($output));
-    $this->container->register(new DockerServiceProvider());
   }
 
 
