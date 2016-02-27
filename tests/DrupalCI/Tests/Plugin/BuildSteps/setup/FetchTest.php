@@ -11,9 +11,15 @@ use DrupalCI\Plugin\BuildSteps\setup\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use Guzzle\Http\ClientInterface;
 
+/**
+ * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup
+ */
 class FetchTest extends DrupalCITestCase {
 
-  function testRun() {
+  /**
+   * @covers ::run
+   */
+  public function testRun() {
     $file = 'file.patch';
     $url = 'http://example.com/site/dir/' . $file;
     $dir = 'test/dir';
@@ -32,10 +38,18 @@ class FetchTest extends DrupalCITestCase {
       ->with($url)
       ->will($this->returnValue($request));
 
+    $job_codebase = $this->getMock('DrupalCI\Job\CodeBase\JobCodebase');
+    $job = $this->getMockBuilder('DrupalCI\Plugin\JobTypes\JobInterface')
+      ->setMethods(['getJobCodebase'])
+      ->getMockForAbstractClass();
+    $job->expects($this->once())
+      ->method('getJobCodebase')
+      ->will($this->returnValue($job_codebase));
+
     $fetch = new TestFetch();
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
-    $fetch->run($this->job, [['url' => $url]]);
+    $fetch->run($job, [['url' => $url]]);
   }
 }
 

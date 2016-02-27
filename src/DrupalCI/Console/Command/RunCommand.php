@@ -20,16 +20,6 @@ use Symfony\Component\Console\Input\InputArgument;
 class RunCommand extends DrupalCICommandBase {
 
   /**
-   * @var \DrupalCI\Plugin\PluginManagerInterface
-   */
-  protected $buildStepsPluginManager;
-
-  /**
-   * @var \DrupalCI\Plugin\PluginManagerInterface
-   */
-  protected $jobPluginManager;
-
-  /**
    * {@inheritdoc}
    */
   protected function configure() {
@@ -59,8 +49,11 @@ class RunCommand extends DrupalCICommandBase {
     }
 
     // Load the associated class for this job type
+    /** @var PluginManager $job_plugin_manager */
+    $job_plugin_manager = $this->container['plugin.manager.factory']->create('JobTypes');
+
     /** @var $job \DrupalCI\Plugin\JobTypes\JobInterface */
-    $job = $this->jobPluginManager()->getPlugin($job_type, $job_type);
+    $job = $job_plugin_manager->getPlugin($job_type, $job_type);
 
     // Link our $output variable to the job, so that jobs can display their work.
     Output::setOutput($output);
@@ -144,7 +137,10 @@ class RunCommand extends DrupalCICommandBase {
       foreach ($steps as $build_step => $data) {
         $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
-        $plugin = $this->buildStepsPluginManager()->getPlugin($build_stage, $build_step);
+        /** @var PluginManager $build_steps_plugin_manager */
+        $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
+        /** @var Plugin $plugin */
+        $plugin = $build_steps_plugin_manager->getPlugin($build_stage, $build_step);
         $plugin->run($job, $data);
         // Update the job results object with build step result information
         $state = $plugin->getState();
@@ -161,7 +157,6 @@ class RunCommand extends DrupalCICommandBase {
           $job->getJobResults()->setSummaryByStage($build_stage, "Build error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>.  Step returned state $state.");
           break 2;
         }
-
         $status = $job->getJobResults()->getResultByStep($build_stage, $build_step);
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
@@ -202,25 +197,4 @@ class RunCommand extends DrupalCICommandBase {
       }
     }
   }
-
-  /**
-   * @return \DrupalCI\Plugin\PluginManagerInterface
-   */
-  protected function buildStepsPluginManager() {
-    if (!isset($this->buildStepsPluginManager)) {
-      $this->buildStepsPluginManager = new PluginManager('BuildSteps');
-    }
-    return $this->buildStepsPluginManager;
-  }
-
-    /**
-   * @return \DrupalCI\Plugin\PluginManagerInterface
-   */
-  protected function jobPluginManager() {
-    if (!isset($this->jobPluginManager)) {
-      $this->jobPluginManager = new PluginManager('JobTypes');
-    }
-    return $this->jobPluginManager;
-  }
-
 }
