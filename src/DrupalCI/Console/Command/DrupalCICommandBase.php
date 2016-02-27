@@ -59,15 +59,15 @@ class DrupalCICommandBase extends SymfonyCommand {
   );
 
   protected function showArguments(InputInterface $input, OutputInterface $output) {
-    $output->writeln('<info>Arguments:</info>');
+    $this->logger->debug('Arguments:');
     $items = $input->getArguments();
     foreach($items as $name=>$value) {
-      $output->writeln(' ' . $name . ': ' . print_r($value, TRUE));
+      $this->logger->debug(' ' . $name . ': ' . print_r($value, TRUE));
     }
-    $output->writeln('<info>Options:</info>');
+    $this->logger->debug('<info>Options:</info>');
     $items = $input->getOptions();
     foreach($items as $name=>$value) {
-      $output->writeln(' ' . $name . ': ' . print_r($value, TRUE));
+      $this->logger->debug(' ' . $name . ': ' . print_r($value, TRUE));
     }
   }
 
