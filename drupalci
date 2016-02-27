@@ -6,6 +6,7 @@
  */
 
 use DrupalCI\Providers\ConsoleCommandProvider;
+use DrupalCI\Providers\DockerServiceProvider;
 use DrupalCI\Providers\DrupalCIServiceProvider;
 use Pimple\Container;
 
@@ -18,5 +19,5 @@ $loader = require_once __DIR__ . '/vendor/autoload.php';
 $container = new Container();
 $container->register(new DrupalCIServiceProvider());
 $container->register(new ConsoleCommandProvider());
-
+$container->register(new DockerServiceProvider());
 $container['console']->run();

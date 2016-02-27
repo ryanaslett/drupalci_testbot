@@ -8,13 +8,12 @@
 namespace DrupalCI\Console\Command;
 
 use DrupalCI\Console\Output;
+use DrupalCI\Providers\DockerServiceProvider;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Docker\Docker;
-use Docker\Http\DockerClient as Client;
 use DrupalCI\Providers\ConsoleOutputServiceProvider;
 
 /**
@@ -28,6 +27,7 @@ class DrupalCICommandBase extends SymfonyCommand {
    * @var \Pimple\Container
    */
   protected $container;
+
   /**
    * {@inheritdoc}
    */
@@ -36,6 +36,7 @@ class DrupalCICommandBase extends SymfonyCommand {
     // Perform some container set-up before command execution.
     $this->container = $this->getApplication()->getContainer();
     $this->container->register(new ConsoleOutputServiceProvider($output));
+    $this->container->register(new DockerServiceProvider());
   }
 
 
@@ -48,9 +49,6 @@ class DrupalCICommandBase extends SymfonyCommand {
     'php'      => 'all'
   );
 
-  // Holds our Docker container manager
-  protected $docker;
-
   protected function showArguments(InputInterface $input, OutputInterface $output) {
     $output->writeln('<info>Arguments:</info>');
     $items = $input->getArguments();
@@ -62,24 +60,14 @@ class DrupalCICommandBase extends SymfonyCommand {
     foreach($items as $name=>$value) {
       $output->writeln(' ' . $name . ': ' . print_r($value, TRUE));
     }
+  }
 
-    }
+  public function getDocker() {
+    return $this->container['docker'];
+  }
 
-  public function getDocker()
-    {
-        $client = Client::createWithEnv();
-        if (null === $this->docker) {
-            $this->docker = new Docker($client);
-        }
-        return $this->docker;
-    }
-
-
-  public function getManager()
-    {
-    // if (null === $this->getManager()) {
-      return $this->getDocker()->getImageManager();
-    // }
-    }
+  public function getManager() {
+    return $this->container['docker.image.manager'];
+  }
 
 }
