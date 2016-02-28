@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cffd709b6781e8ae5fe1788211eb1128",
-    "content-hash": "871716676bc3f0d18760ce8113f3cfe7",
+    "hash": "397a4d57c96ab9e1453e1f9f9c640c7c",
+    "content-hash": "8abdfcbd6c0bc8d3234278a40054b521",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -132,18 +132,6 @@
         },
         {
             "name": "composer/semver",
-<<<<<<< HEAD
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/composer/semver.git",
-                "reference": "0faeb6e433f6b352f0dc55ec1faf5c6b605a35d3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/composer/semver/zipball/0faeb6e433f6b352f0dc55ec1faf5c6b605a35d3",
-                "reference": "0faeb6e433f6b352f0dc55ec1faf5c6b605a35d3",
-=======
             "version": "1.3.0",
             "source": {
                 "type": "git",
@@ -154,7 +142,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/composer/semver/zipball/df4463baa9f44fe6cf0a6da4fde2934d4c0a2747",
                 "reference": "df4463baa9f44fe6cf0a6da4fde2934d4c0a2747",
->>>>>>> dev
                 "shasum": ""
             },
             "require": {
@@ -203,11 +190,7 @@
                 "validation",
                 "versioning"
             ],
-<<<<<<< HEAD
-            "time": "2015-11-10 11:17:42"
-=======
             "time": "2016-02-25 22:23:39"
->>>>>>> dev
         },
         {
             "name": "composer/spdx-licenses",
@@ -269,20 +252,19 @@
                 "validator"
             ],
             "time": "2015-10-05 11:27:42"
-<<<<<<< HEAD
         },
         {
             "name": "docker-php/docker-php",
-            "version": "1.22.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/docker-php/docker-php.git",
-                "reference": "1b87500f110f2ee89a5fce75c5b6f9faf85956ee"
+                "reference": "5d2a65b763ca1e8c6d52bfacf6b154479475d36e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/docker-php/docker-php/zipball/1b87500f110f2ee89a5fce75c5b6f9faf85956ee",
-                "reference": "1b87500f110f2ee89a5fce75c5b6f9faf85956ee",
+                "url": "https://api.github.com/repos/docker-php/docker-php/zipball/5d2a65b763ca1e8c6d52bfacf6b154479475d36e",
+                "reference": "5d2a65b763ca1e8c6d52bfacf6b154479475d36e",
                 "shasum": ""
             },
             "require": {
@@ -316,9 +298,7 @@
                 "MIT"
             ],
             "description": "A Docker PHP client",
-            "time": "2016-02-09 01:21:49"
-=======
->>>>>>> dev
+            "time": "2016-02-20 11:50:31"
         },
         {
             "name": "doctrine/annotations",
@@ -720,16 +700,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "f5d04bdd2881ac89abde1fb78cc234bce24327bb"
+                "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5d04bdd2881ac89abde1fb78cc234bce24327bb",
-                "reference": "f5d04bdd2881ac89abde1fb78cc234bce24327bb",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/2e89629ff057ebb49492ba08e6995d3a6a80021b",
+                "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b",
                 "shasum": ""
             },
             "require": {
@@ -774,20 +754,20 @@
                 "stream",
                 "uri"
             ],
-            "time": "2016-01-23 01:23:02"
+            "time": "2016-02-18 21:54:00"
         },
         {
             "name": "jane/jane",
-            "version": "v1.1.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jolicode/jane.git",
-                "reference": "27baba6b616d8b842a73b2365812c9f9081d8ef0"
+                "reference": "85b93543351e25eb38140797a9d382a17bbb45ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jolicode/jane/zipball/27baba6b616d8b842a73b2365812c9f9081d8ef0",
-                "reference": "27baba6b616d8b842a73b2365812c9f9081d8ef0",
+                "url": "https://api.github.com/repos/jolicode/jane/zipball/85b93543351e25eb38140797a9d382a17bbb45ef",
+                "reference": "85b93543351e25eb38140797a9d382a17bbb45ef",
                 "shasum": ""
             },
             "require": {
@@ -803,7 +783,7 @@
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "^2.0@dev",
-                "phpunit/phpunit": "^5.0"
+                "phpunit/phpunit": "^4.7"
             },
             "suggest": {
                 "fabpot/php-cs-fixer": "Allow to automatically fix cs on generated code for better visualisation"
@@ -833,7 +813,7 @@
                 }
             ],
             "description": "Generate a serializable / deserializable object model given a json schema",
-            "time": "2016-01-26 19:31:12"
+            "time": "2016-02-19 17:05:37"
         },
         {
             "name": "jane/open-api",
@@ -1014,7 +994,6 @@
             "time": "2015-09-19 14:15:08"
         },
         {
-<<<<<<< HEAD
             "name": "php-http/client-common",
             "version": "v1.0.0",
             "source": {
@@ -1036,117 +1015,6 @@
             "require-dev": {
                 "henrikbjorn/phpspec-code-coverage": "^1.0",
                 "phpspec/phpspec": "^2.4"
-=======
-            "name": "pimple/pimple",
-            "version": "v3.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/silexphp/Pimple.git",
-                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/a30f7d6e57565a2e1a316e1baf2a483f788b258a",
-                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Pimple": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "Pimple, a simple Dependency Injection Container",
-            "homepage": "http://pimple.sensiolabs.org",
-            "keywords": [
-                "container",
-                "dependency injection"
-            ],
-            "time": "2015-09-11 15:10:35"
-        },
-        {
-            "name": "seld/cli-prompt",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/cli-prompt.git",
-                "reference": "b27db1514f7d7bb7a366ad95d4eb2b17140a0691"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/cli-prompt/zipball/b27db1514f7d7bb7a366ad95d4eb2b17140a0691",
-                "reference": "b27db1514f7d7bb7a366ad95d4eb2b17140a0691",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Seld\\CliPrompt\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be"
-                }
-            ],
-            "description": "Allows you to prompt for user input on the command line, and optionally hide the characters they type",
-            "keywords": [
-                "cli",
-                "console",
-                "hidden",
-                "input",
-                "prompt"
-            ],
-            "time": "2016-01-09 17:55:27"
-        },
-        {
-            "name": "seld/jsonlint",
-            "version": "1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "66834d3e3566bb5798db7294619388786ae99394"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/66834d3e3566bb5798db7294619388786ae99394",
-                "reference": "66834d3e3566bb5798db7294619388786ae99394",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3 || ^7.0"
->>>>>>> dev
             },
             "type": "library",
             "extra": {
@@ -1172,13 +1040,76 @@
             "description": "Common HTTP Client implementations and tools for HTTPlug",
             "homepage": "http://httplug.io",
             "keywords": [
-<<<<<<< HEAD
                 "client",
                 "common",
                 "http",
                 "httplug"
             ],
             "time": "2016-01-27 10:22:14"
+        },
+        {
+            "name": "php-http/discovery",
+            "version": "v0.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/discovery.git",
+                "reference": "fac1240e8a070b3e2f0e38606941de80c849fa53"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/fac1240e8a070b3e2f0e38606941de80c849fa53",
+                "reference": "fac1240e8a070b3e2f0e38606941de80c849fa53",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4|7.*"
+            },
+            "require-dev": {
+                "henrikbjorn/phpspec-code-coverage": "^1.0",
+                "php-http/httplug": "^1.0",
+                "php-http/message-factory": "^1.0",
+                "phpspec/phpspec": "^2.4",
+                "puli/composer-plugin": "1.0.0-beta9"
+            },
+            "suggest": {
+                "php-http/message": "Allow to use Guzzle or Diactoros factories",
+                "puli/composer-plugin": "Sets up Puli which is required for Discovery to work. Check http://docs.php-http.org/en/latest/discovery.html for more details."
+            },
+            "bin": [
+                "bin/puli.phar"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.9-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Discovery\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Finds installed HTTPlug implementations and PSR-7 message factories",
+            "homepage": "http://httplug.io",
+            "keywords": [
+                "adapter",
+                "client",
+                "discovery",
+                "factory",
+                "http",
+                "message"
+            ],
+            "time": "2016-02-11 09:53:37"
         },
         {
             "name": "php-http/httplug",
@@ -1238,16 +1169,16 @@
         },
         {
             "name": "php-http/message",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/message.git",
-                "reference": "24f87eb1e913bd8d548b6571be584492d95b0f02"
+                "reference": "a3b45d51ae5a7e800b857d2424792fe26c7dcd63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/message/zipball/24f87eb1e913bd8d548b6571be584492d95b0f02",
-                "reference": "24f87eb1e913bd8d548b6571be584492d95b0f02",
+                "url": "https://api.github.com/repos/php-http/message/zipball/a3b45d51ae5a7e800b857d2424792fe26c7dcd63",
+                "reference": "a3b45d51ae5a7e800b857d2424792fe26c7dcd63",
                 "shasum": ""
             },
             "require": {
@@ -1300,7 +1231,7 @@
                 "message",
                 "psr-7"
             ],
-            "time": "2016-01-27 11:42:19"
+            "time": "2016-02-25 10:37:53"
         },
         {
             "name": "php-http/message-factory",
@@ -1385,45 +1316,15 @@
                 "psr/cache-implementation": "Allow to use the CachePlugin",
                 "psr/log-implementation": "Allow to use the LoggerPlugin",
                 "symfony/stopwatch": "Allow to use the StopwatchPlugin"
-=======
-                "json",
-                "linter",
-                "parser",
-                "validator"
-            ],
-            "time": "2015-11-21 02:21:41"
-        },
-        {
-            "name": "seld/phar-utils",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/phar-utils.git",
-                "reference": "7009b5139491975ef6486545a39f3e6dad5ac30a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/phar-utils/zipball/7009b5139491975ef6486545a39f3e6dad5ac30a",
-                "reference": "7009b5139491975ef6486545a39f3e6dad5ac30a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
->>>>>>> dev
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-<<<<<<< HEAD
                     "dev-master": "1.0-dev"
-=======
-                    "dev-master": "1.x-dev"
->>>>>>> dev
                 }
             },
             "autoload": {
                 "psr-4": {
-<<<<<<< HEAD
                     "Http\\Client\\Plugin\\": "src/"
                 }
             },
@@ -1498,20 +1399,21 @@
         },
         {
             "name": "php-http/socket-client",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/socket-client.git",
-                "reference": "84cfa0bca447790ca2918c31b11e8316ba3e1d88"
+                "reference": "1c7c6e5fddaf1f0a457a69a3c17c550321b56a2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/socket-client/zipball/84cfa0bca447790ca2918c31b11e8316ba3e1d88",
-                "reference": "84cfa0bca447790ca2918c31b11e8316ba3e1d88",
+                "url": "https://api.github.com/repos/php-http/socket-client/zipball/1c7c6e5fddaf1f0a457a69a3c17c550321b56a2f",
+                "reference": "1c7c6e5fddaf1f0a457a69a3c17c550321b56a2f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4",
+                "php-http/discovery": "^0.8",
                 "php-http/httplug": "^1.0",
                 "php-http/message-factory": "^1.0.2",
                 "symfony/options-resolver": "^2.6|^3.0"
@@ -1521,19 +1423,16 @@
             },
             "require-dev": {
                 "guzzlehttp/psr7": "^1.2",
-                "php-http/adapter-integration-tests": "dev-master",
-                "php-http/client-common": "0.2.0",
-                "php-http/discovery": "^0.8@dev",
-                "php-http/message": "^0.2@dev",
-                "phpunit/phpunit": "^4.8"
-            },
-            "suggest": {
-                "php-http/discovery": "Used for message factory discovery"
+                "php-http/adapter-integration-tests": "~0.3.1",
+                "php-http/client-common": "^1.0",
+                "php-http/message": "^1.0",
+                "phpunit/phpunit": "^4.8",
+                "puli/composer-plugin": "1.0.0-beta9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -1552,7 +1451,53 @@
                 }
             ],
             "description": "Socket client for PHP-HTTP",
-            "time": "2016-01-26 15:15:24"
+            "time": "2016-02-25 10:31:40"
+        },
+        {
+            "name": "pimple/pimple",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/silexphp/Pimple.git",
+                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/a30f7d6e57565a2e1a316e1baf2a483f788b258a",
+                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Pimple, a simple Dependency Injection Container",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "container",
+                "dependency injection"
+            ],
+            "time": "2015-09-11 15:10:35"
         },
         {
             "name": "psr/cache",
@@ -1667,9 +1612,6 @@
             "autoload": {
                 "psr-0": {
                     "Psr\\Log\\": ""
-=======
-                    "Seld\\PharUtils\\": "src/"
->>>>>>> dev
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1678,7 +1620,6 @@
             ],
             "authors": [
                 {
-<<<<<<< HEAD
                     "name": "PHP-FIG",
                     "homepage": "http://www.php-fig.org/"
                 }
@@ -1690,24 +1631,12 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
-=======
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be"
-                }
-            ],
-            "description": "PHAR file format utilities, for when PHP phars you up",
-            "keywords": [
-                "phra"
-            ],
-            "time": "2015-10-13 18:44:15"
->>>>>>> dev
         },
         {
             "name": "seld/cli-prompt",
             "version": "1.0.1",
             "source": {
                 "type": "git",
-<<<<<<< HEAD
                 "url": "https://github.com/Seldaek/cli-prompt.git",
                 "reference": "b27db1514f7d7bb7a366ad95d4eb2b17140a0691"
             },
@@ -1715,15 +1644,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/Seldaek/cli-prompt/zipball/b27db1514f7d7bb7a366ad95d4eb2b17140a0691",
                 "reference": "b27db1514f7d7bb7a366ad95d4eb2b17140a0691",
-=======
-                "url": "https://github.com/drupalci/docker-php.git",
-                "reference": "18b2f0ed51d82d2f7407ee504bf16569fbd82d17"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/drupalci/docker-php/zipball/18b2f0ed51d82d2f7407ee504bf16569fbd82d17",
-                "reference": "18b2f0ed51d82d2f7407ee504bf16569fbd82d17",
->>>>>>> dev
                 "shasum": ""
             },
             "require": {
@@ -1856,21 +1776,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-<<<<<<< HEAD
                 "reference": "d0239fb42f98dd02e7d342f793c5d2cdee0c478d"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/console/zipball/d0239fb42f98dd02e7d342f793c5d2cdee0c478d",
                 "reference": "d0239fb42f98dd02e7d342f793c5d2cdee0c478d",
-=======
-                "reference": "cd2d1e4bac2206b337326b0140ff475fe9ad5f63"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/cd2d1e4bac2206b337326b0140ff475fe9ad5f63",
-                "reference": "cd2d1e4bac2206b337326b0140ff475fe9ad5f63",
->>>>>>> dev
                 "shasum": ""
             },
             "require": {
@@ -1921,7 +1832,6 @@
         },
         {
             "name": "symfony/filesystem",
-<<<<<<< HEAD
             "version": "v3.0.2",
             "source": {
                 "type": "git",
@@ -1936,31 +1846,11 @@
             },
             "require": {
                 "php": ">=5.5.9"
-=======
-            "version": "v2.8.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/filesystem.git",
-                "reference": "637b64d0ee10f44ae98dbad651b1ecdf35a11e8c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/637b64d0ee10f44ae98dbad651b1ecdf35a11e8c",
-                "reference": "637b64d0ee10f44ae98dbad651b1ecdf35a11e8c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9"
->>>>>>> dev
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-<<<<<<< HEAD
                     "dev-master": "3.0-dev"
-=======
-                    "dev-master": "2.8-dev"
->>>>>>> dev
                 }
             },
             "autoload": {
@@ -1987,11 +1877,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-<<<<<<< HEAD
             "time": "2016-01-27 11:34:55"
-=======
-            "time": "2016-01-13 10:28:07"
->>>>>>> dev
         },
         {
             "name": "symfony/finder",
@@ -2237,18 +2123,12 @@
             ],
             "authors": [
                 {
-<<<<<<< HEAD
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Symfony Community",
                     "homepage": "https://symfony.com/contributors"
-=======
-                    "name": "Kevin Herrera",
-                    "email": "kevin@herrera.io",
-                    "homepage": "http://kevin.herrera.io"
->>>>>>> dev
                 }
             ],
             "description": "Symfony PropertyAccess Component",
@@ -2317,18 +2197,12 @@
             ],
             "authors": [
                 {
-<<<<<<< HEAD
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
                 },
                 {
                     "name": "Symfony Community",
                     "homepage": "https://symfony.com/contributors"
-=======
-                    "name": "Kevin Herrera",
-                    "email": "kevin@herrera.io",
-                    "homepage": "http://kevin.herrera.io"
->>>>>>> dev
                 }
             ],
             "description": "Symfony Serializer Component",
@@ -2370,17 +2244,12 @@
             ],
             "authors": [
                 {
-<<<<<<< HEAD
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
                 },
                 {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
-=======
-                    "name": "Kevin Herrera",
-                    "email": "me@kevingh.com"
->>>>>>> dev
                 }
             ],
             "description": "Symfony Yaml Component",
@@ -2750,288 +2619,13 @@
                 "xunit"
             ],
             "time": "2013-01-13 10:24:48"
-<<<<<<< HEAD
-=======
-        },
-        {
-            "name": "psr/log",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Psr\\Log\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for logging libraries",
-            "keywords": [
-                "log",
-                "psr",
-                "psr-3"
-            ],
-            "time": "2012-12-21 11:40:51"
-        },
-        {
-            "name": "satooshi/php-coveralls",
-            "version": "v0.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/satooshi/php-coveralls.git",
-                "reference": "dd0df95bd37a7cf5c5c50304dfe260ffe4b50760"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/dd0df95bd37a7cf5c5c50304dfe260ffe4b50760",
-                "reference": "dd0df95bd37a7cf5c5c50304dfe260ffe4b50760",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "guzzle/guzzle": ">=3.0",
-                "php": ">=5.3",
-                "psr/log": "1.0.0",
-                "symfony/config": ">=2.0",
-                "symfony/console": ">=2.0",
-                "symfony/stopwatch": ">=2.2",
-                "symfony/yaml": ">=2.0"
-            },
-            "require-dev": {
-                "apigen/apigen": "2.8.*@stable",
-                "pdepend/pdepend": "dev-master",
-                "phpmd/phpmd": "dev-master",
-                "phpunit/php-invoker": ">=1.1.0,<1.2.0",
-                "phpunit/phpunit": "3.7.*@stable",
-                "sebastian/finder-facade": "dev-master",
-                "sebastian/phpcpd": "1.4.*@stable",
-                "squizlabs/php_codesniffer": "1.4.*@stable",
-                "theseer/fdomdocument": "dev-master"
-            },
-            "bin": [
-                "composer/bin/coveralls"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Contrib\\Component": "src/",
-                    "Contrib\\Bundle": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Kitamura Satoshi",
-                    "email": "with.no.parachute@gmail.com",
-                    "homepage": "https://www.facebook.com/satooshi.jp"
-                }
-            ],
-            "description": "PHP client library for Coveralls API",
-            "homepage": "https://github.com/satooshi/php-coveralls",
-            "keywords": [
-                "ci",
-                "coverage",
-                "github",
-                "test"
-            ],
-            "time": "2013-05-04 08:07:33"
-        },
-        {
-            "name": "symfony/config",
-            "version": "v3.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/config.git",
-                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/8c83ff9a2ffbed1e606bc816db11ddc2385a16ee",
-                "reference": "8c83ff9a2ffbed1e606bc816db11ddc2385a16ee",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.9",
-                "symfony/filesystem": "~2.8|~3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Config\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Config Component",
-            "homepage": "https://symfony.com",
-            "time": "2016-01-21 09:38:31"
-        },
-        {
-            "name": "symfony/event-dispatcher",
-            "version": "v2.8.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "ee278f7c851533e58ca307f66305ccb9188aceda"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/ee278f7c851533e58ca307f66305ccb9188aceda",
-                "reference": "ee278f7c851533e58ca307f66305ccb9188aceda",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "psr/log": "~1.0",
-                "symfony/config": "~2.0,>=2.0.5|~3.0.0",
-                "symfony/dependency-injection": "~2.6|~3.0.0",
-                "symfony/expression-language": "~2.6|~3.0.0",
-                "symfony/stopwatch": "~2.3|~3.0.0"
-            },
-            "suggest": {
-                "symfony/dependency-injection": "",
-                "symfony/http-kernel": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\EventDispatcher\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony EventDispatcher Component",
-            "homepage": "https://symfony.com",
-            "time": "2016-01-13 10:28:07"
-        },
-        {
-            "name": "symfony/stopwatch",
-            "version": "v3.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/stopwatch.git",
-                "reference": "4a204804952ff267ace88cf499e0b4bb302a475e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/4a204804952ff267ace88cf499e0b4bb302a475e",
-                "reference": "4a204804952ff267ace88cf499e0b4bb302a475e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.9"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Stopwatch\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Stopwatch Component",
-            "homepage": "https://symfony.com",
-            "time": "2016-01-03 15:35:16"
-        }
-    ],
-    "aliases": [
-        {
-            "alias": "master",
-            "alias_normalized": "9999999-dev",
-            "version": "dev-guzzle4",
-            "package": "drupalci/results-api"
->>>>>>> dev
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "composer/composer": 20
+        "composer/composer": 20,
+        "docker-php/docker-php": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
