@@ -165,7 +165,7 @@ class Patch
   protected $httpClient;
 
   /**
-   * @param string $patch_details
+   * @param string[] $patch_details
    * @param JobCodeBase $codebase
    */
   public function __construct($patch_details, $codebase)
