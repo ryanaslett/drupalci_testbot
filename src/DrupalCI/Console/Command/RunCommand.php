@@ -120,6 +120,9 @@ class RunCommand extends DrupalCICommandBase {
     // definition
     $definition = $job_definition->getDefinition();
 
+    /** @var PluginManager $build_steps_plugin_manager */
+    $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
+
     // Iterate over the build stages
     foreach ($definition as $build_stage => $steps) {
       // Post-processing needs to happen outside of this loop, in case any one
@@ -137,8 +140,6 @@ class RunCommand extends DrupalCICommandBase {
       foreach ($steps as $build_step => $data) {
         $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
-        /** @var PluginManager $build_steps_plugin_manager */
-        $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
         /** @var Plugin $plugin */
         $plugin = $build_steps_plugin_manager->getPlugin($build_stage, $build_step);
         $plugin->run($job, $data);
@@ -185,7 +186,7 @@ class RunCommand extends DrupalCICommandBase {
       // Iterate over build steps
       $job_results->updateStepStatus("postprocess", $build_step, 'Executing');
       // Execute the build step
-      $this->buildStepsPluginManager()->getPlugin("postprocess", $build_step)->run($job, $data);
+      $build_steps_plugin_manager->getPlugin("postprocess", $build_step)->run($job, $data);
       // Check for errors / failures after build step execution
       $status = $job_results->getResultByStep("postprocess", $build_step);
 
