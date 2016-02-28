@@ -7,6 +7,7 @@ MAINTAINER drupalci
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV HOME /root
+ENV DRUPALCI TRUE
 
 # Saves us from stale repository issues.
 # Build packages.
@@ -19,6 +20,7 @@ RUN apt-get clean && apt-get update && \
     bison \
     ccache \
     curl \
+    daemon \
     freetds-dev \
     git \
     libaspell-dev \
@@ -49,6 +51,7 @@ RUN apt-get clean && apt-get update && \
     libssl-dev \
     libxpm-dev \
     libxslt-dev \
+    libyaml-dev \
     libz-dev \
     make \
     mysql-client \
@@ -60,11 +63,26 @@ RUN apt-get clean && apt-get update && \
     software-properties-common \
     sqlite3 \
     sudo \
-    supervisor \
     unixODBC-dev \
+    unzip \
+    sqlite3 \
+    libicu52 \
+    libjpeg8 \
+    libfontconfig \
+    libwebp5 \
     unzip && \
-   apt-get clean && apt-get autoremove -y && \
+    apt-get clean && apt-get autoremove -y && \
     rm /etc/cron.d/php5
+
+##
+# PhantomJS
+##
+RUN curl -L https://github.com/bprodoehl/phantomjs/releases/download/v2.0.0-20150528/phantomjs-2.0.0-20150528-u1404-x86_64.zip -o ~/phantomjs-2.0.zip && \
+    unzip -j ~/phantomjs-2.0.zip -d ~/phantomjs && \
+    mv ~/phantomjs/phantomjs /usr/bin/phantomjs && \
+    rm -f ~/phantomjs-2.0.zip && \
+    rm -rf ~/phantomjs && \
+    chmod 755 /usr/bin/phantomjs
 
 ##
 # PHPENV.
@@ -74,7 +92,9 @@ RUN git clone --depth 1 https://github.com/CHH/phpenv.git /tmp/phpenv && \
     PHPENV_ROOT="/opt/phpenv" /tmp/phpenv/bin/phpenv-install.sh && \
     scp /tmp/phpenv/extensions/* /opt/phpenv/libexec/ && \
     echo 'eval "$(phpenv init -)"' >> /root/.bashrc && \
-    git clone --depth 1 https://github.com/CHH/php-build.git /opt/phpenv/plugins/php-build
+    git clone https://github.com/php-build/php-build.git /opt/phpenv/plugins/php-build
+WORKDIR /opt/phpenv/plugins/php-build
+RUN    git reset --hard 2b1928b7ef7b3def9966db12eaf56d7966f834cd
 ENV PATH /opt/phpenv/shims:/opt/phpenv/bin:$PATH
 
 
@@ -100,15 +120,3 @@ RUN bash -c "wget http://getcomposer.org/composer.phar && chmod 775 composer.pha
 # Drush and dependencies.
 RUN HOME=/ /usr/local/bin/composer global require drush/drush:dev-master && \
     /.composer/vendor/drush/drush/drush --version
-
-# supervisor
-COPY ./conf/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Scripts.
-COPY ./conf/scripts/start.sh /start.sh
-COPY ./conf/mongodb.settings.php /mongodb.settings.php
-COPY ./conf/scripts/foreground.sh /etc/apache2/foreground.sh
-COPY daemon.sh /daemon.sh
-
-# Make start.sh executable.
-RUN chmod 755 /start.sh /daemon.sh
