@@ -4,6 +4,7 @@ namespace DrupalCI\Providers;
 
 use DrupalCI\Console\DrupalCIConsoleApp;
 use DrupalCI\Plugin\PluginManagerFactory;
+use DrupalCI\Providers\DockerServiceProvider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -18,6 +19,7 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     * @param Container $container
     */
   public function register(Container $container) {
+    $container->register(new DockerServiceProvider());
     $container['console'] = function ($container) {
       return new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.2', $container);
     };

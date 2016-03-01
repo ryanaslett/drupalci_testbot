@@ -2,8 +2,8 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use Symfony\Component\Console\Tester\CommandTester;
 use DrupalCI\Tests\Console\Command\CommandTestBase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class StatusCommandTest extends CommandTestBase {
 
