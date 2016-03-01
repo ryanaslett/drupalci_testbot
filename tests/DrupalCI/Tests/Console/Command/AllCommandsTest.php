@@ -33,7 +33,6 @@ class AllCommandsPresentTest extends CommandTestBase {
       ['pull'],
       ['run'],
       ['status'],
-      ['travis'],
     ];
   }
 
