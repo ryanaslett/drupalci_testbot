@@ -1,6 +1,6 @@
 <?php
 
-namespace DrupalCI\Tests\Console\Command;
+namespace DrupalCI\Tests\Console\Command\Status;
 
 use DrupalCI\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
