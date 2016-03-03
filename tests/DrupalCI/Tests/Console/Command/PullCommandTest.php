@@ -10,6 +10,8 @@ class PullCommandTest extends CommandTestBase {
 
   /**
    * @todo: This test relies on a timeout of the docker image service. Fix that.
+   * @group docker
+   *
    * @coversNothing
    */
   public function testPull() {
