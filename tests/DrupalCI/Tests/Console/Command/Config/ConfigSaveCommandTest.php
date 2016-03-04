@@ -16,8 +16,7 @@ class ConfigSaveCommandTest extends CommandTestBase {
       'configset_name' => 'foof',
     ]);
     $display = $commandTester->getDisplay(TRUE);
-    $this->assertRegExp("`Unable to save an empty configuration set.`", $display);
-    $this->assertRegExp("/Use the 'drupalci config:set \[variablename]=\[value]' command to set some configuration defaults before attempting to save a new config set\./", $display);
+    $this->assertRegExp("`(Unable to save an empty configuration set.)|(Configuration foof saved.)`", $display);
   }
 
 }
