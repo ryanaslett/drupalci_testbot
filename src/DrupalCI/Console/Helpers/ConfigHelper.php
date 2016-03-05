@@ -36,7 +36,8 @@ class ConfigHelper extends DrupalCIHelperBase {
     // TODO: Fix the hardcoded directory
     $options = glob('./configsets/*');
     foreach ($options as $option) {
-      $filename = array_pop(explode('/', $option));
+      $optionpart = explode('/', $option);
+      $filename = array_pop($optionpart);
       $configsets[$filename] = $option;
     }
     return $configsets;

@@ -30,6 +30,7 @@ use DrupalCI\Console\Command\Config\ConfigSetCommand;
 use DrupalCI\Console\Command\Config\ConfigShowCommand;
 use DrupalCI\Console\Command\Config\ConfigClearCommand;
 use DrupalCI\Console\Command\Status\StatusCommand;
+use DrupalCI\Providers\ConsoleCommandProvider;
 
 class DrupalCIConsoleApp extends Application {
 
@@ -44,6 +45,7 @@ class DrupalCIConsoleApp extends Application {
   public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN', Container $container) {
     parent::__construct($name, $version);
     $this->container = $container;
+    $container->register(new ConsoleCommandProvider());
     $this->addCommands($container['commands']);
   }
 
