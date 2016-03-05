@@ -17,8 +17,7 @@ class DockerRemoveCommandTest extends CommandTestBase {
       'type' => 'illegal_container',
     ]);
     $display = $commandTester->getDisplay(TRUE);
-    $this->assertRegExp('`illegal_container is not a legal container type.`', $display);
-    $this->assertRegExp('`Nothing to Remove `', $display);
+    $this->assertRegExp('`illegal_container is not a legal container type.\n`', $display);
   }
 
 }
