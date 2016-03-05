@@ -11,12 +11,16 @@ class ConfigResetCommandTest extends CommandTestBase {
     $c = $this->getConsoleApp();
     $command = $c->find('config:reset');
     $commandTester = new CommandTester($command);
+
+    $helper = $command->getHelper('question');
+    $helper->setInputStream($this->getInputStream('yes\\n'));
+
     $commandTester->execute([
       'command' => $command->getName(),
       'setting' => ['foof'],
     ]);
     $display = $commandTester->getDisplay(TRUE);
-    $this->assertRegExp("`The 'foof' configuration set does not exist.`", $display);
+    $this->assertRegExp("`(The 'foof' configuration set does not exist.)|(This action will delete the foof configuration set.)`", $display);
   }
 
 }
