@@ -26,11 +26,10 @@ class PullCommandTest extends CommandTestBase {
     }
     catch (ImageNotFoundException $e) {
       $display = $commandTester->getDisplay(TRUE);
-      $this->assertRegExp('`Executing pull ...`', $display);
-      $this->assertRegExp('`Pulling foof:latest container`', $display);
+      $this->assertRegExp('`\[notice\] Pulling foof:latest container`', $display);
       return;
     }
-    $this->fail('Run command did not throw exception or display status info.');
+    $this->fail('Pull command did not throw exception or display status info.');
   }
 
 }

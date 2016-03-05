@@ -13,7 +13,8 @@ class StatusCommandTest extends CommandTestBase {
     $commandTester = new CommandTester($command);
     $commandTester->execute(['command' => $command->getName()]);
 
-    $this->assertRegExp('/Running Status Checks ... \nChecking Docker Version ... \n/', $commandTester->getDisplay(TRUE));
+    $this->assertRegExp('/\[info\] Running Status Checks ...\nChecking Docker Version .../', $commandTester->getDisplay(TRUE));
+
   }
 
 }
