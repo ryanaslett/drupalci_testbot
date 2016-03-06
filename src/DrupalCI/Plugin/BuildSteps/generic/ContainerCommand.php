@@ -50,7 +50,7 @@ class ContainerCommand extends PluginBase {
             $command = ["/bin/bash", "-c", $cmd];
             $exec_config->setCmd($command);
 
-            $exec_manager = $job->getDocker()->getExecManager();
+            $exec_manager = $docker->getExecManager();
             $response = $exec_manager->create($id, $exec_config);
 
             $exec_id = $response->getId();
