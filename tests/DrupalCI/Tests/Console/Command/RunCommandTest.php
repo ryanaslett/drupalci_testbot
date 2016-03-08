@@ -2,7 +2,7 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use DrupalCI\Tests\DrupalCIFunctionalTestBase;
+use DrupalCI\Tests\Application\DrupalCIFunctionalTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class RunCommandTest extends DrupalCIFunctionalTestBase {
