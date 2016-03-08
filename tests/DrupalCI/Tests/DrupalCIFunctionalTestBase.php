@@ -1,6 +1,6 @@
 <?php
 
-namespace DrupalCI\Tests\Application;
+namespace DrupalCI\Tests;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Providers\DrupalCIServiceProvider;
