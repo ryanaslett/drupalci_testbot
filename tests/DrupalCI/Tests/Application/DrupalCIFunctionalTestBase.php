@@ -2,6 +2,7 @@
 
 namespace DrupalCI\Tests\Application;
 
+use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Providers\DrupalCIServiceProvider;
 use DrupalCI\Tests\DrupalCITestCase;
 use Pimple\Container;
@@ -21,7 +22,7 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
    * These values will be initialized using the config:set command.
    *
    * Override this array with your own config sets and settings.
-   * 
+   *
    * @code
    * [
    *   'DCI_JobType=simpletest',
@@ -32,6 +33,7 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
    * @var string[]
    */
   protected $dciConfig;
+
   /**
    * The service container.
    *
@@ -75,17 +77,29 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * {@inheritdoc}
+   * Activate a configset.
+   *
+   * We use the config helper here because the config:load command requires
+   * interaction.
+   *
+   * @param string $config_name
    */
-  public function setUp() {
-    parent::setUp();
-    // Complain if there is no config.
-    if (empty($this->dciConfig)) {
-      throw new \PHPUnit_Framework_Exception('You must provide ' . get_class($this) . '::$dciConfig.');
+  protected function configLoad($config_name) {
+    $config_helper = new ConfigHelper();
+    if (!$config_helper->activateConfig($config_name)) {
+      throw new \PHPUnit_Framework_Exception('Unable to load the configset: ' . $config_name);
     }
+  }
 
-    // Get our config commands.
-    $config_load = $this->getCommand('config:load');
+  /**
+   * Set configuration values.
+   *
+   * This method calls the config:set method with the values to set.
+   *
+   * @param string[] $config
+   */
+  protected function configSet($config) {
+    // Get the command.
     $config_set = $this->getCommand('config:set');
 
     // Set up the app.
@@ -94,21 +108,27 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
     $app->setCatchExceptions(FALSE);
     $options = ['interactive' => FALSE];
 
-    // Set up our fixture config. Use CommandTester for convenience.
-    $command_tester = new CommandTester($config_load);
-
-    // Load the blank configset.
-    $command_tester->execute([
-      'command' => $config_load->getName(),
-      'configset' => 'blank',
-    ], $options);
-
-    // Add all our configs.
+    // Add all our configs. Use CommandTester for convenience.
     $command_tester = new CommandTester($config_set);
     $command_tester->execute([
       'command' => $config_set->getName(),
-      'assignment' => $this->dciConfig,
+      'assignment' => $config,
     ], $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp();
+    // Complain if there is no config.
+    if (empty($this->dciConfig)) {
+      throw new \PHPUnit_Framework_Exception('You must provide ' . get_class($this) . '::$dciConfig.');
+    }
+    $this->configLoad('blank');
+    $this->configSet($this->dciConfig);
+    $app = $this->getConsoleApp();
+    $app->setAutoExit(FALSE);
   }
 
 }
