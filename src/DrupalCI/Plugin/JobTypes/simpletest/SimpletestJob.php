@@ -40,7 +40,7 @@ class SimpletestJob extends JobBase {
     'DCI_DBUser' => 'drupaltestbot',
     'DCI_DBPassword' => 'drupaltestbotpw',
     'DCI_DBUrl' => 'dbtype://host', // DBVersion, DBUser and DBPassword variable plugins will change this.
-    'DCI_TestGroups' => '--all',
+    'DCI_TestGroups' => '--types "Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional" --all',
     'DCI_SQLite' => '/var/www/html/results/simpletest.sqlite',
     'DCI_Concurrency' => 4,
     'DCI_GitCommitHash' => '',
