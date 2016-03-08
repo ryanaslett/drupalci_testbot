@@ -4,6 +4,7 @@ namespace DrupalCI\Tests\Console\Command;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Tests\Console\Command\CommandTestBase;
+use DrupalCI\Tests\DrupalCIFunctionalTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class RunCommandTest extends DrupalCIFunctionalTestBase {
@@ -25,5 +26,4 @@ class RunCommandTest extends DrupalCIFunctionalTestBase {
     $this->assertRegExp('`Executing job with build ID:`', $display);
     $this->assertRegExp('`Loading DrupalCI platform default arguments:`', $display);
   }
-
 }
