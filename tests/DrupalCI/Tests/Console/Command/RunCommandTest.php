@@ -2,27 +2,28 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use DrupalCI\Tests\Console\Command\CommandTestBase;
+use DrupalCI\Tests\Application\DrupalCIFunctionalTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
-class RunCommandTest extends CommandTestBase {
+class RunCommandTest extends DrupalCIFunctionalTestBase {
 
-  public function testStatus() {
+  /**
+   * {@inheritdoc}
+   */
+  protected $dciConfig = [
+    'DCI_UseLocalCodebase=/tmp/drupal',
+    'DCI_JobType=simpletest',
+    'DCI_TestGroups=ban',
+  ];
+
+  public function testRun() {
     $c = $this->getConsoleApp();
     $command = $c->find('run');
     $commandTester = new CommandTester($command);
-    try {
-      $commandTester->execute(['command' => $command->getName()]);
-    }
-    catch (FileNotFoundException $e) {
-      $display = $commandTester->getDisplay(TRUE);
-      $this->assertRegExp('`Executing job with build ID:`', $display);
-      $this->assertRegExp('`Loading DrupalCI platform default arguments:`', $display);
-      $this->assertRegExp('`Using job definition template: ./drupalci.yml`', $display);
-      return;
-    }
-    $this->fail('Run command did not throw exception or display status info.');
+    $commandTester->execute(['command' => $command->getName()]);
+    $display = $commandTester->getDisplay(TRUE);
+    $this->assertRegExp('`Executing job with build ID:`', $display);
+    $this->assertRegExp('`Loading DrupalCI platform default arguments:`', $display);
   }
 
 }
