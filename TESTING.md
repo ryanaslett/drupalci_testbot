@@ -13,16 +13,19 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
 - Run the tests using `./bin/phpunit`.
 - Depending on your needs, you can exclude some tests with hard dependencies with `--exclude-group`. Notably `@group docker`.
 
-
         $ git clone --branch dev https://git.drupal.org/project/drupalci_testbot.git
         $ cd drupalci_testbot
         $ vagrant up
         // Wait a while...
         $ vagrant ssh
         $ rm -rf ~/.drupalci
+        $ ./drupalci init
+        // Pull down all the images.
+        $ cd /tmp
+        $ git clone --branch 8.1.x https://git.drupal.org/project/drupal.git
+        $ cd ~/drupalci_testbot
         $ ./bin/phpunit
         // Tests run.
         $ ./bin/phpunit --exclude-group docker
         // Tests run without docker dependencies.
         $
-
