@@ -28,7 +28,6 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
 
   public function testBadPatch() {
     $app = $this->getConsoleApp();
-    $app->setAutoExit(TRUE);
     $options = ['interactive' => FALSE];
 
     $app_tester = new ApplicationTester($app);
