@@ -13,6 +13,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  * git clone --branch 8.1.x https://git.drupal.org/project/drupal.git
  *
  * @group Application
+ * @group failing
  *
  * @see TESTING.md
  */
