@@ -53,7 +53,7 @@ class Patch extends SetupBase {
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-I        $source_dir = $job->getJobCodebase()->getWorkingDir();
+        $source_dir = $job->getJobCodebase()->getWorkingDir();
         // TODO: Temporary hack.  Strip /checkout off the directory
         $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
 
