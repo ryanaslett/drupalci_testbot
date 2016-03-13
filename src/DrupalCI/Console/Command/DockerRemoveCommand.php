@@ -119,7 +119,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
 
       // list removed containers
       $this->logger->notice('Removed Containers:');
-      $this->logger->notice(explode("\n", $rmContainers));
+      $this->logger->notice(implode("\n", $rmContainers));
 
       //check to for any DCI after the kill and remove
       exec($cmd_docker_psa, $remove_check);
