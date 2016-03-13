@@ -18,11 +18,13 @@ interface JobInterface {
   public function getJobType();
 
   /**
+   * @deprecated Kill this after we're done properly injecting the container.
    * @return \Symfony\Component\Console\Output\OutputInterface
    */
   public function getOutput();
 
   /**
+   * @deprecated Kill this after we're done properly injecting the container.
    * @param \Symfony\Component\Console\Output\OutputInterface $output
    */
   public function setOutput(OutputInterface $output);
