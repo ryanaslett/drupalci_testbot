@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1d439c88200ffa9bf8fb5a951096bb15",
-    "content-hash": "be425e17b5e07298fb2d083f8ed842ef",
+    "hash": "48b95ebf32ae5a0edf90f9ea687e3bd8",
+    "content-hash": "60a8e839eaea76e89aa8af2b924e9594",
     "packages": [
         {
             "name": "composer/composer",
@@ -374,7 +374,7 @@
                     "Doctrine\\Common\\Collections\\": "lib/"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -834,6 +834,53 @@
             "time": "2015-09-11 15:10:35"
         },
         {
+            "name": "psr/log",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "d8e60a5619fff77f9669da8997697443ef1a1d7e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d8e60a5619fff77f9669da8997697443ef1a1d7e",
+                "reference": "d8e60a5619fff77f9669da8997697443ef1a1d7e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2016-01-06 21:40:42"
+        },
+        {
             "name": "seld/cli-prompt",
             "version": "1.0.1",
             "source": {
@@ -1006,7 +1053,7 @@
             ],
             "description": "A Docker PHP client",
             "support": {
-                "source": "https://github.com/ryanaslett/docker-php/tree/ryanaslett-rawstreams-1"
+                "source": "https://github.com/drupalci/docker-php/tree/ryanaslett-rawstreams-1"
             },
             "time": "2015-09-16 23:03:19"
         },
@@ -2239,7 +2286,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "composer/composer": 20,
-        "stage1/docker-php": 20
+        "stage1/docker-php": 20,
+        "psr/log": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
