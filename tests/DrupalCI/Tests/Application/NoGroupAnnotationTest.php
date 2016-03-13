@@ -31,7 +31,7 @@ class NoGroupAnnotationTest extends DrupalCIFunctionalTestBase {
     'DCI_Patch=2680713-test-with-no-group-annotation.patch',
   ];
 
-  public function testContribNoTests() {
+  public function testNoGroupAnnotation() {
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
 
