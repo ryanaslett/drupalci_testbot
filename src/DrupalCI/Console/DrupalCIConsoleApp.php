@@ -14,6 +14,7 @@ use DrupalCI\Console\Command\Init\InitDockerCommand;
 use DrupalCI\Console\Command\Init\InitWebContainersCommand;
 use DrupalCI\Console\Command\Init\InitPhpContainersCommand;
 use DrupalCI\InjectableTrait;
+use DrupalCI\Providers\LoggerProvider;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
 use DrupalCI\Console\Command\Init\InitAllCommand;
@@ -47,6 +48,7 @@ class DrupalCIConsoleApp extends Application {
     parent::__construct($name, $version);
     $this->container = $container;
     $container->register(new ConsoleCommandProvider());
+    $container->register(new LoggerProvider());
     $this->addCommands($container['commands']);
   }
 

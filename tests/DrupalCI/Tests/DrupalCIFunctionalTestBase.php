@@ -4,6 +4,7 @@ namespace DrupalCI\Tests;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Providers\DrupalCIServiceProvider;
+use DrupalCI\Providers\LoggerProvider;
 use DrupalCI\Tests\DrupalCITestCase;
 use Pimple\Container;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -48,6 +49,7 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
     if (empty($this->container)) {
       $this->container = new Container();
       $this->container->register(new DrupalCIServiceProvider());
+      $this->container->register(new LoggerProvider());
     }
     return $this->container;
   }
