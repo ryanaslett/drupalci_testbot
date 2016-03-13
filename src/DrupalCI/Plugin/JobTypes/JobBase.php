@@ -392,6 +392,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   }
 
   public function startServiceContainerDaemons($container_type) {
+    $output = $this->container['console.output'];
     $needs_sleep = FALSE;
     $docker = $this->getDocker();
     $manager = $docker->getContainerManager();
@@ -406,7 +407,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     foreach ($this->serviceContainers[$container_type] as $key => $image) {
       if (in_array($image['image'], array_keys($instances))) {
         // TODO: Determine service container ports, id, etc, and save it to the job.
-        Output::writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
+        $output->writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
         // TODO: Load up container parameters
         $container = $manager->find($instances[$image['image']]);
         $container_id = $container->getID();
@@ -418,7 +419,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
         continue;
       }
       // Container not running, so we'll need to create it.
-      Output::writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
+      $output->writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
 
       // Get container configuration, which defines parameters such as exposed ports, etc.
       $configs = $this->getContainerConfiguration($image['image']);
@@ -441,7 +442,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $this->serviceContainers[$container_type][$key]['name'] = $container_name;
       $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
       $short_id = substr($container_id, 0, 8);
-      Output::writeln("<comment>Created new <options=bold>${image['image']}</options=bold> container instance with ID <options=bold>$short_id</options=bold></comment>");
+      $output->writeln("<comment>Created new <options=bold>${image['image']}</options=bold> container instance with ID <options=bold>$short_id</options=bold></comment>");
     }
 
     $dburl_parts = parse_url($this->buildVars['DCI_DBUrl']);
@@ -452,14 +453,14 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $max_sleep = 120;
       while($counter < $max_sleep ){
         if ($this->checkDBStatus($dburl_parts)){
-          Output::writeln("<comment>Database is active.</comment>");
+          $output->writeln("<comment>Database is active.</comment>");
           break;
         }
         if ($counter >= $max_sleep){
-          Output::writeln("<error>Max retries reached, exiting promgram.</error>");
+          $output->writeln("<error>Max retries reached, exiting promgram.</error>");
           exit(1);
         }
-        Output::writeln("<comment>Sleeping " . $increment . " seconds to allow service to start.</comment>");
+        $output->writeln("<comment>Sleeping " . $increment . " seconds to allow service to start.</comment>");
         sleep($increment);
         $counter += $increment;
 

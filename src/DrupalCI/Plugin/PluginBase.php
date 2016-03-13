@@ -6,12 +6,16 @@
 
 namespace DrupalCI\Plugin;
 
+use DrupalCI\Injectable;
+use DrupalCI\InjectableTrait;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 
 /**
  * Base class for plugins.
  */
-abstract class PluginBase {
+abstract class PluginBase implements Injectable {
+
+  use InjectableTrait;
 
   /**
    * The plugin_id.
