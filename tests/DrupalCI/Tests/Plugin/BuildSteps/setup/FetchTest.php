@@ -9,7 +9,7 @@ namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
 use DrupalCI\Plugin\BuildSteps\setup\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
-use Guzzle\Http\ClientInterface;
+use GuzzleHttp\ClientInterface;
 
 /**
  * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup
@@ -24,18 +24,12 @@ class FetchTest extends DrupalCITestCase {
     $url = 'http://example.com/site/dir/' . $file;
     $dir = 'test/dir';
 
-    $request = $this->getMock('Guzzle\Http\Message\RequestInterface');
-    $request->expects($this->once())
-      ->method('setResponseBody')
-      ->with("$dir/$file")
-      ->will($this->returnSelf());
-    $request->expects($this->once())
-      ->method('send');
+    $request = $this->getMock('GuzzleHttp\Message\RequestInterface');
 
-    $http_client = $this->getMock('Guzzle\Http\ClientInterface');
+    $http_client = $this->getMock('GuzzleHttp\ClientInterface');
     $http_client->expects($this->once())
       ->method('get')
-      ->with($url)
+      ->with($url, ['send_to' => "$dir/$file"])
       ->will($this->returnValue($request));
 
     $job_codebase = $this->getMock('DrupalCI\Job\CodeBase\JobCodebase');
