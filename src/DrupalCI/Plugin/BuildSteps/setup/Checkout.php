@@ -115,20 +115,22 @@ class Checkout extends SetupBase {
       $job->error();
       return;
     }
-    $this->update("Completed", "Pass", "Created checkout directory $directory using branch $git_branch from repo $repo");
     if (!empty($details['commit_hash'])) {
       $cmd =  "cd " . $directory . " && git reset -q --hard " . $details['commit_hash'] . " ";
       Output::writeLn("Git Command: $cmd");
       $this->exec($cmd, $cmdoutput, $result);
+      if ($result !==0) {
+        // Git threw an error.
+        $job->errorOutput("Checkout failed", "The git checkout returned an error.");
+        $this->update("Error", "SystemError", "An error was returned while attempting to reset to the specified commit hash ({$details['commit_hash']}).  Error Code: $result");
+        // TODO: Pass on the actual return value for the git checkout
+        return;
+      }
+      $this->update("Completed", "Pass", "Created checkout directory $directory using commit hash {$details['commit_hash']} from repo $repo");
     }
-    if ($result !==0) {
-      // Git threw an error.
-      $job->errorOutput("Checkout failed", "The git checkout returned an error.");
-      $this->update("Error", "SystemError", "An error was returned while attempting to reset to the specified commit hash ({$details['commit_hash']}).  Error Code: $result");
-      // TODO: Pass on the actual return value for the git checkout
-      return;
+    else {
+      $this->update("Completed", "Pass", "Created checkout directory $directory using branch $git_branch from repo $repo");
     }
-    $this->update("Completed", "Pass", "Created checkout directory $directory using commit hash {$details['commit_hash']} from repo $repo");
     $cmd = "cd '$directory' && git log --oneline -n 1 --decorate";
     $this->exec($cmd, $cmdoutput, $result);
     Output::writeLn("<comment>Git commit info:</comment>");
