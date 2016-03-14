@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
 class Fetch extends SetupBase {
 
   /**
-   * @var \GuzzleHttp\Client
+   * @var \GuzzleHttp\ClientInterface
    */
   protected $httpClient;
 

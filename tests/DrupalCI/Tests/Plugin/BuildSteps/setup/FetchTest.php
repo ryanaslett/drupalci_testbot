@@ -25,13 +25,13 @@ class FetchTest extends DrupalCITestCase {
     $dir = 'test/dir';
     $param = ['send_to' => "$dir/$file"];
 
-    $response = $this->getMock('GuzzleHttp\Message\ResponseInterface');
+    $request = $this->getMock('GuzzleHttp\Message\RequestInterface');
 
     $http_client = $this->getMock('GuzzleHttp\ClientInterface');
     $http_client->expects($this->once())
       ->method('get')
-      ->with($url)
-      ->will($this->returnValue($response));
+      ->with($url, ['save_to' => "$dir/$file"])
+      ->will($this->returnValue($request));
 
     $job_codebase = $this->getMock('DrupalCI\Job\CodeBase\JobCodebase');
     $job = $this->getMockBuilder('DrupalCI\Plugin\JobTypes\JobInterface')
