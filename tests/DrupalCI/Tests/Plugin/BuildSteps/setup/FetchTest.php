@@ -12,7 +12,7 @@ use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
 
 /**
- * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup
+ * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup\Fetch
  */
 class FetchTest extends DrupalCITestCase {
 
