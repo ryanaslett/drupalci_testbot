@@ -12,6 +12,7 @@ use DrupalCI\Console\Output;
 use DrupalCI\Job\CodeBase\JobCodeBase;
 use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Job\Results\JobResults;
+use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,21 +23,30 @@ class RunCommand extends DrupalCICommandBase {
   /**
    * The Job this command is executing.
    *
-   * @var $job \DrupalCI\Plugin\JobTypes\JobInterface
+   * @todo This needs to be replaced with a service
+   * in the container.
+   *
+   * @var $job JobInterface
    */
   protected $job;
 
   /**
-   * @return \DrupalCI\Plugin\JobTypes\JobInterface
+   * Gets the job from the RunCommand.
+   *
+   * @return JobInterface
+   *   The job being ran.
    */
   public function getJob() {
     return $this->job;
   }
 
   /**
-   * @param \DrupalCI\Plugin\JobTypes\JobInterface $job
+   * Sets the job on the RunCommand.
+   *
+   * @param JobInterface $job
+   *   The job and all its definition.
    */
-  public function setJob($job) {
+  public function setJob(JobInterface $job) {
     $this->job = $job;
   }
 
@@ -73,7 +83,7 @@ class RunCommand extends DrupalCICommandBase {
     /** @var PluginManager $job_plugin_manager */
     $job_plugin_manager = $this->container['plugin.manager.factory']->create('JobTypes');
 
-    /** @var $job \DrupalCI\Plugin\JobTypes\JobInterface */
+    /** @var $job JobInterface */
     $this->job = $job_plugin_manager->getPlugin($job_type, $job_type);
 
     // Link our $output variable to the job, so that jobs can display their work.

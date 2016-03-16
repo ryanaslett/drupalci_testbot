@@ -28,7 +28,7 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
     'DCI_CoreBranch=8.1.x',
     'DCI_TestGroups=Url',
     'DCI_JunitXml=xml',
-
+    'DCI_ComposerInstall=true',
   ];
 
   public function testBasicTest() {
