@@ -7,13 +7,19 @@
  * 'checkout' entries in the job definition for the repositories defined by
  * that variable.
  */
+
 namespace DrupalCI\Plugin\Preprocess\definition;
+
 use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
+use DrupalCI\InjectableTrait;
 
 /**
  * @PluginID("additionalrepositories")
  */
-class AdditionalRepositories {
+class AdditionalRepositories implements Injectable {
+
+  use InjectableTrait;
 
   /**
    * {@inheritdoc}
@@ -89,7 +95,7 @@ class AdditionalRepositories {
       $components = explode(',', $entry);
       // Ensure we have at least 3 components
       if (count($components) < 4) {
-        Output::writeLn("<error>Unable to parse repository information for value <options=bold>$entry</options=bold>.</error>");
+        $this->container['console.output']->writeLn("<error>Unable to parse repository information for value <options=bold>$entry</options=bold>.</error>");
         // TODO: Bail out of processing.  For now, we'll just keep going with the next entry.
         continue;
       }

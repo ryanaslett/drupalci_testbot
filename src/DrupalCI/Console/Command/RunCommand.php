@@ -9,7 +9,7 @@ namespace DrupalCI\Console\Command;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
-use DrupalCI\Job\CodeBase\JobCodeBase;
+use DrupalCI\Job\CodeBase\JobCodebase;
 use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Job\Results\JobResults;
 use DrupalCI\Plugin\JobTypes\JobInterface;
@@ -95,10 +95,12 @@ class RunCommand extends DrupalCICommandBase {
 
     // Create our job Codebase object and attach it to the job.
     $job_codebase = new JobCodebase();
+    $job_codebase->setContainer($this->container);
     $this->job->setJobCodebase($job_codebase);
 
     // Create our job Definition object and attach it to the job.
     $job_definition = new JobDefinition();
+    $job_definition->setContainer($this->container);
     $this->job->setJobDefinition($job_definition);
 
     // Compile our complete list of DCI_* variables
@@ -115,7 +117,7 @@ class RunCommand extends DrupalCICommandBase {
       $template_file = $this->job->getDefaultDefinitionTemplate($job_type);
     }
 
-    Output::writeLn("<info>Using job definition template: <options=bold>$template_file</options=bold></info>");
+    $output->writeLn("<info>Using job definition template: <options=bold>$template_file</options=bold></info>");
 
     // Load our job template file into the job definition.  If $template_file
     // doesn't exist, this will trigger a FileNotFound or ParseError exception.
@@ -145,6 +147,7 @@ class RunCommand extends DrupalCICommandBase {
 
     // Create our job Results object and attach it to the job.
     $job_results = new JobResults($this->job);
+    $job_results->setContainer($this->container);
     $this->job->setJobResults($job_results);
 
     // The job should now have a fully merged job definition file, including
@@ -174,19 +177,18 @@ class RunCommand extends DrupalCICommandBase {
         $status = $job_results->getResultByStep($build_stage, $build_step);
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
-          Output::error("Execution Error", "Error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>");
+          Output::error("Execution Error", "Error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>", $output);
           break 2;
         }
         if ($status == 'Fail') {
           // Step returned an failure.  Halt execution.
-          Output::error("Execution Failure", "Build step <options=bold>$build_stage:$build_step</options=bold> FAILED");
+          Output::error("Execution Failure", "Build step <options=bold>$build_stage:$build_step</options=bold> FAILED", $output);
           break 2;
         }
         $job_results->updateStepStatus($build_stage, $build_step, 'Completed');
       }
       $job_results->updateStageStatus($build_stage, 'Completed');
     }
-    error_log('done?');
     // TODO: Gather results.
     // This should be moved out of the 'build steps' logic, as an error in any
     // build step halts execution of the entire loop, and the artifacts are not

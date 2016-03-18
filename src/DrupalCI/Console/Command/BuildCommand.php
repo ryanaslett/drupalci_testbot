@@ -45,12 +45,12 @@ class BuildCommand extends DrupalCICommandBase {
     // TODO: Validate passed arguments
     foreach ($names as $name) {
       if (in_array($name, array_keys($containers))) {
-        Output::writeln("<comment>Building <options=bold>$name</options=bold> container</comment>");
-        $this->build($name, $input);
+        $output->writeln("<comment>Building <options=bold>$name</options=bold> container</comment>");
+        $this->build($name, $output);
       }
       else {
         // Container name not found.  Skip build.
-        Output::writeln("<error>No '$name' container found.  Skipping container build.</error>");
+        $output->writeln("<error>No '$name' container found.  Skipping container build.</error>");
         // TODO: Error handling
       }
     }
@@ -59,25 +59,25 @@ class BuildCommand extends DrupalCICommandBase {
   /**
    * (#inheritdoc)
    */
-  protected function build($name, InputInterface $input) {
+  protected function build($name, OutputInterface $output) {
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     $container_path = $containers[$name];
     $docker = $this->getDocker();
     $context = new Context($container_path);
-    Output::writeln("-------------------- Start build script --------------------");
+    $output->writeln("-------------------- Start build script --------------------");
     $response = $docker->build($context, $name, function ($output) {
       if (isset($output['stream'])) {
-        Output::writeLn('<info>' . $output['stream'] . '</info>');
+        $output->writeLn('<info>' . $output['stream'] . '</info>');
       }
       elseif (isset($output['error'])) {
-        Output::error('Error', $output['error']);
+        Output::error('Error', $output['error'], $output);
       }
     });
 
-    Output::writeln("--------------------- End build script ---------------------");
+    $output->writeln("--------------------- End build script ---------------------");
     $response->getBody()->getContents();
-    Output::writeln((string) $response);
+    $output->writeln((string) $response);
 
     // TODO: Capture return value and determine whether build was successful or not, throwing an error if it isn't.
     // (This may already automatically throw an exception within docker-php)

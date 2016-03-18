@@ -11,6 +11,7 @@ use DrupalCI\Console\Output;
 use DrupalCI\Job\CodeBase\JobCodeBase;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class Patch
@@ -165,11 +166,17 @@ class Patch
   protected $httpClient;
 
   /**
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * @param string[] $patch_details
    * @param JobCodeBase $codebase
    */
-  public function __construct($patch_details, $codebase)
-  {
+  public function __construct($patch_details, $codebase, OutputInterface $output) {
+    $this->output = $output;
     // Copy working directory from the initial codebase
     $working_dir = $codebase->getWorkingDir();
     $this->setWorkingDir($working_dir);
@@ -215,7 +222,7 @@ class Patch
     $destination_file = $directory . DIRECTORY_SEPARATOR . $file_info['basename'];
     $this->httpClient()
       ->get($url, ['save_to' => "$destination_file"]);
-    Output::writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
+    $this->output->writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
     return $destination_file;
   }
 
@@ -243,7 +250,7 @@ class Patch
     $real_file = realpath($source);
     if ($real_file === FALSE) {
       // Invalid patch file
-      Output::error("Patch Error", "The patch file <info>$source</info> is invalid.");
+      Output::error("Patch Error", "The patch file <info>$source</info> is invalid.", $this->output);
       return FALSE;
     }
     return TRUE;
@@ -260,7 +267,7 @@ class Patch
     $real_directory = realpath($apply_dir);
     if ($real_directory === FALSE) {
       // Invalid target directory
-      Output::error("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.");
+      Output::error("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.", $this->output);
       return FALSE;
     }
     return TRUE;
@@ -282,12 +289,12 @@ class Patch
     $this->setPatchApplyResults($cmdoutput);
     if ($result !== 0) {
       // The command threw an error.
-      Output::writeLn($cmdoutput);
-      Output::error("Patch Error", "The patch attempt returned an error.  Error code: $result");
+      $this->output->writeLn($cmdoutput);
+      Output::error("Patch Error", "The patch attempt returned an error.  Error code: $result", $this->output);
       // TODO: Pass on the actual return value for the patch attempt
       return FALSE;
     }
-    Output::writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
+    $this->output->writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
     $this->applied = TRUE;
     return TRUE;
   }
@@ -310,7 +317,7 @@ class Patch
       exec($cmd, $cmdoutput, $return);
       if ($return !== 0) {
         // git diff returned a non-zero error code
-        Output::writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
+        $this->output->writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
         return FALSE;
       }
       $files = $cmdoutput;

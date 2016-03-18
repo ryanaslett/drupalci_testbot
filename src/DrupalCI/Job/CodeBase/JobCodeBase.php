@@ -8,11 +8,15 @@
 namespace DrupalCI\Job\CodeBase;
 
 use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
+use DrupalCI\InjectableTrait;
+use DrupalCI\Job\CodeBase\Repository;
 use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Job\CodeBase\Repository;
 
-class JobCodebase {
+class JobCodebase implements Injectable {
+
+  use InjectableTrait;
 
   /**
    * The base working directory for this codebase build
@@ -144,6 +148,7 @@ class JobCodebase {
    * Initialize Codebase
    */
   public function setupWorkingDirectory(JobDefinition $job_definition) {
+    $output = $this->container['console.output'];
     // Check if the target working directory has been specified.
     $working_dir = $job_definition->getDCIVariable('DCI_WorkingDir');
     $tmp_directory = sys_get_temp_dir();
@@ -169,10 +174,10 @@ class JobCodebase {
       $result = mkdir($working_dir, 0777, TRUE);
       if (!$result) {
         // Error creating checkout directory
-        Output::error('Directory Creation Error', 'Error encountered while attempting to create local working directory');
+        Output::error('Directory Creation Error', 'Error encountered while attempting to create local working directory', $output);
         return FALSE;
       }
-      Output::writeLn("<info>Checkout directory created at <options=bold>$working_dir</options=bold></info>");
+      $output->writeLn("<info>Checkout directory created at <options=bold>$working_dir</options=bold></info>");
     }
 
     // Validate that the working directory is empty.  If the directory contains
@@ -181,7 +186,7 @@ class JobCodebase {
     $iterator = new \FilesystemIterator($working_dir);
     if ($iterator->valid()) {
       // Existing files found in directory.
-      Output::error('Directory not empty', 'Unable to use a non-empty working directory.');
+      Output::error('Directory not empty', 'Unable to use a non-empty working directory.', $output);
       return FALSE;
     };
 
@@ -189,13 +194,13 @@ class JobCodebase {
     $working_dir = realpath($working_dir);
     if (!$working_dir) {
       // Directory not found after conversion to canonicalized absolute path
-      Output::error('Directory not found', 'Unable to determine working directory absolute path.');
+      Output::error('Directory not found', 'Unable to determine working directory absolute path.', $output);
       return FALSE;
     }
 
     // Ensure we're still within the system temp directory
     if (strpos(realpath($working_dir), realpath($tmp_directory)) !== 0) {
-      Output::error('Directory error', 'Detected attempt to traverse out of the system temp directory.');
+      Output::error('Directory error', 'Detected attempt to traverse out of the system temp directory.', $output);
       return FALSE;
     }
 
@@ -203,4 +208,5 @@ class JobCodebase {
     $this->setWorkingDir($working_dir);
     $job_definition->setDCIVariable('DCI_WorkingDir', $working_dir);
   }
+
 }

@@ -37,7 +37,7 @@ class Patch extends SetupBase {
         return;
       }
       // Create a new patch object
-      $patch = new PatchFile($details, $codebase);
+      $patch = new PatchFile($details, $codebase, $output);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
         $job->error();

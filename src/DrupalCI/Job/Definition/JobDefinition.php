@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-class JobDefinition Implements Injectable {
+class JobDefinition implements Injectable {
 
   use InjectableTrait;
 
@@ -143,7 +143,10 @@ class JobDefinition Implements Injectable {
         }
       }
       // If processing gets to here, we're missing a required variable
-      Output::error("Invalid Job Definition", "Required test parameter <options=bold>'$env_var'</options=bold> not found in environment variables, and <options=bold>'$yaml_loc'</options=bold> not found in job definition file.");
+      Output::error(
+        "Invalid Job Definition", "Required test parameter <options=bold>'$env_var'</options=bold> not found in environment variables, and <options=bold>'$yaml_loc'</options=bold> not found in job definition file.",
+        $this->container['console.output']
+      );
       // TODO: Graceful handling of failed exit states
       return FALSE;
     }
@@ -171,6 +174,7 @@ class JobDefinition Implements Injectable {
    * Compiles the list of available DCI_* variables to consider with this job
    */
   protected function compileDciVariables(JobInterface $job) {
+    $output = $this->container['console.output'];
     // Get and parse external (i.e. anything not from the default definition
     // file) job argument parameters.  DrupalCI jobs are controlled via a
     // hierarchy of configuration settings, which define the behaviour of the
@@ -180,30 +184,30 @@ class JobDefinition Implements Injectable {
     // 1. Out-of-the-box DrupalCI platform defaults, as defined in DrupalCI/Plugin/JobTypes/JobBase->platformDefaults
     $platform_defaults = $job->getPlatformDefaults();
     if (!empty($platform_defaults)) {
-      Output::writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
-      Output::writeLn(implode(",", array_keys($platform_defaults)));
+      $output->writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
+      $output->writeLn(implode(",", array_keys($platform_defaults)));
     }
 
     // 2. Out-of-the-box DrupalCI JobType defaults, as defined in DrupalCI/Plugin/JobTypes/<jobtype>->defaultArguments
     $jobtype_defaults = $job->getDefaultArguments();
     if (!empty($jobtype_defaults)) {
-      Output::writeLn("<comment>Loading job type default arguments:</comment>");
-      Output::writeLn(implode(",", array_keys($jobtype_defaults)));
+      $output->writeLn("<comment>Loading job type default arguments:</comment>");
+      $output->writeLn(implode(",", array_keys($jobtype_defaults)));
     }
 
     // 3. Local overrides defined in ~/.drupalci/config
     $confighelper = new ConfigHelper();
     $local_overrides = $confighelper->getCurrentConfigSetParsed();
     if (!empty($local_overrides)) {
-      Output::writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
-      Output::writeLn(implode(",", array_keys($local_overrides)));
+      $output->writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
+      $output->writeLn(implode(",", array_keys($local_overrides)));
     }
 
     // 4. 'DCI_' namespaced environment variable overrides
     $environment_variables = $confighelper->getCurrentEnvVars();
     if (!empty($environment_variables)) {
-      Output::writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
-      Output::writeLn(implode(",", array_keys($environment_variables)));
+      $output->writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
+      $output->writeLn(implode(",", array_keys($environment_variables)));
     }
 
     // 5. Additional variables passed in via the command line
@@ -338,8 +342,6 @@ class JobDefinition Implements Injectable {
     }
     return $this->pluginManager;
   }
-
-
 
   // Other potential methods for this class:
   // insert build step before/after

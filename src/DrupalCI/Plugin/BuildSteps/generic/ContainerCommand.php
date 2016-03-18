@@ -69,7 +69,7 @@ class ContainerCommand extends PluginBase {
 
   protected function checkCommandStatus($signal) {
     if ($signal !==0) {
-      Output::error('Error', "Received a non-zero return code from the last command executed on the container.  (Return status: " . $signal . ")");
+      Output::error('Error', "Received a non-zero return code from the last command executed on the container.  (Return status: " . $signal . ")", $this->container['console.output']);
       return 1;
     }
     else {

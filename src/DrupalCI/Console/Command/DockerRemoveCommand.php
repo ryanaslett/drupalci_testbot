@@ -59,7 +59,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     foreach ($containers as $containerLabel => $containerName) {
-      Output::writeln("<comment>$containerLabel, $containerName</comment>");
+      $output->writeln("<comment>$containerLabel, $containerName</comment>");
     }
   }
 
@@ -106,7 +106,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     exec($cmd_docker_psa, $createdContainers);
 
     if($createdContainers) {
-      Output::writeln('<comment>Removing containers.</comment>');
+      $output->writeln('<comment>Removing containers.</comment>');
       exec($cmd_docker_ps, $runningContainers);
       if(!empty($runningContainers)){
         // kill DCI running containers
@@ -119,8 +119,8 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec( $cmd_docker_rm, $rmContainers);
 
       // list removed containers
-      Output::writeln('Removed Containers:');
-      Output::writeln($rmContainers);
+      $output->writeln('Removed Containers:');
+      $output->writeln($rmContainers);
 
       // DEBUG
       //Output::writeln($rmContainers);
@@ -129,16 +129,16 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec($cmd_docker_psa, $remove_check);
 
       if (!empty($remove_check)) {
-        Output::writeln('<error>Error:</error>');
-        Output::writeln($remove_check);
+        $output->writeln('<error>Error:</error>');
+        $output->writeln($remove_check);
       }
       else {
-        Output::writeln('<comment>Remove complete.</comment>');
+        $output->writeln('<comment>Remove complete.</comment>');
       }
     }
     else {
       // nothing to remove
-      Output::writeln('<comment>Nothing to Remove</comment> ');
+      $output->writeln('<comment>Nothing to Remove</comment> ');
     }
 
   }

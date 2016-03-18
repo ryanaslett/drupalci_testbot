@@ -50,18 +50,18 @@ class PullCommand extends DrupalCICommandBase {
         {
           $tag = 'latest';
         }
-        Output::writeln("<comment>Pulling <options=bold>$container:$tag</options=bold> container</comment>");
-        $this->pull($container ,$tag , $input);
+        $output->writeln("<comment>Pulling <options=bold>$container:$tag</options=bold> container</comment>");
+        $this->pull($container ,$tag , $output);
     }
   }
 
   /**
    * (#inheritdoc)
    */
-  protected function pull($name, $tag, InputInterface $input) {
+  protected function pull($name, $tag, OutputInterface $console_output) {
     $manager = $this->getManager();
     $progressInformation = array();
-    $response = $manager->pull($name, $tag, function ($output) use (&$progressInformation) {
+    $response = $manager->pull($name, $tag, function ($output) use (&$progressInformation, $console_output) {
 
       // Initialize the Counting on how far we are away from completing the docker pull process
       $current_transfer = 0;
@@ -81,7 +81,7 @@ class PullCommand extends DrupalCICommandBase {
 
       // Start the progress bar and advance it all the time we run the output function
       $advance = ($current_transfer > $total_transfer) ? $total_transfer : $current_transfer;
-      $progressbar = new ProgressBar(Output::getOutput(), $total_transfer);
+      $progressbar = new ProgressBar($console_output, $total_transfer);
       $progressbar->start();
       $progressbar->advance($advance);
 
@@ -94,6 +94,6 @@ class PullCommand extends DrupalCICommandBase {
     });
     // $response->getBody()->getContents();
     // Output::writeln((string) $response);
-    Output::writeln("");
+    $console_output->writeln("");
   }
 }

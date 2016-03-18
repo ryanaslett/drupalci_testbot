@@ -5,7 +5,10 @@ namespace DrupalCI;
 use Pimple\Container;
 
 /**
- * Standardize the way the container is injected into objects.
+ * Provide a way to inject the container.
+ *
+ * Objects implementing the Injectable interface should gather only the
+ * dependencies they actually need and not use this trait.
  *
  * @see \DrupalCI\Injectable
  */

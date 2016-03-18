@@ -283,8 +283,9 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $process = new Process($cmd);
     $process->setTimeout(3600*6);
     $process->setIdleTimeout(3600);
-    $process->run(function ($type, $buffer) {
-        Output::writeln($buffer);
+    $output = $this->container['console.output'];
+    $process->run(function ($type, $buffer) use ($output) {
+        $output->writeln($buffer);
     });
    }
 
@@ -335,7 +336,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $container['name'] = $instance->getName();
     $container['created'] = TRUE;
     $short_id = substr($container['id'], 0, 8);
-    Output::writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
+    $this->container['console.output']->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
   }
 
   protected function setDefaultCommand(&$config) {
@@ -470,15 +471,16 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   public function checkDBStatus($dburl_parts)
   {
+    $output = $this->container['console.output'];
     if(strcmp('mariadb',$dburl_parts['scheme']) === 1){
       $dburl_parts['scheme'] = 'mysql';
     }
     try {
       $conn_string = $dburl_parts['scheme'] . ':host=' . $dburl_parts['host'];
-      Output::writeln("<comment>Attempting to connect to database server.</comment>");
+      $output->writeln("<comment>Attempting to connect to database server.</comment>");
       $conn = new PDO($conn_string, $dburl_parts['user'], $dburl_parts['pass']);
     } catch (\PDOException $e) {
-      Output::writeln("<comment>Could not connect to database server.</comment>");
+      $output->writeln("<comment>Could not connect to database server.</comment>");
       return FALSE;
     }
     return TRUE;
@@ -629,7 +631,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $build_id = $this->getJobType() . '_' . time();
     }
     $this->setBuildId($build_id);
-    Output::writeLn("<info>Executing job with build ID: <options=bold>$build_id</options=bold></info>");
+    $this->container['console.output']->writeLn("<info>Executing job with build ID: <options=bold>$build_id</options=bold></info>");
   }
 
 }
