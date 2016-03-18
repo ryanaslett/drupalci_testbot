@@ -157,7 +157,6 @@ class RunCommand extends DrupalCICommandBase {
 
     // Iterate over the build stages
     foreach ($definition as $build_stage => $steps) {
-//            error_log('starting: ' . $build_stage);
       if (empty($steps)) {
         $job_results->updateStageStatus($build_stage, 'Skipped');
         continue;
@@ -166,7 +165,6 @@ class RunCommand extends DrupalCICommandBase {
 
       // Iterate over the build steps
       foreach ($steps as $build_step => $data) {
-//        error_log('  starting: ' . $build_step);
         $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
         /** @var PluginManager $build_steps_plugin_manager */
