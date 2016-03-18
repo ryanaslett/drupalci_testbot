@@ -40,6 +40,7 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
       'command' => 'run',
     ], $options);
     $display = $app_tester->getDisplay();
+    $this->assertRegExp('`Executing on container instance`', $display);
     $job = $this->getCommand('run')->getJob();
     $this->assertRegExp('/.*Drupal\\\\system\\\\Tests\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
     // Look for junit xml results file

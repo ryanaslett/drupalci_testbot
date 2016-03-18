@@ -26,27 +26,28 @@ class Fetch extends SetupBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
+    $output = $this->container['console.output'];
     // Data format:
     // i) array('url' => '...', 'fetch_dir' => '...')
     // or
     // iii) array(array(...), array(...))
     // Normalize data to the third format, if necessary
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
-    Output::writeLn("<info>Entering setup_fetch().</info>");
+    $output->writeLn("<info>Entering setup_fetch().</info>");
     foreach ($data as $details) {
       // URL and target directory
       // TODO: Ensure $details contains all required parameters
       if (empty($details['url'])) {
-        Output::error("Fetch error", "No valid target file provided for fetch command.");
+        Output::error("Fetch error", "No valid target file provided for fetch command.", $output);
         $job->error();
         return;
       }
       $url = $details['url'];
       $workingdir = $job->getJobCodebase()->getWorkingDir();
       $fetchdir = (!empty($details['fetch_directory'])) ? $details['fetch_directory'] : $workingdir;
-      if (!($directory = $this->validateDirectory($job, $fetchdir))) {
+      if (!($directory = $this->validateDirectory($job, $fetchdir, $output))) {
         // Invalid checkout directory
-        Output:error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
+        Output::error("Fetch error", "The fetch directory <info>$directory</info> is invalid.", $output);
         $job->error();
         return;
       }
@@ -57,11 +58,11 @@ class Fetch extends SetupBase {
           ->get($url, ['save_to' => $destination_file]);
       }
       catch (\Exception $e) {
-        Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$directory</info>");
+        Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$directory</info>", $output);
         $job->error();
         return;
       }
-      Output::writeLn("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
+      $output->writeLn("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
     }
   }
 

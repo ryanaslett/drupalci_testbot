@@ -41,6 +41,7 @@ class FetchTest extends DrupalCITestCase {
       ->will($this->returnValue($job_codebase));
 
     $fetch = new TestFetch();
+    $fetch->setContainer($this->fixtureContainer());
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
     $fetch->run($job, [['url' => $url]]);

@@ -10,6 +10,8 @@ namespace DrupalCI\Tests\Plugin\BuildSteps\generic;
 use Docker\Container;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 use DrupalCI\Tests\DrupalCITestCase;
+use Pimple\Container as PimpleContainer;
+use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * @coversDefaultClass DrupalCI\Plugin\BuildSteps\generic\ContainerCommand
@@ -64,7 +66,11 @@ class ContainerCommandTest extends DrupalCITestCase {
       ->method('getExecContainers')
       ->will($this->returnValue(['php' => [['id' => 'dockerci/php-5.4']]]));
 
+    $pimple = new PimpleContainer();
+    $pimple['console.output'] = new NullOutput();
+
     $command = new ContainerCommand();
+    $command->setContainer($pimple);
     $command->run($job, $cmd);
   }
 

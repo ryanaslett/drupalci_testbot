@@ -65,6 +65,7 @@ class RunCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
+    $this->container['console.output'] = $output;
     $arg = $input->getArgument('definition');
 
     $config_helper = new ConfigHelper();
@@ -153,6 +154,7 @@ class RunCommand extends DrupalCICommandBase {
 
     // Iterate over the build stages
     foreach ($definition as $build_stage => $steps) {
+//            error_log('starting: ' . $build_stage);
       if (empty($steps)) {
         $job_results->updateStageStatus($build_stage, 'Skipped');
         continue;
@@ -161,12 +163,12 @@ class RunCommand extends DrupalCICommandBase {
 
       // Iterate over the build steps
       foreach ($steps as $build_step => $data) {
+//        error_log('  starting: ' . $build_step);
         $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
         /** @var PluginManager $build_steps_plugin_manager */
         $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
         $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->job, $data);
-
 
         // Check for errors / failures after build step execution
         $status = $job_results->getResultByStep($build_stage, $build_step);
@@ -184,6 +186,7 @@ class RunCommand extends DrupalCICommandBase {
       }
       $job_results->updateStageStatus($build_stage, 'Completed');
     }
+    error_log('done?');
     // TODO: Gather results.
     // This should be moved out of the 'build steps' logic, as an error in any
     // build step halts execution of the entire loop, and the artifacts are not

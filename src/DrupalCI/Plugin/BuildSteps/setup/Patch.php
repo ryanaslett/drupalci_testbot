@@ -21,17 +21,18 @@ class Patch extends SetupBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
+    $output = $this->container['console.output'];
     // Data format:
     // i) array('patch_file' => '...', 'patch_dir' => '...')
     // or
     // iii) array(array(...), array(...))
     // Normalize data to the third format, if necessary
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
-    Output::writeLn("<info>Entering setup_patch().</info>");
+    $output->writeLn("<info>Entering setup_patch().</info>");
     $codebase = $job->getJobCodebase();
     foreach ($data as $key => $details) {
       if (empty($details['patch_file'])) {
-        Output::error("Patch error", "No valid patch file provided for the patch command.");
+        Output::error("Patch error", "No valid patch file provided for the patch command.", $output);
         $job->error();
         return;
       }
@@ -64,7 +65,7 @@ class Patch extends SetupBase {
           mkdir($output_directory, 0777, TRUE);
         }
 
-        $output = preg_replace('/[^\x{0009}\x{000A}\x{000D}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u', '�', implode("\n", $patch->getPatchApplyResults()));
+        $cdata = preg_replace('/[^\x{0009}\x{000A}\x{000D}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u', '�', implode("\n", $patch->getPatchApplyResults()));
 
         $xml_error = '<?xml version="1.0"?>
 
@@ -72,7 +73,7 @@ class Patch extends SetupBase {
                         <testcase classname="Apply Patch" name="' . $patch->getLocalSource() . '">
                           <error message="Patch Failed to apply" type="PatchFailure">Patch failed to apply</error>
                         </testcase>
-                        <system-out><![CDATA[' . $output . ']]></system-out>
+                        <system-out><![CDATA[' . $cdata . ']]></system-out>
                       </testsuite>';
         file_put_contents($output_directory . "/patchfailure.xml", $xml_error);
 

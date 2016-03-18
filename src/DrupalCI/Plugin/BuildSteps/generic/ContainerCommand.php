@@ -21,6 +21,8 @@ class ContainerCommand extends PluginBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
+    $output = $this->container['console.output'];
+
     // Data format: 'command [arguments]' or array('command [arguments]', 'command [arguments]')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
@@ -36,23 +38,23 @@ class ContainerCommand extends PluginBase {
           $id = $container['id'];
           $instance = $manager->find($id);
           $short_id = substr($id, 0, 8);
-          Output::writeLn("<info>Executing on container instance $short_id:</info>");
+          $output->writeLn("<info>Executing on container instance $short_id:</info>");
           foreach ($data as $cmd) {
-            Output::writeLn("<fg=magenta>$cmd</fg=magenta>");
+            $output->writeLn("<fg=magenta>$cmd</fg=magenta>");
             $exec = ["/bin/bash", "-c", $cmd];
             $exec_id = $manager->exec($instance, $exec, TRUE, TRUE, TRUE, TRUE);
-            Output::writeLn("<info>Command created as exec id " . substr($exec_id, 0, 8) . "</info>");
-            $result = $manager->execstart($exec_id, function ($result, $type) {
+            $output->writeLn("<info>Command created as exec id " . substr($exec_id, 0, 8) . "</info>");
+            $result = $manager->execstart($exec_id, function ($result, $type) use ($output) {
               if ($type === 1) {
-                Output::write("$result");
+                $output->write("$result");
               }
               else {
-                Output::error('Error', $result);
+                Output::error('Error', $result, $output);
               }
             });
             // Response stream is never read you need to simulate a wait in order to get output
             $result->getBody()->getContents();
-            Output::writeLn((string) $result);
+            $output->writeLn((string) $result);
             $inspection = $manager->execinspect($exec_id);
 
             if ($this->checkCommandStatus($inspection->ExitCode) !==0) {

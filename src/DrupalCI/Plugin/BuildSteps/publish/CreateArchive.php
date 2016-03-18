@@ -23,6 +23,7 @@ class CreateArchive extends PluginBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
+    $output = $this->container['console.output'];
     // $data defines the directory/filename of the desired zip file.
     $files = $job->getArtifacts();
     if (empty($files)) { return; }
@@ -36,14 +37,14 @@ class CreateArchive extends PluginBase {
     }
 
     // Add artifact files to zip file
-    Output::writeLn("<info>Gathering artifact files:</info>");
+    $output->writeLn("<info>Gathering artifact files:</info>");
     foreach ($files as $file) {
       if (file_exists($file)) {
         $zip->addFile($file);
-        Output::writeLn("<comment>" . $file . "</comment>");
+        $output->writeLn("<comment>" . $file . "</comment>");
       }
       else {
-        Output::writeln("<comment>" . $file . " NOT FOUND.</comment>");
+        $output->writeln("<comment>" . $file . " NOT FOUND.</comment>");
       }
     }
 

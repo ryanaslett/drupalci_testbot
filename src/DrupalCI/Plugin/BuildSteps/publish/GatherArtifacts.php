@@ -22,16 +22,21 @@ class GatherArtifacts extends PluginBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $target_directory) {
+    $output = $this->container['console.output'];
 
     $docker = $job->getDocker();
     $manager = $docker->getContainerManager();
 
-    Output::writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
+    $output->writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
+
+    // We'll need a ContainerCommand object to work with each artifact item, so
+    // let's make one now.
+    $plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
+    $container_command = $plugin_manager->getPlugin('generic', 'command');
 
     // Create the destination directory
     if (!empty($target_directory)) {
-      $command = new ContainerCommand();
-      $command->run($job, "mkdir -p $target_directory");
+      $container_command->run($job, "mkdir -p $target_directory");
     }
 
     // Store the directory in our job object
@@ -51,13 +56,12 @@ class GatherArtifacts extends PluginBase {
         if (!empty($destination_filename)) {
           $file = $target_directory . DIRECTORY_SEPARATOR . $destination_filename;
           // TODO: Verify file name - unique, empty, etc.
-          $command = new ContainerCommand();
           $cmd = "cat >$file <<EOL \n" . print_r($definition, TRUE) . "\nEOL";
-          $command->run($job, $cmd);
+          $container_command->run($job, $cmd);
         }
         else {
           // TODO: Exception handling
-          Output::writeLn('<info>Error generating job definition build artifact.');
+          $output->writeLn('<info>Error generating job definition build artifact.');
         }
       }
       elseif (strtolower($artifact->getType()) == 'file' || $artifact->getType() == 'directory') {
@@ -65,22 +69,21 @@ class GatherArtifacts extends PluginBase {
         $file = $artifact->getValue();
         $dest = $target_directory . DIRECTORY_SEPARATOR . basename($file);
         if ($file !== $dest) {
-          $command = new ContainerCommand();
           $cmd = "cp -r $file $dest";
-          $command->run($job, $cmd);
+          $container_command->run($job, $cmd);
         }
         else {
-          Output::writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
+          $output->writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
         }
       }
       elseif (strtolower($artifact->getType) == 'string') {
         // Write string to new file with filename based on the string's key
         $dest = $target_directory . DIRECTORY_SEPARATOR . $key;
         $content = $artifact->getValue;
-        $command = new ContainerCommand();
         $cmd = "cat >$dest <<EOL \n" . print_r($content, TRUE) . "\nEOL";
-        $command->run($job, $cmd);
+        $container_command->run($job, $cmd);
       }
     }
   }
+
 }

@@ -8,7 +8,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 
@@ -21,8 +20,9 @@ class SyntaxCheck extends SetupBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
+    $output = $this->container['console.output'];
     if ($data != FALSE) {
-      Output::writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
+      $output->writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
 
       $codebase = $job->getJobCodebase();
       $modified_files = $codebase->getModifiedFiles();
@@ -42,17 +42,19 @@ class SyntaxCheck extends SetupBase {
         }
       }
       $lintable_files = 'artifacts/lintable_files.txt';
-      Output::writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
+      $output->writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
       file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
       // Make sure
       if (0 < filesize($workingdir . "/" . $lintable_files)) {
         // TODO: Remove hardcoded /var/www/html.
         // This should be come JobCodeBase->getLocalDir() or similar
         // Use xargs to concurrently run linting on file.
+        $plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
+        $container_command = $plugin_manager->getPlugin('generic', 'command');
         $cmd = "cd /var/www/html && xargs -P $jobconcurrency -a $lintable_files -I {} php -l '{}'";
-        $command = new ContainerCommand();
-        $command->run($job, $cmd);
+        $container_command->run($job, $cmd);
       }
     }
   }
+
 }

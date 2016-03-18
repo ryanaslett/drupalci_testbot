@@ -18,6 +18,7 @@ trait InjectableTrait {
 
   public function setContainer(Container $container) {
     $this->container = $container;
+//    error_log('setting container for ' . get_class($this));
   }
 
 }

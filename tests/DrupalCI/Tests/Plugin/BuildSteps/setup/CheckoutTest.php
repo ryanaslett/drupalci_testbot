@@ -21,7 +21,9 @@ class CheckoutTest extends DrupalCITestCase {
       'checkout_dir' => $dir,
       'depth' => 1,
     ];
+
     $checkout = new TestCheckout();
+    $checkout->setContainer($this->fixtureContainer());
     $checkout->setValidate($dir);
     $checkout->run($this->job, $data);
     $this->assertSame(['git clone -b 8.0.x --depth 1 git://code.drupal.org/drupal.git \'test/dir\''], $checkout->getCommands());
@@ -36,10 +38,12 @@ class CheckoutTest extends DrupalCITestCase {
       'checkout_dir' => $dir,
     ];
     $checkout = new TestCheckout([], 'checkout', []);
+    $checkout->setContainer($this->fixtureContainer());
     $checkout->setValidate($dir);
     $checkout->run($this->job, $data);
     $this->assertSame(["rsync -a   $tmp_dir/. test/dir"], $checkout->getCommands());
   }
+
 }
 
 class TestCheckout extends Checkout {
