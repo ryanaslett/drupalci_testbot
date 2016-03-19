@@ -1,5 +1,6 @@
 <?php
 use DrupalCI\Plugin\Preprocess\definition\UseLocalCodebase;
+use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
 
 /**
  * @file
@@ -9,30 +10,23 @@ use DrupalCI\Plugin\Preprocess\definition\UseLocalCodebase;
  * @group DefinitionPreprocessor
  */
 
-class UseLocalCodebaseDefinitionPreprocessorTest extends \PHPUnit_Framework_TestCase
+class UseLocalCodebaseDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
 {
   public function testUseLocalCodebaseDefinitionPreprocessor() {
-    $definition = [
-      'setup' => [
-        'checkout' => [
-          'protocol' => 'git',
-          'repo' => 'git://my.repo/myrepo.git'
-        ]
-      ]
-    ];
+
+    $definition = $this->getDefinitionTemplate();
     $source_directory = 'my/local/directory';
     $dci_variables = [];
+
     $expected_result = [
-      'setup' => [
-        'checkout' => [
-          'protocol' => 'local',
-          'source_dir' => 'my/local/directory'
-        ]
+      'checkout' => [
+        'protocol' => 'local',
+        'source_dir' => 'my/local/directory'
       ]
     ];
 
     $plugin = new UseLocalCodebase();
     $plugin->process($definition, $source_directory, $dci_variables);
-    $this->assertEquals($expected_result, $definition);
+    $this->assertEquals($expected_result, $definition['setup']);
    }
 }
