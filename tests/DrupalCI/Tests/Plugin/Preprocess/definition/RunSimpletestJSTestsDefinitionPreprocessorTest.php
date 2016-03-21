@@ -16,7 +16,7 @@ class RunSimpletestJSTestsDefinitionPreprocessorTest extends DefinitionPreproces
    * @param boolean $value                    Whether the php version should be shown
    * @param array $expected_result            Expected Result
    *
-   * @dataProvider provideShowPHPVersionDefinitionPreprocessorInputDefinitions
+   * @dataProvider provideRunSimpletestJSTestsDefinitionPreprocessorInputDefinitions
    */
   public function testRunSimpletestJSTestsDefinitionPreprocessor($value, $expected_result) {
     // Adds Simpletest Javascript testing elements to the definition template
@@ -27,7 +27,7 @@ class RunSimpletestJSTestsDefinitionPreprocessorTest extends DefinitionPreproces
     $this->assertEquals($expected_result, $definition['execute']['command']);
   }
 
-  public function provideShowPHPVersionDefinitionPreprocessorInputDefinitions() {
+  public function provideRunSimpletestJSTestsDefinitionPreprocessorInputDefinitions() {
     $expected_enabled = [
       "daemon -- nohup /usr/bin/phantomjs %DCI_SimpletestJSOptions%",
       "sleep 5",
