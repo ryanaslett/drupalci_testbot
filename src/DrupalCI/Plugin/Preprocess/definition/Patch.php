@@ -44,7 +44,9 @@ class Patch {
           list($patch['patch_file'], $patch['patch_dir']) = array($patch_string, '.');
         }
         else {
-          list($patch['patch_file'], $patch['patch_dir']) = explode(',', $patch_string);
+          $elements = explode(',', $patch_string);
+          $patch['patch_file'] = $elements[0];
+          $patch['patch_dir'] = (!empty($elements[1])) ? $elements[1] : '.';
         }
         $definition['setup']['patch'][] = $patch;
       }
