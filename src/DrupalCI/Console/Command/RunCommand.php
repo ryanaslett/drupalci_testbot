@@ -12,12 +12,43 @@ use DrupalCI\Console\Output;
 use DrupalCI\Job\CodeBase\JobCodeBase;
 use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Job\Results\JobResults;
+use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 class RunCommand extends DrupalCICommandBase {
+
+  /**
+   * The Job this command is executing.
+   *
+   * @todo This needs to be replaced with a service
+   * in the container.
+   *
+   * @var $job JobInterface
+   */
+  protected $job;
+
+  /**
+   * Gets the job from the RunCommand.
+   *
+   * @return JobInterface
+   *   The job being ran.
+   */
+  public function getJob() {
+    return $this->job;
+  }
+
+  /**
+   * Sets the job on the RunCommand.
+   *
+   * @param JobInterface $job
+   *   The job and all its definition.
+   */
+  public function setJob(JobInterface $job) {
+    $this->job = $job;
+  }
 
   /**
    * {@inheritdoc}
@@ -52,25 +83,25 @@ class RunCommand extends DrupalCICommandBase {
     /** @var PluginManager $job_plugin_manager */
     $job_plugin_manager = $this->container['plugin.manager.factory']->create('JobTypes');
 
-    /** @var $job \DrupalCI\Plugin\JobTypes\JobInterface */
-    $job = $job_plugin_manager->getPlugin($job_type, $job_type);
+    /** @var $job JobInterface */
+    $this->job = $job_plugin_manager->getPlugin($job_type, $job_type);
 
     // Link our $output variable to the job, so that jobs can display their work.
     Output::setOutput($output);
 
     // Generate a unique job build_id, and store it within the job object
-    $job->generateBuildId();
+    $this->job->generateBuildId();
 
     // Create our job Codebase object and attach it to the job.
     $job_codebase = new JobCodebase();
-    $job->setJobCodebase($job_codebase);
+    $this->job->setJobCodebase($job_codebase);
 
     // Create our job Definition object and attach it to the job.
     $job_definition = new JobDefinition();
-    $job->setJobDefinition($job_definition);
+    $this->job->setJobDefinition($job_definition);
 
     // Compile our complete list of DCI_* variables
-    $job_definition->compile($job);
+    $job_definition->compile($this->job);
 
     // Setup our project and version metadata
     $job_codebase->setupProject($job_definition);
@@ -80,7 +111,7 @@ class RunCommand extends DrupalCICommandBase {
       $template_file = $arg;
     }
     else {
-      $template_file = $job->getDefaultDefinitionTemplate($job_type);
+      $template_file = $this->job->getDefaultDefinitionTemplate($job_type);
     }
 
     Output::writeLn("<info>Using job definition template: <options=bold>$template_file</options=bold></info>");
@@ -91,11 +122,11 @@ class RunCommand extends DrupalCICommandBase {
 
     // Process the complete job definition, taking into account DCI_* variable
     // and definition preprocessors, along with job-specific arguments
-    $job_definition->preprocess($job);
+    $job_definition->preprocess($this->job);
 
     // Validate the resulting job definition, to ensure all required parameters
     // are present.
-    $result = $job_definition->validate($job);
+    $result = $job_definition->validate($this->job);
     if (!$result) {
       // Job definition failed validation.  Error output has already been
       // generated and displayed during execution of the validation method.
@@ -112,8 +143,8 @@ class RunCommand extends DrupalCICommandBase {
     }
 
     // Create our job Results object and attach it to the job.
-    $job_results = new JobResults($job);
-    $job->setJobResults($job_results);
+    $job_results = new JobResults($this->job);
+    $this->job->setJobResults($job_results);
 
     // The job should now have a fully merged job definition file, including
     // any local or DrupalCI defaults not otherwise defined in the passed job
@@ -134,7 +165,7 @@ class RunCommand extends DrupalCICommandBase {
         // Execute the build step
         /** @var PluginManager $build_steps_plugin_manager */
         $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
-        $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($job, $data);
+        $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->job, $data);
 
 
         // Check for errors / failures after build step execution
