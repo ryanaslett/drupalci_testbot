@@ -32,6 +32,7 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
     'DCI_PHPVersion=5.5',
     'DCI_JobType=simpletest',
     'DCI_TestItem=directory:modules/drupalci_d8_module_no_tests',
+    'DCI_ComposerInstall=true',
   ];
 
   public function testContribNoTests() {
