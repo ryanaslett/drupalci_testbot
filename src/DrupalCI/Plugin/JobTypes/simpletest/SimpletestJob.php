@@ -49,6 +49,9 @@ class SimpletestJob extends JobBase {
     'DCI_RunOptions' => 'color;keep-results',
     'DCI_SyntaxCheck' => TRUE,
     'DCI_ShowPHPVersion' => TRUE,
+    'DCI_RunSimpletestJSTests' => TRUE,
+    'DCI_SimpletestJSOptions' => '--ssl-protocol=any --ignore-ssl-errors=true /var/www/html/vendor/jcalderonzumba/gastonjs/src/Client/main.js 8510 1024 768',
+    //'DCI_RunTestsJSOptions' => 'PUT OPTIONS TO BE PASSED TO Run-tests.sh DURING JS TESTING HERE',
   );
 
   /**
