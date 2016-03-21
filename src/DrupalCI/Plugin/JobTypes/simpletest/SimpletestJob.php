@@ -48,6 +48,7 @@ class SimpletestJob extends JobBase {
     'DCI_PHPInterpreter' => '/opt/phpenv/shims/php',
     'DCI_RunOptions' => 'color;keep-results',
     'DCI_SyntaxCheck' => TRUE,
+    'DCI_ShowPHPVersion' => TRUE,
   );
 
   /**
