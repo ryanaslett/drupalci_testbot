@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
-use DrupalCI\Plugin\BuildSteps\setup\SetupBase;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Console\Output;
 
@@ -48,7 +47,7 @@ class Composer extends SetupBase {
    *   The full composer command string.
    */
   protected function buildComposerCommand($data, $workingdir) {
-    return "composer $data $workingdir";
+    return "./bin/composer $data $workingdir";
   }
 
 }
