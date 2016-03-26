@@ -614,7 +614,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
    *   The location of the default job definition template
    */
   public function getDefaultDefinitionTemplate($job_type) {
-    return __DIR__ . "/$job_type/drupalci.yml";
+    return __DIR__ . "/$job_type/template.yml";
   }
 
   /**

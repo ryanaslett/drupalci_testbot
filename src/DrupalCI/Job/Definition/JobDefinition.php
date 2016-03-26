@@ -65,7 +65,7 @@ class JobDefinition Implements Injectable {
 
     // For other 'jobtype' jobs, this is the file location returned by
     // the $job->getDefaultDefinitionTemplate() method, which defaults to
-    // DrupalCI/Plugin/JobTypes/<jobtype>/drupalci.yml for most job types.
+    // DrupalCI/Plugin/JobTypes/<jobtype>/template.yml for most job types.
 
     if (!file_exists($template_file)) {
       //Output::writeln("Unable to locate job definition template at <options=bold>$template_file</options=bold>");
