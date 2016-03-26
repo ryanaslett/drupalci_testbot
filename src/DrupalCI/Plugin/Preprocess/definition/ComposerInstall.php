@@ -44,7 +44,7 @@ class ComposerInstall {
     }
 
     // Run additional composer steps for contrib modules.
-    if ($this->hasComposerDependencies($definition)) {
+    if ($this->hasAdditionalRepositories($definition)) {
       $definition['setup']['composer'][] = 'config repositories.drupal composer https://packagist.drupal-composer.org --working-dir ';
       $definition['setup']['composer'][] = 'require mile23/drupal-merge-plugin --working-dir ';
       $definition['setup']['composer'][] = 'update --working-dir ';
@@ -65,7 +65,7 @@ class ComposerInstall {
    *   The job definition array.
    * @return boolean
    */
-  protected function hasComposerDependencies(array $definition) {
-    return (count($definition['setup']['checkout']) > 1 && is_array($definition['setup']['checkout'][0]));
+  protected function hasAdditionalRepositories(array $definition) {
+    return (count($definition['setup']['checkout']) > 1 && !isset($definition['setup']['checkout']['protocol']));
   }
 }
