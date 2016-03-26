@@ -25,6 +25,10 @@ class JobDefinition Implements Injectable {
   protected $template_file;
   protected function setTemplateFile($template_file) {  $this->template_file = $template_file; }
 
+  // Location of our job config file
+  protected $config_file;
+  protected function setConfigFile($config_file) { $this->config_file = $config_file; }
+
   // Contains our array of DCI_* variables
   protected $dci_variables;
   public function getDCIVariables() {  return $this->dci_variables;  }
