@@ -8,15 +8,15 @@
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Console\Output;
+use DrupalCI\Plugin\PluginBase;
 
 /**
  * @PluginID("composer")
  *
- * Processes "setup: composer:" instructions from within a job
+ * Processes "build_step: composer:" instructions from within a job
  * definition.
  */
-class Composer extends SetupBase {
+class Composer extends PluginBase {
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,7 @@ class Composer extends SetupBase {
 
     foreach ($data_list as $data) {
       $cmd = $this->buildComposerCommand($data, $workingdir);
-      $this->exec($cmd, $cmdoutput, $result);
+      exec($cmd, $cmdoutput, $result);
     }
   }
 

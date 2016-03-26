@@ -43,13 +43,14 @@ class ComposerInstall {
       $definition['setup']['composer'] = [];
     }
 
-    $definition['setup']['composer'][] = 'install --prefer-dist --working-dir ';
-
     // Run additional composer steps for contrib modules.
     if ($this->hasComposerDependencies($definition)) {
       $definition['setup']['composer'][] = 'config repositories.drupal composer https://packagist.drupal-composer.org --working-dir ';
       $definition['setup']['composer'][] = 'require mile23/drupal-merge-plugin --working-dir ';
       $definition['setup']['composer'][] = 'update --working-dir ';
+    }
+    else {
+      $definition['setup']['composer'][] = 'install --prefer-dist --working-dir ';
     }
   }
 
@@ -65,6 +66,6 @@ class ComposerInstall {
    * @return boolean
    */
   protected function hasComposerDependencies(array $definition) {
-    return count($definition['setup']['checkout']) > 1;
+    return (count($definition['setup']['checkout']) > 1 && is_array($definition['setup']['checkout'][0]));
   }
 }

@@ -147,6 +147,12 @@ class SimpletestJob extends JobBase {
     // CoreBranch needs to be able to override the SQLite variable before the
     // SQLite option is added to RunOptions
     'DCI_CoreBranch',
+    // UseLocalCodebase needs to go before AdditionalRepositories, as it
+    // overrides any 'checkout' keys when executed.
+    'DCI_UseLocalCodebase',
+    // Ensure Additional repositories are added to the definition before
+    // determining whether additional composer installs are required.
+    'DCI_AdditionalRepositories',
   );
 
   /**
