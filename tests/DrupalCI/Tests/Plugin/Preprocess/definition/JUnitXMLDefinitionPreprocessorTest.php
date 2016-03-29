@@ -10,14 +10,14 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class JUnitXMLDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
+class JUnitXmlDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
 {
-  public function testJUnitXMLDefinitionPreprocessor() {
+  public function testJUnitXmlDefinitionPreprocessor() {
     $definition = $this->getDefinitionTemplate();
     $target_directory = 'my/target/directory';
     $dci_variables = [];
 
-    $plugin = new JUnitXML();
+    $plugin = new JUnitXml();
     $plugin->process($definition, $target_directory, $dci_variables);
     $this->assertEquals($target_directory, $definition['publish']['junit_xmlformat']);
   }
