@@ -80,9 +80,9 @@ class ComposerInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTe
     // test when $definition['setup'] and $definition['install'] don't exist, but $definition['execute'] does
     unset($definition2['setup']);
     unset($definition2['install']);
-    // TODO: Test when $definition['execute'] doesn't exist
+    // TODO: Test when $definition['execute'] doesn't exist, once plugin contains this logic
     // unset($definition3['setup']);  unset($definition3['install']);  unset($definition3['execute']);
-    // TODO: Test when $composer already exists (i.e. does not overwrite)
+    // TODO: Test when $composer already exists (i.e. does not overwrite), once plugin contains this logic
     return [$definition, $definition1, $definition2];
   }
 }
