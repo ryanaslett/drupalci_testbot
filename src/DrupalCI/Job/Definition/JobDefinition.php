@@ -17,43 +17,83 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-class JobDefinition Implements Injectable {
+class JobDefinition Implements Injectable
+{
 
   use InjectableTrait;
 
   // Location of our job definition template
   protected $template_file;
-  protected function setTemplateFile($template_file) {  $this->template_file = $template_file; }
+
+  protected function setTemplateFile($template_file)
+  {
+    $this->template_file = $template_file;
+  }
 
   // Location of our job config file
   protected $config_file;
-  protected function setConfigFile($config_file) { $this->config_file = $config_file; }
+
+  protected function setConfigFile($config_file)
+  {
+    $this->config_file = $config_file;
+  }
 
   // Contains our array of DCI_* variables
   protected $dci_variables;
-  public function getDCIVariables() {  return $this->dci_variables;  }
-  public function setDCIVariables($dci_variables) {  $this->dci_variables = $dci_variables;  }
-  public function setDCIVariable($dci_variable, $value) {  $this->dci_variables[$dci_variable] = $value;  }
-  public function getDCIVariable($dci_variable) {
+
+  public function getDCIVariables()
+  {
+    return $this->dci_variables;
+  }
+
+  public function setDCIVariables($dci_variables)
+  {
+    $this->dci_variables = $dci_variables;
+  }
+
+  public function setDCIVariable($dci_variable, $value)
+  {
+    $this->dci_variables[$dci_variable] = $value;
+  }
+
+  public function getDCIVariable($dci_variable)
+  {
     return (!empty($this->dci_variables[$dci_variable])) ? $this->dci_variables[$dci_variable] : NULL;
   }
 
   // Contains the parsed job definition
   protected $definition = array();
-  public function getDefinition() {  return $this->definition;  }
-  protected function setDefinition(array $job_definition) {  $this->definition = $job_definition;  }
+
+  public function getDefinition()
+  {
+    return $this->definition;
+  }
+
+  protected function setDefinition(array $job_definition)
+  {
+    $this->definition = $job_definition;
+  }
 
   // Contains the array of build steps
   protected $build_steps = array();
-  public function getBuildSteps() {  return $this->build_steps;  }
-  protected function setBuildSteps(array $build_steps) {  $this->build_steps = $build_steps;  }
+
+  public function getBuildSteps()
+  {
+    return $this->build_steps;
+  }
+
+  protected function setBuildSteps(array $build_steps)
+  {
+    $this->build_steps = $build_steps;
+  }
 
   /**
    * @var \DrupalCI\Plugin\PluginManager;
    */
   protected $pluginManager;
 
-  public function loadTemplateFile($template_file) {
+  public function loadTemplateFile($template_file)
+  {
     // TODO: Pass in Job instead of template file, and calculate what template file we need as a result
 
     // Store the template location
@@ -84,7 +124,8 @@ class JobDefinition Implements Injectable {
   /**
    * Compile the complete list of DCI_* variables
    */
-  public function compile(JobInterface $job) {
+  public function compile(JobInterface $job)
+  {
     // Compile our list of DCI_* variables
     $this->compileDciVariables($job);
   }
@@ -93,7 +134,8 @@ class JobDefinition Implements Injectable {
    * Populates the job definition template based on DCI_* variables and
    * job-specific arguments
    */
-  public function preprocess(JobInterface $job) {
+  public function preprocess(JobInterface $job)
+  {
     // Execute variable preprocessor plugin logic
     $this->executeVariablePreprocessors();
     // Execute definition preprocessor plugin logic
@@ -111,15 +153,15 @@ class JobDefinition Implements Injectable {
   /**
    * Validate that the job contains all required elements defined in the class
    */
-  public function validate(JobInterface $job) {
+  public function validate(JobInterface $job)
+  {
     // TODO: Ensure that all 'required' arguments are defined
     $definition = $this->getDefinition();
     $failflag = FALSE;
     foreach ($job->getRequiredArguments() as $env_var => $yaml_loc) {
       if (!empty($job->getBuildVars()[$env_var])) {
         continue;
-      }
-      else {
+      } else {
         // Look for the appropriate array structure in the job definition file
         // eg: environment:db
         $keys = explode(":", $yaml_loc);
@@ -131,12 +173,10 @@ class JobDefinition Implements Injectable {
             // array.
             if (isset($eval[$key][0])) {
               $eval = $eval[$key][0];
+            } else {
+              $eval = $eval[$key];
             }
-            else {
-              $eval=$eval[$key];
-            }
-          }
-          else {
+          } else {
             // Missing a required key in the array key chain
             $failflag = TRUE;
             break;
@@ -164,7 +204,8 @@ class JobDefinition Implements Injectable {
    *   an array containing the parsed YAML contents from the source file
    * @throws ParseException
    */
-  protected function loadYaml($source) {
+  protected function loadYaml($source)
+  {
     if ($content = file_get_contents($source)) {
       return Yaml::parse($content);
     }
@@ -174,7 +215,8 @@ class JobDefinition Implements Injectable {
   /**
    * Compiles the list of available DCI_* variables to consider with this job
    */
-  protected function compileDciVariables(JobInterface $job) {
+  protected function compileDciVariables(JobInterface $job)
+  {
     // Get and parse external (i.e. anything not from the default definition
     // file) job argument parameters.  DrupalCI jobs are controlled via a
     // hierarchy of configuration settings, which define the behaviour of the
@@ -237,7 +279,8 @@ class JobDefinition Implements Injectable {
   /**
    * Execute Variable preprocessor Plugin logic
    */
-  protected function executeVariablePreprocessors() {
+  protected function executeVariablePreprocessors()
+  {
     // For each DCI_* element in the array, check to see if a variable
     // preprocessor exists, and process it if it does.
     $replacements = [];
@@ -270,7 +313,8 @@ class JobDefinition Implements Injectable {
   /**
    * Execute Variable preprocessor Plugin logic
    */
-  protected function executeDefinitionPreprocessors() {
+  protected function executeDefinitionPreprocessors()
+  {
     $definition = $this->getDefinition();
     $dci_variables = $this->getDCIVariables();
     $plugin_manager = $this->getPreprocessPluginManager();
@@ -292,7 +336,8 @@ class JobDefinition Implements Injectable {
   /**
    * Substitute DCI_* variables into the job definition template
    */
-  protected function substituteTemplateVariables() {
+  protected function substituteTemplateVariables()
+  {
     // Generate our replacements array
     $replacements = [];
     $dci_variables = $this->getDCIVariables();
@@ -318,7 +363,8 @@ class JobDefinition Implements Injectable {
     $this->setDefinition($definition);
   }
 
-  protected function parseBuildSteps() {
+  protected function parseBuildSteps()
+  {
     $definition = $this->getDefinition();
     $build_steps = [];
     foreach ($definition as $stage => $steps) {
@@ -336,7 +382,8 @@ class JobDefinition Implements Injectable {
   /**
    * @return \DrupalCI\Plugin\PluginManager
    */
-  protected function getPreprocessPluginManager() {
+  protected function getPreprocessPluginManager()
+  {
     if (!isset($this->pluginManager)) {
       $this->pluginManager = new PluginManager('Preprocess', $this->container);
     }
