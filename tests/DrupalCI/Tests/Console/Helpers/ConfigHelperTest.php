@@ -34,12 +34,9 @@ class ConfigHelperTest extends DrupalCITestCase {
   }
 
   public function testGetCurrentEnvVars() {
-
     $confighelper = new ConfigHelper();
     $results = $confighelper->getCurrentEnvVars();
-
     foreach ($this->data as $key => $value) {
-      # code...
       $this->assertEquals( $value, $results[$key]);
     }
   }
@@ -51,7 +48,6 @@ class ConfigHelperTest extends DrupalCITestCase {
     foreach ($results as $key => $value) {
       $r2 .= $value . PHP_EOL;
     }
-
     $this->assertFileExists($this->dci_config);
     $this->assertStringEqualsFile(__DIR__ . '/Fixtures/ConfigHelperTest_config', $r2, 'The file has been altered.');
 
@@ -61,9 +57,5 @@ class ConfigHelperTest extends DrupalCITestCase {
     unlink($this->tmp_home . '/.drupalci/config');
     rmdir($this->tmp_home . '/.drupalci');
     rmdir($this->tmp_home);
-//    putenv('HOME=' . $this->$origHome);
   }
 }
-//Class TestConfigHelper extends ConfigHelper {
-//  use TestSetupBaseTrait;
-//}

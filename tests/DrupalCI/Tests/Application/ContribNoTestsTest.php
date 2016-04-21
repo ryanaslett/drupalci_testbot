@@ -36,15 +36,12 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
   ];
 
   public function testContribNoTests() {
-    $this->setUp();
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
-
     $app_tester = new ApplicationTester($app);
     $app_tester->run([
       'command' => 'run',
     ], $options);
-
     $this->assertRegExp('/ERROR: No valid tests were specified./', $app_tester->getDisplay());
     $this->assertEquals(0, $app_tester->getStatusCode());
   }

@@ -34,7 +34,6 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
 
   public function testBadPatch() {
 
-    $this->setUp();
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
 
