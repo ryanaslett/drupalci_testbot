@@ -61,7 +61,8 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
 
         $display = $app_tester->getDisplay();
         $job = $this->getCommand('run')->getJob();
-        
+
+        $this->assertNotRegExp('/.*simpletestlegacy7*/', $app_tester->getDisplay());
         $this->assertRegExp('/.*Drupal\\\\system\\\\Tests\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
         // Look for junit xml results file
         $output_file = $job->getJobCodebase()->getWorkingDir() . "/artifacts/" . $job->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
