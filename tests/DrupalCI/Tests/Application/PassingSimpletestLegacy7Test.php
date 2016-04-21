@@ -58,6 +58,7 @@ class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
         $display = $app_tester->getDisplay();
         $job = $this->getCommand('run')->getJob();
 
+        $this->assertRegExp('/.*simpletestlegacy7*/', $app_tester->getDisplay());
         $this->assertRegExp('/.*Blog functionality 244 passes, 0 fails, and 0 exceptions*/', $app_tester->getDisplay());
         // Look for junit xml results file
         $output_file = $job->getJobCodebase()->getWorkingDir() . "/artifacts/" . $job->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
