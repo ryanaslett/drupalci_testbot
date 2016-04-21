@@ -28,43 +28,29 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
     'DCI_TestGroups=ban',
     'DCI_Fetch=http://drupal.org/files/issues/does_not_apply.patch',
     'DCI_Patch=does_not_apply.patch',
-  ];
-
-  private $dciConfigPhpVer = [
     'DCI_PHPVersion=5.5',
-    'DCI_PHPVersion=5.6',
-    'DCI_PHPVersion=7',
-  ];
-  private $dciConfigDb = [
     'DCI_DBVersion=mysql-5.5',
-    'DCI_DBVersion=pgsql-9.1',
-    'DCI_DBVersion=sqlite-3.8',
   ];
 
   public function testBadPatch() {
-    foreach ($this->dciConfigDb as $dbKey) {
-      array_push($this->dciConfig, $dbKey);
-      foreach ($this->dciConfigPhpVer as $phpKey) {
-        array_push($this->dciConfig, $phpKey);
-        $this->setUp();
-        $app = $this->getConsoleApp();
-        $options = ['interactive' => FALSE];
 
-        $app_tester = new ApplicationTester($app);
-        $app_tester->run([
-          'command' => 'run',
-        ], $options);
+    $this->setUp();
+    $app = $this->getConsoleApp();
+    $options = ['interactive' => FALSE];
 
-        $this->assertRegExp('/.*The patch attempt returned an error.*/', $app_tester->getDisplay());
-        // The testbot should not return 0 if there was an error.
-        // @todo: Poke around in artifacts to verify that the testbot is telling
-        //   d.o or other consumers that this is a failed test.
+    $app_tester = new ApplicationTester($app);
+    $app_tester->run([
+      'command' => 'run',
+    ], $options);
 
-        // Currently the result code of the failed patch does not bubble up to the exit code of the
-        // drupalci run command.
-        //$this->assertNotEquals(0, $app_tester->getStatusCode());
-      }
-    }
+    $this->assertRegExp('/.*The patch attempt returned an error.*/', $app_tester->getDisplay());
+    // The testbot should not return 0 if there was an error.
+    // @todo: Poke around in artifacts to verify that the testbot is telling
+    //   d.o or other consumers that this is a failed test.
+
+    // Currently the result code of the failed patch does not bubble up to the exit code of the
+    // drupalci run command.
+    //$this->assertNotEquals(0, $app_tester->getStatusCode());
   }
 
 }

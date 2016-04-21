@@ -35,34 +35,17 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
     'DCI_ComposerInstall=true',
   ];
 
-  private $dciConfigPhpVer = [
-    'DCI_PHPVersion=5.5',
-    'DCI_PHPVersion=5.6',
-    'DCI_PHPVersion=7',
-  ];
-  private $dciConfigDb = [
-    'DCI_DBVersion=mysql-5.5',
-    'DCI_DBVersion=pgsql-9.1',
-    'DCI_DBVersion=sqlite-3.8',
-  ];
-
   public function testContribNoTests() {
-    foreach ($this->dciConfigDb as $dbKey) {
-      array_push($this->dciConfig, $dbKey);
-      foreach ($this->dciConfigPhpVer as $phpKey) {
-        array_push($this->dciConfig, $phpKey);
-        $this->setUp();
-        $app = $this->getConsoleApp();
-        $options = ['interactive' => FALSE];
+    $this->setUp();
+    $app = $this->getConsoleApp();
+    $options = ['interactive' => FALSE];
 
-        $app_tester = new ApplicationTester($app);
-        $app_tester->run([
-          'command' => 'run',
-        ], $options);
+    $app_tester = new ApplicationTester($app);
+    $app_tester->run([
+      'command' => 'run',
+    ], $options);
 
-        $this->assertRegExp('/ERROR: No valid tests were specified./', $app_tester->getDisplay());
-        $this->assertEquals(0, $app_tester->getStatusCode());
-      }
-    }
+    $this->assertRegExp('/ERROR: No valid tests were specified./', $app_tester->getDisplay());
+    $this->assertEquals(0, $app_tester->getStatusCode());
   }
 }
