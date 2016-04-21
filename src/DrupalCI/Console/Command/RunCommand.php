@@ -68,7 +68,9 @@ class RunCommand extends DrupalCICommandBase {
     $arg = $input->getArgument('definition');
 
     $config_helper = new ConfigHelper();
-    $local_overrides = $config_helper->getCurrentConfigSetParsed();
+    $fileConfig = $config_helper->getCurrentConfigSetParsed();
+    $envConfig = $config_helper->getCurrentEnvVars();
+    $local_overrides = array_merge($fileConfig,$envConfig);
 
     // Determine the Job Type based on the first argument to the run command
     if ($arg) {

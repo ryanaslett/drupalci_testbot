@@ -57,15 +57,6 @@ class ConfigHelperTest extends DrupalCITestCase {
 
   }
 
-  public function testGetCurrentConfigSetParsed() {
-    $confighelper = new ConfigHelper();
-    $results = $confighelper->getCurrentConfigSetParsed();
-    $this->assertEquals($results['DCI_PHPVersion'], $this->data['DCI_PHPVersion']);
-    $this->assertEquals($results['DCI_Concurrency'], $this->data['DCI_Concurrency']);
-    $this->assertEquals($results['DCI_TestGroups'], $this->data['DCI_TestGroups']);
-  }
-
-
   protected function tearDown(){
     unlink($this->tmp_home . '/.drupalci/config');
     rmdir($this->tmp_home . '/.drupalci');

@@ -67,15 +67,13 @@ class ConfigHelper extends DrupalCIHelperBase {
    */
   public function getCurrentConfigSetParsed() {
     $config = $this->getCurrentConfigSetContents();
-    $envConfig = $this->getCurrentEnvVars();
-    $parsing = array();
+    $parsed = array();
     foreach ($config as $line) {
       $value = explode("=", $line);
       if (!empty($value[0]) && !empty($value[1])) {
-        $parsing[$value[0]] = $value[1];
+        $parsed[$value[0]] = $value[1];
       }
     }
-    $parsed = array_merge($parsing,$envConfig);
     return $parsed;
   }
 
