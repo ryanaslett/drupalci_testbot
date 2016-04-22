@@ -22,7 +22,7 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         $ ./drupalci init
         // Pull down all the images.
         $ cd /tmp
-        $ git clone --branch 8.1.x https://git.drupal.org/project/drupal.git
+        $ git clone --bare https://git.drupal.org/project/drupal.git
         $ cd drupal
         $ ~/drupalci_testbot/bin/composer install
         $ cd ~/drupalci_testbot

@@ -22,7 +22,7 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_UseLocalCodebase=/tmp/drupal',
+    'DCI_CoreRepository=file:///tmp/drupal.git',
     'DCI_JobType=simpletest',
     'DCI_CoreBranch=8.1.x',
     'DCI_TestGroups=ban',

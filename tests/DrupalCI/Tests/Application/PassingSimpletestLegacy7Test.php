@@ -24,7 +24,7 @@ class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
    */
 
   protected $dciConfig = [
-    'DCI_UseLocalCodebase=/tmp/drupal7',
+    'DCI_CoreRepository=file:///tmp/drupal.git',
     'DCI_JobType=simpletestlegacy7',
     'DCI_CoreBranch=7.x',
     'DCI_RunScript=/var/www/html/scripts/run-tests.sh',
