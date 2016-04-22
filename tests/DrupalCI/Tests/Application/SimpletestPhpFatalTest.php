@@ -12,8 +12,8 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  * https://www.drupal.org/sandbox/mile23/2683655
  *
  * NOTE: This test assumes you have checked out Drupal 8.1.x branch into a
- * directory called /tmp/drupal, using a command like this:
- * git clone --branch 8.1.x https://git.drupal.org/project/drupal.git
+ * directory called /tmp/drupal.git, using a command like this:
+ * git clone --bare https://git.drupal.org/project/drupal.git
  *
  * @group Application
  *

@@ -9,8 +9,8 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  * Basic test that proves that drupalci can execute a simpletest and generate a result
  *
  * NOTE: This test assumes you have checked out Drupal 7.x branch into a
- * directory called /tmp/drupal7, using a command like this:
- * git clone --branch 7.x https://git.drupal.org/project/drupal.git
+ * directory called /tmp/drupal.git, using a command like this:
+ * git clone --bare https://git.drupal.org/project/drupal.git
  *
  * @group Application
  * @group docker
