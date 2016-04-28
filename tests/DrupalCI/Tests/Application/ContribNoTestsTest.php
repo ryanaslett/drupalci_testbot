@@ -25,14 +25,14 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_CoreRepository=file:///tmp/drupal.git',
-    'DCI_CoreBranch=8.1.x',
     'DCI_AdditionalRepositories=git,https://git.drupal.org/sandbox/Mile23/2683655.git,8.x-1.x,modules/drupalci_d8_module_no_tests,1;',
-    'DCI_DBVersion=mysql-5.5',
-    'DCI_PHPVersion=5.5',
-    'DCI_JobType=simpletest',
-    'DCI_TestItem=directory:modules/drupalci_d8_module_no_tests',
     'DCI_ComposerInstall=true',
+    'DCI_CoreBranch=8.1.x',
+    'DCI_CoreRepository=file:///tmp/drupal.git',
+    'DCI_DBVersion=mysql-5.5',
+    'DCI_JobType=simpletest',
+    'DCI_PHPVersion=5.5',
+    'DCI_TestItem=directory:modules/drupalci_d8_module_no_tests',
   ];
 
   public function testContribNoTests() {

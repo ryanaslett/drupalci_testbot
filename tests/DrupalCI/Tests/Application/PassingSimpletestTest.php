@@ -24,12 +24,12 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
    */
 
   protected $dciConfig = [
+    'DCI_ComposerInstall=true',
+    'DCI_CoreBranch=8.1.x',
     'DCI_CoreRepository=file:///tmp/drupal.git',
     'DCI_JobType=simpletest',
-    'DCI_CoreBranch=8.1.x',
-    'DCI_TestGroups=Url',
     'DCI_JunitXml=xml',
-    'DCI_ComposerInstall=true',
+    'DCI_TestGroups=Url',
   ];
 
   private $dciConfigPhpVer = [

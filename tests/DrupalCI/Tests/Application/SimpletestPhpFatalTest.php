@@ -25,19 +25,19 @@ class simpletestPhpFatalTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_CoreRepository=file:///tmp/drupal.git',
-    'DCI_RunScript=/var/www/html/core/scripts/run-tests.sh ',
-    'DCI_PHPVersion=5.5',
-    'DCI_JobType=simpletest',
-    'DCI_ComposerInstall=True',
-    'DCI_CoreBranch=8.1.x',
-    'DCI_Patch=2684095-2.patch,.',
     'DCI_Color=True',
-    'DCI_JunitXml=xml',
-    'DCI_Fetch=https://www.drupal.org/files/issues/2684095-2.patch,.',
+    'DCI_ComposerInstall=True',
     'DCI_Concurrency=2',
+    'DCI_CoreBranch=8.1.x',
+    'DCI_CoreRepository=file:///tmp/drupal.git',
     'DCI_DBVersion=mysql-5.5',
+    'DCI_Fetch=https://www.drupal.org/files/issues/2684095-2.patch,.',
     'DCI_GitCommitHash=6afe359',
+    'DCI_JobType=simpletest',
+    'DCI_JunitXml=xml',
+    'DCI_PHPVersion=5.5',
+    'DCI_Patch=2684095-2.patch,.',
+    'DCI_RunScript=/var/www/html/core/scripts/run-tests.sh ',
     'DCI_TestGroups=--class "Drupal\comment\Tests\CommentItemTest"',
   ];
 

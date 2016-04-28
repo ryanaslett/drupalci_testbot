@@ -22,15 +22,15 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_CoreRepository=file:///tmp/drupal.git',
-    'DCI_JobType=simpletest',
     'DCI_CoreBranch=8.1.x',
-    'DCI_TestGroups=ban',
-    'DCI_Fetch=https://drupal.org/files/issues/does_not_apply.patch',
-    'DCI_Patch=does_not_apply.patch',
-    'DCI_PHPVersion=5.5',
+    'DCI_CoreRepository=file:///tmp/drupal.git',
     'DCI_DBVersion=mysql-5.5',
+    'DCI_Fetch=http://drupal.org/files/issues/does_not_apply.patch',
+    'DCI_JobType=simpletest',
     'DCI_JunitXml=xml',
+    'DCI_PHPVersion=5.5',
+    'DCI_Patch=does_not_apply.patch',
+    'DCI_TestGroups=ban',
   ];
 
   public function testBadPatch() {
