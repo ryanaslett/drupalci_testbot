@@ -6,7 +6,7 @@ use DrupalCI\Tests\DrupalCIFunctionalTestBase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
- * Test what happens when a patch is applied to core.
+ * Test what happens when running a test that does not have @group set.
  *
  * This test comes from:
  * https://dispatcher.drupalci.org/job/default/92908/

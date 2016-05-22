@@ -6,7 +6,7 @@ use DrupalCI\Tests\DrupalCIFunctionalTestBase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
- * Test what happens a contrib module has no tests.
+ * Test what happens a test run encounters a fatal error.
  *
  * This test depends on the drupalci_d8_no_tests module which you can find here:
  * https://www.drupal.org/sandbox/mile23/2683655
