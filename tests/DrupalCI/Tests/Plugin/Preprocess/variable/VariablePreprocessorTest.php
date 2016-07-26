@@ -4,7 +4,7 @@
 
 use DrupalCI\Plugin\Preprocess\VariableInterface;
 
-class VariablePreprocessorTestBase extends \PHPUnit_Framework_TestCase
+class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
 {
 
   /**
