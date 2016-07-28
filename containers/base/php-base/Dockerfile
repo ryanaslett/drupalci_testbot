@@ -78,10 +78,10 @@ RUN apt-get clean && apt-get update && \
 ##
 # PhantomJS
 ##
-RUN curl -L https://github.com/bprodoehl/phantomjs/releases/download/v2.0.0-20150528/phantomjs-2.0.0-20150528-u1404-x86_64.zip -o ~/phantomjs-2.0.zip && \
-    unzip -j ~/phantomjs-2.0.zip -d ~/phantomjs && \
+RUN curl -L https://github.com/ariya/phantomjs/archive/2.1.1.zip -o ~/phantomjs-2.1.1.zip && \
+    unzip -j ~/phantomjs-2.1.1.zip -d ~/phantomjs && \
     mv ~/phantomjs/phantomjs /usr/bin/phantomjs && \
-    rm -f ~/phantomjs-2.0.zip && \
+    rm -f ~/phantomjs-2.1.1.zip && \
     rm -rf ~/phantomjs && \
     chmod 755 /usr/bin/phantomjs
 
