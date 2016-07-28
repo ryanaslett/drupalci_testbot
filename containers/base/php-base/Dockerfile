@@ -119,7 +119,7 @@ RUN echo "--with-gettext=shared" >> /opt/phpenv/plugins/php-build/share/php-buil
 RUN bash -c "wget http://getcomposer.org/composer.phar && chmod 775 composer.phar && sudo mv composer.phar /usr/local/bin/composer"
 
 # Drush and dependencies.
-RUN HOME=/ /usr/local/bin/composer global require drush/drush:dev-master && \
+RUN HOME=/ /usr/local/bin/composer global require drush/drush:9.0.0-alpha1 && \
     /.composer/vendor/drush/drush/drush --version
 
 COPY ./conf/start.sh /usr/local/bin/start.sh
