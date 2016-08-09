@@ -18,6 +18,7 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         $ vagrant up
         // Wait a while...
         $ vagrant ssh
+        $ sudo docker -d &
         $ rm -rf ~/.drupalci
         $ ./drupalci init
         // Pull down all the images.
