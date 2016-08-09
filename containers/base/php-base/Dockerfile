@@ -78,11 +78,11 @@ RUN apt-get clean && apt-get update && \
 ##
 # PhantomJS
 ##
-RUN curl -L https://github.com/bprodoehl/phantomjs/releases/download/v2.0.0-20150528/phantomjs-2.0.0-20150528-u1404-x86_64.zip -o ~/phantomjs-2.0.zip && \
-    unzip -j ~/phantomjs-2.0.zip -d ~/phantomjs && \
-    mv ~/phantomjs/phantomjs /usr/bin/phantomjs && \
-    rm -f ~/phantomjs-2.0.zip && \
-    rm -rf ~/phantomjs && \
+RUN curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 -o ~/phantomjs-2.1.1.tar.bz2 && \
+    tar jxvf ~/phantomjs-2.1.1.tar.bz2 -C ~ && \
+    mv ~/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs && \
+    rm -f ~/phantomjs-2.1.1.tar.bz2 && \
+    rm -rf ~/phantomjs-2.1.1-linux-x86_64 && \
     chmod 755 /usr/bin/phantomjs
 
 ##
@@ -119,7 +119,7 @@ RUN echo "--with-gettext=shared" >> /opt/phpenv/plugins/php-build/share/php-buil
 RUN bash -c "wget http://getcomposer.org/composer.phar && chmod 775 composer.phar && sudo mv composer.phar /usr/local/bin/composer"
 
 # Drush and dependencies.
-RUN HOME=/ /usr/local/bin/composer global require drush/drush:dev-master && \
+RUN HOME=/ /usr/local/bin/composer global require drush/drush:9.0.0-alpha1 && \
     /.composer/vendor/drush/drush/drush --version
 
 COPY ./conf/start.sh /usr/local/bin/start.sh
