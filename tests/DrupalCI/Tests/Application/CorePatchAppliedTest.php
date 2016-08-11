@@ -25,9 +25,10 @@ class CorePatchAppliedTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_ComposerInstall=true',
+    'DCI_ComposerInstall=false',
     'DCI_CoreBranch=8.1.x',
-    'DCI_CoreRepository=file:///tmp/drupal.git',
+    'DCI_CoreRepository=file:///tmp/drupal',
+    //'DCI_UseLocalCodebase=/tmp/drupal',
     'DCI_DBVersion=mysql-5.5',
     'DCI_Fetch=https://www.drupal.org/files/issues/Generic.PHP_.UpperCaseConstant-2572307-24.patch,.',
     'DCI_GitCommitHash=bdb434a',
@@ -47,6 +48,7 @@ class CorePatchAppliedTest extends DrupalCIFunctionalTestBase {
     ], $options);
     $this->assertRegExp('/.*Generic.PHP_.UpperCaseConstant-2572307-24.patch applied.*/', $app_tester->getDisplay());
     $this->assertRegExp('/.*Drupal\\\\system\\\\Tests\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
+    fwrite(STDERR, print_r($app_tester->getDisplay(), TRUE));
     $this->assertEquals(0, $app_tester->getStatusCode());
   }
 }

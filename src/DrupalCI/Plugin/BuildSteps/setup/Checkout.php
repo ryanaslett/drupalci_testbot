@@ -84,6 +84,7 @@ class Checkout extends SetupBase {
   protected function setupCheckoutGit(JobInterface $job, $details) {
     Output::writeLn("<info>Entering setup_checkout_git().</info>");
     $repo = isset($details['repo']) ? $details['repo'] : 'git://drupalcode.org/project/drupal.git';
+
     $git_branch = isset($details['branch']) ? $details['branch'] : 'master';
     $checkout_directory = isset($details['checkout_dir']) ? $details['checkout_dir'] : $job->getJobCodebase()->getWorkingDir();
     // TODO: Ensure we don't end up with double slashes
@@ -94,20 +95,38 @@ class Checkout extends SetupBase {
       $job->error();
       return;
     }
-    Output::writeLn("<comment>Performing git checkout of $repo $git_branch branch to $directory.</comment>");
-    // TODO: Make sure target directory is empty
-    $git_depth = '';
-    if (isset($details['depth']) && empty($details['commit_hash'])) {
-      $git_depth = '--depth ' . $details['depth'];
-    }
-    $cmd = "git clone -b $git_branch $git_depth $repo '$directory'";
-    Output::writeLn("Git Command: $cmd");
-    $this->exec($cmd, $cmdoutput, $result);
-    if ($result !==0) {
-      // Git threw an error.
-      Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result");
-      $job->error();
-      return;
+    if (substr($details['repo'],0,4) == 'file') {
+      // If the repository is specified as a local file://tmp/project, then we rsync the
+      // project over to avoid re-composering and re-cloning.
+      $exclude_var = isset($details['DCI_EXCLUDE']) ? '--exclude="' . $details['DCI_EXCLUDE'] . '"' : "";
+      $source_dir = substr($details['repo'],7);
+      $cmd = "rsync -a $exclude_var  $source_dir/. $directory";
+      Output::writeLn("<comment>Performing rsync of git checkout of $repo $git_branch branch to $directory.</comment>");
+      Output::writeLn("Rsync Command: $cmd");
+      $this->exec($cmd, $cmdoutput, $result);
+      if ($result !== 0) {
+        // Git threw an error.
+        Output::error("Checkout Error", "The rsync returned an error.  Error Code: $result");
+        $job->error();
+        return;
+      }
+    } else {
+      Output::writeLn("<comment>Performing git checkout of $repo $git_branch branch to $directory.</comment>");
+      // TODO: Make sure target directory is empty
+      $git_depth = '';
+      if (isset($details['depth']) && empty($details['commit_hash'])) {
+        $git_depth = '--depth ' . $details['depth'];
+      }
+      $cmd = "git clone -b $git_branch $git_depth $repo '$directory'";
+      Output::writeLn("Git Command: $cmd");
+      $this->exec($cmd, $cmdoutput, $result);
+
+      if ($result !== 0) {
+        // Git threw an error.
+        Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result");
+        $job->error();
+        return;
+      }
     }
 
     if (!empty($details['commit_hash'])) {

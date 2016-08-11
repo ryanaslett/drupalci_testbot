@@ -24,9 +24,9 @@ class ContribDependenciesLegacy7Test extends DrupalCIFunctionalTestBase {
    */
   protected $dciConfig = [
     'DCI_AdditionalRepositories=git,git://git.drupal.org/project/forena.git,7.x-4.x,sites/all/modules/forena,1;',
-    'DCI_ComposerInstall=false',
+    'DCI_ComposerInstall=true',
     'DCI_CoreBranch=7.x',
-    'DCI_CoreRepository=file:///tmp/drupal.git',
+    'DCI_CoreRepository=file:///tmp/drupal',
     'DCI_DBVersion=mysql-5.5',
     'DCI_GitCommitHash=d33ac7e',
     'DCI_JobType=simpletestlegacy7',

@@ -28,7 +28,7 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
     'DCI_AdditionalRepositories=git,https://git.drupal.org/sandbox/Mile23/2683655.git,8.x-1.x,modules/drupalci_d8_module_no_tests,1;',
     'DCI_ComposerInstall=true',
     'DCI_CoreBranch=8.1.x',
-    'DCI_CoreRepository=file:///tmp/drupal.git',
+    'DCI_CoreRepository=file:///tmp/drupal',
     'DCI_DBVersion=mysql-5.5',
     'DCI_JobType=simpletest',
     'DCI_PHPVersion=5.5',

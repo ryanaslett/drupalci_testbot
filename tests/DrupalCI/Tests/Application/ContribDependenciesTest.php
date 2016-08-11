@@ -25,7 +25,7 @@ class ContribDependenciesTest extends DrupalCIFunctionalTestBase {
   protected $dciConfig = [
     'DCI_AdditionalRepositories=git,git://git.drupal.org/project/token.git,8.x-1.x,modules/token,1;',
     'DCI_ComposerInstall=true',
-    'DCI_CoreRepository=file:///tmp/drupal.git',
+    'DCI_CoreRepository=file:///tmp/drupal',
     'DCI_CoreBranch=8.1.x',
     'DCI_DBVersion=mysql-5.5',
     'DCI_GitCommitHash=f7b30ad',

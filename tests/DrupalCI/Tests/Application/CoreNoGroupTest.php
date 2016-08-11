@@ -27,7 +27,7 @@ class CoreNoGroupTest extends DrupalCIFunctionalTestBase {
   protected $dciConfig = [
     'DCI_ComposerInstall=true',
     'DCI_CoreBranch=8.1.x',
-    'DCI_CoreRepository=file:///tmp/drupal.git',
+    'DCI_CoreRepository=file:///tmp/drupal',
     'DCI_DBVersion=mysql-5.5',
     'DCI_Fetch=https://www.drupal.org/files/issues/2675066-12.patch,.',
     'DCI_GitCommitHash=04038f4',
