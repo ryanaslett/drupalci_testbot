@@ -17,15 +17,20 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @todo Other potential methods for this class:
+ *   insert build step before/after
+ *   get/set DCI_parameters.
+ */
 class JobDefinition Implements Injectable {
 
   use InjectableTrait;
 
-  // Location of our job definition template
+  // Location of our job definition template.
   protected $template_file;
   protected function setTemplateFile($template_file) {  $this->template_file = $template_file; }
 
-  // Contains our array of DCI_* variables
+  // Contains our array of DCI_* variables.
   protected $dci_variables;
   public function getDCIVariables() {  return $this->dci_variables;  }
   public function setDCIVariables($dci_variables) {  $this->dci_variables = $dci_variables;  }
@@ -34,12 +39,12 @@ class JobDefinition Implements Injectable {
     return (!empty($this->dci_variables[$dci_variable])) ? $this->dci_variables[$dci_variable] : NULL;
   }
 
-  // Contains the parsed job definition
+  // Contains the parsed job definition.
   protected $definition = array();
   public function getDefinition() {  return $this->definition;  }
   protected function setDefinition(array $job_definition) {  $this->definition = $job_definition;  }
 
-  // Contains the array of build steps
+  // Contains the array of build steps.
   protected $build_steps = array();
   public function getBuildSteps() {  return $this->build_steps;  }
   protected function setBuildSteps(array $build_steps) {  $this->build_steps = $build_steps;  }
@@ -50,25 +55,21 @@ class JobDefinition Implements Injectable {
   protected $pluginManager;
 
   public function loadTemplateFile($template_file) {
-    // TODO: Pass in Job instead of template file, and calculate what template file we need as a result
-
-    // Store the template location
+    // TODO: Pass in Job instead of template file, and calculate what template file we need as a result.
+    // Store the template location.
     $this->setTemplateFile($template_file);
 
     // Get and parse the default definition template (containing %DCI_*%
     // placeholders) into the job definition.
-
     // For 'generic' jobs, this is either the file passed in on the
     // 'drupalci run <filename>' command; and should be fully populated (though
     // template placeholders *can* be supported) ... or a drupalci.yml file at
     // the working directory root.
-
     // For other 'jobtype' jobs, this is the file location returned by
     // the $job->getDefaultDefinitionTemplate() method, which defaults to
     // DrupalCI/Plugin/JobTypes/<jobtype>/drupalci.yml for most job types.
-
     if (!file_exists($template_file)) {
-      //Output::writeln("Unable to locate job definition template at <options=bold>$template_file</options=bold>");
+      // Output::writeln("Unable to locate job definition template at <options=bold>$template_file</options=bold>");.
       throw new FileNotFoundException("Unable to locate job definition template at $template_file.");
     }
 
@@ -81,7 +82,7 @@ class JobDefinition Implements Injectable {
    * Compile the complete list of DCI_* variables
    */
   public function compile(JobInterface $job) {
-    // Compile our list of DCI_* variables
+    // Compile our list of DCI_* variables.
     $this->compileDciVariables($job);
   }
 
@@ -90,11 +91,11 @@ class JobDefinition Implements Injectable {
    * job-specific arguments
    */
   public function preprocess(JobInterface $job) {
-    // Execute variable preprocessor plugin logic
+    // Execute variable preprocessor plugin logic.
     $this->executeVariablePreprocessors();
-    // Execute definition preprocessor plugin logic
+    // Execute definition preprocessor plugin logic.
     $this->executeDefinitionPreprocessors();
-    // Process DCI_* variable substitution into the job definition template
+    // Process DCI_* variable substitution into the job definition template.
     $this->substituteTemplateVariables();
     // Add the build variables and job definition to our job object, for
     // compatibility.
@@ -108,7 +109,7 @@ class JobDefinition Implements Injectable {
    * Validate that the job contains all required elements defined in the class
    */
   public function validate(JobInterface $job) {
-    // TODO: Ensure that all 'required' arguments are defined
+    // TODO: Ensure that all 'required' arguments are defined.
     $definition = $this->getDefinition();
     $failflag = FALSE;
     foreach ($job->getRequiredArguments() as $env_var => $yaml_loc) {
@@ -117,7 +118,7 @@ class JobDefinition Implements Injectable {
       }
       else {
         // Look for the appropriate array structure in the job definition file
-        // eg: environment:db
+        // eg: environment:db.
         $keys = explode(":", $yaml_loc);
         $eval = $definition;
         foreach ($keys as $key) {
@@ -133,7 +134,7 @@ class JobDefinition Implements Injectable {
             }
           }
           else {
-            // Missing a required key in the array key chain
+            // Missing a required key in the array key chain.
             $failflag = TRUE;
             break;
           }
@@ -142,12 +143,12 @@ class JobDefinition Implements Injectable {
           continue;
         }
       }
-      // If processing gets to here, we're missing a required variable
+      // If processing gets to here, we're missing a required variable.
       Output::error("Invalid Job Definition", "Required test parameter <options=bold>'$env_var'</options=bold> not found in environment variables, and <options=bold>'$yaml_loc'</options=bold> not found in job definition file.");
-      // TODO: Graceful handling of failed exit states
+      // TODO: Graceful handling of failed exit states.
       return FALSE;
     }
-    // TODO: Strip out arguments which are not defined in the 'Available' arguments array
+    // TODO: Strip out arguments which are not defined in the 'Available' arguments array.
     return TRUE;
   }
 
@@ -176,22 +177,21 @@ class JobDefinition Implements Injectable {
     // hierarchy of configuration settings, which define the behaviour of the
     // platform while running DrupalCI jobs.  This hierarchy is defined as
     // follows, which each level overriding the previous:
-
-    // 1. Out-of-the-box DrupalCI platform defaults, as defined in DrupalCI/Plugin/JobTypes/JobBase->platformDefaults
+    // 1. Out-of-the-box DrupalCI platform defaults, as defined in DrupalCI/Plugin/JobTypes/JobBase->platformDefaults.
     $platform_defaults = $job->getPlatformDefaults();
     if (!empty($platform_defaults)) {
       Output::writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($platform_defaults)));
     }
 
-    // 2. Out-of-the-box DrupalCI JobType defaults, as defined in DrupalCI/Plugin/JobTypes/<jobtype>->defaultArguments
+    // 2. Out-of-the-box DrupalCI JobType defaults, as defined in DrupalCI/Plugin/JobTypes/<jobtype>->defaultArguments.
     $jobtype_defaults = $job->getDefaultArguments();
     if (!empty($jobtype_defaults)) {
       Output::writeLn("<comment>Loading job type default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($jobtype_defaults)));
     }
 
-    // 3. Local overrides defined in ~/.drupalci/config
+    // 3. Local overrides defined in ~/.drupalci/config.
     $confighelper = new ConfigHelper();
     $local_overrides = $confighelper->getCurrentConfigSetParsed();
     if (!empty($local_overrides)) {
@@ -199,7 +199,7 @@ class JobDefinition Implements Injectable {
       Output::writeLn(implode(",", array_keys($local_overrides)));
     }
 
-    // 4. 'DCI_' namespaced environment variable overrides
+    // 4. 'DCI_' namespaced environment variable overrides.
     $environment_variables = $confighelper->getCurrentEnvVars();
     if (!empty($environment_variables)) {
       Output::writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
@@ -207,13 +207,13 @@ class JobDefinition Implements Injectable {
     }
 
     // 5. Additional variables passed in via the command line
-    // TODO: Not yet implemented
+    // TODO: Not yet implemented.
     $cli_variables = ['DCI_JobBuildId' => $job->getBuildId()];
 
-    // Combine the above to generate the final array of DCI_* key=>value pairs
+    // Combine the above to generate the final array of DCI_* key=>value pairs.
     $dci_variables = $cli_variables + $environment_variables + $local_overrides + $jobtype_defaults + $platform_defaults;
 
-    // Reorder array, placing priority variables at the front
+    // Reorder array, placing priority variables at the front.
     if (!empty($job->priorityArguments)) {
       $original_array = $dci_variables;
       $original_keys = array_keys($original_array);
@@ -289,7 +289,7 @@ class JobDefinition Implements Injectable {
    * Substitute DCI_* variables into the job definition template
    */
   protected function substituteTemplateVariables() {
-    // Generate our replacements array
+    // Generate our replacements array.
     $replacements = [];
     $dci_variables = $this->getDCIVariables();
     foreach ($dci_variables as $key => $value) {
@@ -299,10 +299,10 @@ class JobDefinition Implements Injectable {
       }
     }
 
-    // Add support for substituting '%HOME%' with the $HOME env variable
+    // Add support for substituting '%HOME%' with the $HOME env variable.
     $replacements["%HOME%"] = getenv("HOME");
 
-    // Process DCI_* variable substitution into test definition template
+    // Process DCI_* variable substitution into test definition template.
     $search = array_keys($replacements);
     $replace = array_values($replacements);
     $definition = $this->getDefinition();
@@ -310,7 +310,7 @@ class JobDefinition Implements Injectable {
       $value = str_ireplace($search, $replace, $value);
     });
 
-    // Save our post-replacements job definition back to the object
+    // Save our post-replacements job definition back to the object.
     $this->setDefinition($definition);
   }
 
@@ -338,11 +338,5 @@ class JobDefinition Implements Injectable {
     }
     return $this->pluginManager;
   }
-
-
-
-  // Other potential methods for this class:
-  // insert build step before/after
-  // get/set DCI_parameters
 
 }

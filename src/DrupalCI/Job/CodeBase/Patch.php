@@ -170,34 +170,34 @@ class Patch
    */
   public function __construct($patch_details, $codebase)
   {
-    // Copy working directory from the initial codebase
+    // Copy working directory from the initial codebase.
     $working_dir = $codebase->getWorkingDir();
     $this->setWorkingDir($working_dir);
 
-    // Set source and apply_dir properties
+    // Set source and apply_dir properties.
     $this->setSource($patch_details['patch_file']);
     $this->setApplyDir($patch_details['patch_dir']);
 
-    // Determine whether passed a URL or local file
+    // Determine whether passed a URL or local file.
     $type = filter_var($patch_details['patch_file'], FILTER_VALIDATE_URL) ? "remote" : "local";
     $this->setType($type);
 
-    // If a remote file, download a local copy
+    // If a remote file, download a local copy.
     if ($type == "remote") {
       // Download the patch file
       // If any errors encountered during download, we expect guzzle to throw
       // an appropriate exception.
       $local_source = $this->download();
     } else {
-      // If a local file, we already know the local source location
+      // If a local file, we already know the local source location.
       $local_source = $this->working_dir . DIRECTORY_SEPARATOR . $patch_details['patch_dir'] . DIRECTORY_SEPARATOR . $patch_details['patch_file'];
     }
     $this->setLocalSource($local_source);
 
-    // Set initial 'applied' state
+    // Set initial 'applied' state.
     $this->applied = false;
 
-    // Attach this patch to the codebase object
+    // Attach this patch to the codebase object.
     $codebase->addPatch($this);
   }
 
@@ -242,7 +242,7 @@ class Patch
     $source = $this->getLocalSource();
     $real_file = realpath($source);
     if ($real_file === FALSE) {
-      // Invalid patch file
+      // Invalid patch file.
       Output::error("Patch Error", "The patch file <info>$source</info> is invalid.");
       return FALSE;
     }
@@ -259,7 +259,7 @@ class Patch
     $apply_dir = $this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir();
     $real_directory = realpath($apply_dir);
     if ($real_directory === FALSE) {
-      // Invalid target directory
+      // Invalid target directory.
       Output::error("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.");
       return FALSE;
     }
@@ -284,7 +284,7 @@ class Patch
       // The command threw an error.
       Output::writeLn($cmdoutput);
       Output::error("Patch Error", "The patch attempt returned an error.  Error code: $result");
-      // TODO: Pass on the actual return value for the patch attempt
+      // TODO: Pass on the actual return value for the patch attempt.
       return FALSE;
     }
     Output::writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
@@ -304,12 +304,12 @@ class Patch
       return [];
     }
     if (empty($this->modified_files)) {
-      // Calculate modified files
+      // Calculate modified files.
       $apply_dir = $this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir();
       $cmd = "cd $apply_dir && git diff --name-only";
       exec($cmd, $cmdoutput, $return);
       if ($return !== 0) {
-        // git diff returned a non-zero error code
+        // Git diff returned a non-zero error code.
         Output::writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
         return FALSE;
       }

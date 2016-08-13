@@ -61,28 +61,28 @@ class ComposerInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTe
     list ($definition, $definition1, $definition2) = $this->getDefinitions();
     $expected_result = ["install --prefer-dist --working-dir "];
     return [
-      // $definition['setup'] defined
+      // $definition['setup'] defined.
       'already_defined' => [$definition, 'pre-install'],
-      // $definition['setup'] not defined, 'install' present
+      // $definition['setup'] not defined, 'install' present.
       'install_present' => [$definition1, 'install'],
-      // $definition['setup'] not defined, 'install' not present
+      // $definition['setup'] not defined, 'install' not present.
       'neither_present' => [$definition2, 'execute'],
     ];
   }
 
   protected function getDefinitions() {
-    // test when $definition['setup'] already exists
+    // Test when $definition['setup'] already exists.
     $definition = $this->getDefinitionTemplate();
     $definition1 = $definition;
     $definition2 = $definition;
-    // test when $definition['setup'] doesn't exist, but $definition['install'] does
+    // Test when $definition['setup'] doesn't exist, but $definition['install'] does.
     unset($definition1['setup']);
-    // test when $definition['setup'] and $definition['install'] don't exist, but $definition['execute'] does
+    // Test when $definition['setup'] and $definition['install'] don't exist, but $definition['execute'] does.
     unset($definition2['setup']);
     unset($definition2['install']);
     // TODO: Test when $definition['execute'] doesn't exist, once plugin contains this logic
     // unset($definition3['setup']);  unset($definition3['install']);  unset($definition3['execute']);
-    // TODO: Test when $composer already exists (i.e. does not overwrite), once plugin contains this logic
+    // TODO: Test when $composer already exists (i.e. does not overwrite), once plugin contains this logic.
     return [$definition, $definition1, $definition2];
   }
 }

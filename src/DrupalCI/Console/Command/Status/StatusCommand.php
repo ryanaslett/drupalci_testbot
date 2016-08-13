@@ -33,20 +33,20 @@ class StatusCommand extends DrupalCICommandBase {
    */
   public function execute(InputInterface $input, OutputInterface $output) {
     $output->writeln("<info>Running Status Checks ... </info>");
-    # Check whether Docker is installed
+    // Check whether Docker is installed.
     $docker = new DockerHelper();
     $docker->getStatus($input, $output);
 
-    # Check whether base containers have been built and output list of available containers
+    // Check whether base containers have been built and output list of available containers.
     $this->containerStatus($input, $output);
 
-    # Check whether configuration sets have been created and output list of available config sets
+    // Check whether configuration sets have been created and output list of available config sets.
     $this->configStatus($input, $output);
 
-    # Check whether testing dependencies (phpunit, etc) have been installed
+    // Check whether testing dependencies (phpunit, etc) have been installed.
     $this->dependencyStatus($input, $output);
 
-    # Output error counts and final status result
+    // Output error counts and final status result.
     $this->statusOutput($output);
 
   }
@@ -54,21 +54,21 @@ class StatusCommand extends DrupalCICommandBase {
 
 
   protected function containerStatus(InputInterface $input, OutputInterface $output) {
-    # TODO: Check whether base containers have been built and output list of available containers
+    // TODO: Check whether base containers have been built and output list of available containers.
   }
 
   protected function configStatus(InputInterface $input, OutputInterface $output) {
-    # TODO: Check whether configuration sets have been created and output list of available config sets
+    // TODO: Check whether configuration sets have been created and output list of available config sets.
   }
 
   protected function dependencyStatus(InputInterface $input, OutputInterface $output) {
-    # TODO: Check whether testing dependencies (phpunit, etc) have been installed
+    // TODO: Check whether testing dependencies (phpunit, etc) have been installed.
   }
 
   protected function statusOutput(OutputInterface $output) {
     if (!empty($this->errors)) {
       $output->writeln("<error>Found " . count($this->errors) . " errors.");
-      # TODO: Output count by error type.
+      // TODO: Output count by error type.
     }
     else {
       $output->writeln("<info>No errors found!</info>");
@@ -77,5 +77,4 @@ class StatusCommand extends DrupalCICommandBase {
   }
 
   // TODO: Check php configuration to ensure that $_ENV is populated (i.e. variables_order contains 'E').
-
 }

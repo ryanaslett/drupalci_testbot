@@ -29,7 +29,7 @@ class DbEnvironment extends EnvironmentBase {
 
     // Data format: 'mysql-5.5' or array('mysql-5.5', 'pgsql-9.1')
     // $data May be a string if one version required, or array if multiple
-    // Normalize data to the array format, if necessary
+    // Normalize data to the array format, if necessary.
     $data = is_array($data) ? $data : [$data];
     Output::writeLn("<info>Parsing required database container image names ...</info>");
     $containers = $this->buildImageNames($data, $job);

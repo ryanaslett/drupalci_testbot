@@ -27,7 +27,7 @@ class JunitXMLFormat extends PluginBase {
 
   protected function loadTestList($file) {
     $test_list = file($file, FILE_IGNORE_NEW_LINES);
-    // Get rid of the first four lines
+    // Get rid of the first four lines.
     $this->setTestlist(array_slice($test_list, 4));
   }
 
@@ -35,7 +35,7 @@ class JunitXMLFormat extends PluginBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $output_directory) {
-    // Set up initial variable to store tests
+    // Set up initial variable to store tests.
     $CoreBranch = $job->getBuildVars()["DCI_CoreBranch"];
     $DBUrlArray = parse_url($job->getBuildVars()["DCI_DBUrl"]);
     $DBVersion = $job->getBuildVars()["DCI_DBVersion"];
@@ -50,7 +50,7 @@ class JunitXMLFormat extends PluginBase {
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
     $source_dir = $job->getJobCodebase()->getWorkingDir();
-    // TODO: Temporary hack.  Strip /checkout off the directory
+    // TODO: Temporary hack.  Strip /checkout off the directory.
     $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
     $this->loadTestList($source_dir . DIRECTORY_SEPARATOR . 'artifacts/testgroups.txt');
 
@@ -60,18 +60,18 @@ class JunitXMLFormat extends PluginBase {
 
     // Set an initial default group, in case leading tests are found with no group.
     $group = 'nogroup';
-    // Iterate through and process the test list
+    // Iterate through and process the test list.
     $test_list = $this->getTestlist();
     if(strcmp($CoreBranch,'7.x') === 0 || strcmp($CoreBranch,'6.x') === 0){
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
-          // This is a class
+          // This is a class.
           $class = str_replace(array('(',')'),'',end(explode(' ', $output_line)));
           $test_groups[$class] = $group;
         }
         else {
-          // This is a group
+          // This is a group.
           $group = ucwords($output_line);
         }
       }
@@ -82,12 +82,12 @@ class JunitXMLFormat extends PluginBase {
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
-          // This is a class
+          // This is a class.
           $class = substr($output_line, 3);
           $test_groups[$class] = $group;
         }
         else {
-          // This is a group
+          // This is a group.
           $group = ucwords($output_line);
         }
       }
@@ -96,7 +96,7 @@ class JunitXMLFormat extends PluginBase {
       $db = new PDO('sqlite:' . $dbfile);
     }
 
-    // query for simpletest results
+    // Query for simpletest results.
     $results_map = array(
       'pass' => 'Pass',
       'fail' => 'Fail',
@@ -112,13 +112,13 @@ class JunitXMLFormat extends PluginBase {
     $errors = 0;
     $failures = 0;
 
-    //while ($result = $q_result->fetchAll()) {
+    // While ($result = $q_result->fetchAll()) {.
     while ($result = $q_result->fetch(PDO::FETCH_ASSOC)) {
       if (isset($results_map[$result['status']])) {
-        // Set the group from the lookup table
+        // Set the group from the lookup table.
         $test_group = $test_groups[$result['test_class']];
 
-        // Set the test class
+        // Set the test class.
         if (isset($result['test_class'])) {
           $test_class = $result['test_class'];
         }
@@ -126,12 +126,12 @@ class JunitXMLFormat extends PluginBase {
         // This might need to be re-addressed when we look at the tests.
         $classname = $test_groups[$test_class] . '.' . $test_class;
 
-        // Cleanup the class, and the parens from the test method name
+        // Cleanup the class, and the parens from the test method name.
         $test_method = substr($result['function'], strpos($result['function'], '>') + 1);
         $test_method = substr($test_method, 0, strlen($test_method) - 2);
 
-        //$classes[$test_group][$test_class][$test_method]['classname'] = $classname;
-        $result['file'] = substr($result['file'],14); // Trim off /var/www/html
+        // $classes[$test_group][$test_class][$test_method]['classname'] = $classname;
+        $result['file'] = substr($result['file'],14); // Trim off /var/www/html.
         $classes[$test_group][$test_class][$test_method][] = array(
           'status' => $result['status'],
           'type' => $result['message_group'],
@@ -153,7 +153,6 @@ class JunitXMLFormat extends PluginBase {
       'debug' => 'system-err',
     );
     // Create an xml file per group?
-
     $test_group_id = 0;
     $doc = new DomDocument('1.0');
     $test_suites = $doc->createElement('testsuites');
@@ -175,13 +174,12 @@ class JunitXMLFormat extends PluginBase {
       $test_suite->setAttribute('name', $groupname);
       // While more pure, we should probably inject a date/time service.
       // For now we do not need the timestamp on group data.
-      //  $test_suite->setAttribute('timestamp', date('c'));
+      // $test_suite->setAttribute('timestamp', date('c'));.
       $test_suite->setAttribute('hostname', "TODO: Set Hostname");
       $test_suite->setAttribute('package', $groupname);
       // TODO: time test runs. $test_group->setAttribute('time', $test_group_id);
       // TODO: add in the properties of the job into the test run.
-
-      // Loop through the classes in each group
+      // Loop through the classes in each group.
       foreach ($group_classes as $class_name => $class_methods) {
         foreach ($class_methods as $test_method => $method_results) {
           $test_case = $doc->createElement('testcase');
@@ -198,7 +196,7 @@ class JunitXMLFormat extends PluginBase {
             $assertion_result = $assertion['status'] . ": [" . $assertion['type'] . "] Line " . $assertion['line'] . " of " . $assertion['file'] . ":\n" . $assertion['message'] . "\n\n";
             $assertion_result = preg_replace('/[^\x{0009}\x{000A}\x{000D}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u', '�', $assertion_result);
 
-            // Keep track of overall assersions counts
+            // Keep track of overall assersions counts.
             if (!isset($assertion_counter[$assertion['status']])) {
               $assertion_counter[$assertion['status']] = 0;
             }
@@ -246,8 +244,7 @@ class JunitXMLFormat extends PluginBase {
           // TODO: Errors and Failures need to be set per test Case.
           $test_case->setAttribute('status', $test_case_status);
           $test_case->setAttribute('assertions', $test_case_assertions);
-         // $test_case->setAttribute('time', "TODO: track time");
-
+         // $test_case->setAttribute('time', "TODO: track time");.
           $test_suite->appendChild($test_case);
 
         }
@@ -266,7 +263,7 @@ class JunitXMLFormat extends PluginBase {
     }
     $test_suites->setAttribute('tests', $total_tests);
     $test_suites->setAttribute('failures', $total_failures);
-   // $test_suites->setAttribute('disabled', "TODO SET");
+   // $test_suites->setAttribute('disabled', "TODO SET");.
     $test_suites->setAttribute('errors', $total_exceptions);
     $doc->appendChild($test_suites);
     file_put_contents($output_dir . '/testresults.xml', $doc->saveXML());

@@ -9,6 +9,7 @@
   <exclude-pattern>./vendor</exclude-pattern>
 
   <!-- Only include specific sniffs that pass. This ensures that, if new sniffs are added, HEAD does not fail.-->
+  <rule ref="Drupal.Commenting.InlineComment"/>
   <rule ref="Generic.PHP.DisallowShortOpenTag"/>
 
 </ruleset>

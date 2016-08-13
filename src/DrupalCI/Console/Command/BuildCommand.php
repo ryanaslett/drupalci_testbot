@@ -25,12 +25,12 @@ class BuildCommand extends DrupalCICommandBase {
       ->setDescription('Build DrupalCI container image.')
       ->addArgument('container_name', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'Docker container image(s) to build.')
     ;
-      #->addOption(
-      #  'dbtype', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Database types to support', array('mysql')
-      #)
-      #->addOption('php_version', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'PHP Versions to support', array('5.4'))
-      #->addOption('container_type', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Types of container image (db/web) to build.', array('web'))
-      #->addOption('container_name', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Names of a specific container image to build.');
+      // ->addOption(
+      // 'dbtype', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Database types to support', array('mysql')
+      // )
+      // ->addOption('php_version', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'PHP Versions to support', array('5.4'))
+      // ->addOption('container_type', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Types of container image (db/web) to build.', array('web'))
+      // ->addOption('container_name', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Names of a specific container image to build.');.
   }
 
   /**
@@ -42,7 +42,7 @@ class BuildCommand extends DrupalCICommandBase {
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     $names = $input->getArgument('container_name');
-    // TODO: Validate passed arguments
+    // TODO: Validate passed arguments.
     foreach ($names as $name) {
       if (in_array($name, array_keys($containers))) {
         Output::writeln("<comment>Building <options=bold>$name</options=bold> container</comment>");
@@ -51,7 +51,7 @@ class BuildCommand extends DrupalCICommandBase {
       else {
         // Container name not found.  Skip build.
         Output::writeln("<error>No '$name' container found.  Skipping container build.</error>");
-        // TODO: Error handling
+        // TODO: Error handling.
       }
     }
   }

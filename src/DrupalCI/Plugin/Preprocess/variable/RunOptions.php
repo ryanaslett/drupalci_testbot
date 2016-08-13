@@ -24,7 +24,7 @@ class RunOptions extends PluginBase {
    * {@inheritdoc}
    */
   public function process($run_options, $arguments) {
-    // Input format: (string) $value = "argument1,value1;argument2,value2;argument3;argument4,value4;..."
+    // Input format: (string) $value = "argument1,value1;argument2,value2;argument3;argument4,value4;...".
     $expanded = explode(';', $arguments);
     $parsed = "";
     foreach ($expanded as $argument_string) {

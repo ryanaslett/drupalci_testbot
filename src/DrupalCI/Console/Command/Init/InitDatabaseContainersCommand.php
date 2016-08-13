@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-//use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Console\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -38,7 +37,7 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
   public function execute(InputInterface $input, OutputInterface $output) {
     $output->writeln("<info>Executing init:database</info>");
 
-    # Generate array of general arguments to pass downstream
+    // Generate array of general arguments to pass downstream.
     $options = array();
     $options['--quiet'] = $input->getOption('quiet');
     $options['--verbose'] = $input->getOption('verbose');
@@ -52,10 +51,10 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
 
     $names = array();
     if ($names = $input->getArgument('container_name')) {
-      // We've been passed a container name, validate it
+      // We've been passed a container name, validate it.
       foreach ($names as $key => $name) {
         if (!in_array($name, $container_names)) {
-          // Not a valid db container.  Remove it and warn the user
+          // Not a valid db container.  Remove it and warn the user.
           unset($names[$key]);
           $output->writeln("<error>Received an invalid db container name. Skipping build of the $name container.");
         }
@@ -99,13 +98,13 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
       );
       $cmdinput = new ArrayInput($arguments + $options);
       $returnCode = $cmd->run($cmdinput, $output);
-      // TODO: Error handling
+      // TODO: Error handling.
     }
     $output->writeln('');
   }
 
   protected function getDbContainerNames($containers, InputInterface $input, OutputInterface $output) {
-    # Prompt the user
+    // Prompt the user.
     $helper = $this->getHelperSet()->get('question');
     $defaultcontainer = array_flip($containers);
     $containers[] = 'all';    $question = new ChoiceQuestion(

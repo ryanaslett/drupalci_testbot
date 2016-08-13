@@ -39,16 +39,15 @@ class ConfigShowCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    // TODO: Ensure that configurations have been initialized
-
-    // Get available config sets
+    // TODO: Ensure that configurations have been initialized.
+    // Get available config sets.
     $helper = new ConfigHelper();
     $configsets = $helper->getAllConfigSets();
     $homedir = getenv('HOME');
-    // Check if passed argument is 'all'
+    // Check if passed argument is 'all'.
     $names = $input->getArgument('setting');
     if (empty($names)) {
-      // If no argument passed, prompt the user for which config set to display
+      // If no argument passed, prompt the user for which config set to display.
       $qhelper = $this->getHelper('question');
       $message = "<question>Choose the number corresponding to which configuration set(s) to display:</question> ";
       $output->writeln($message);

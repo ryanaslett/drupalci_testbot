@@ -22,7 +22,7 @@ class ComposerInstall {
   public function process(array &$definition, $value, $dci_variables) {
     // TODO: Ensure that $definition['execute'] exists (minimum requirement)
     // TODO: Should composer go into the 'pre-install' step instead?
-    // Check to see if Composer Install is set and true
+    // Check to see if Composer Install is set and true.
     if (strtolower($value) !== 'true') {
       return;
     }

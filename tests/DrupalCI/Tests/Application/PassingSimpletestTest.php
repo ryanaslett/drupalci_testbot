@@ -42,12 +42,12 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
     $display = $app_tester->getDisplay();
     $job = $this->getCommand('run')->getJob();
     $this->assertRegExp('/.*Drupal\\\\system\\\\Tests\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
-    // Look for junit xml results file
+    // Look for junit xml results file.
     $output_file = $job->getJobCodebase()->getWorkingDir() . "/artifacts/" . $job->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
     $this->assertFileExists($output_file);
 
-    // create a test fixture that contains the xml output results.
-    //$this->assertFileEquals();
+    // Create a test fixture that contains the xml output results.
+    // $this->assertFileEquals();
     $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/PassingSimpletestTest_testresults.xml', $output_file);
   }
 

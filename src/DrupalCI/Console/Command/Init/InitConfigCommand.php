@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-//use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,13 +37,12 @@ class InitConfigCommand extends DrupalCICommandBase {
   public function execute(InputInterface $input, OutputInterface $output) {
     $output->writeln("<info>Executing init:config</info>");
 
-    # Check whether ~/.drupalci directory exists, and force option not called
-    # TODO: Parameterize the DrupalCI directory
-
+    // Check whether ~/.drupalci directory exists, and force option not called
+    // TODO: Parameterize the DrupalCI directory.
     $homedir = getenv('HOME');
 
     if (file_exists($homedir . "/.drupalci") && !($input->getOption('force'))) {
-      # Output 'configuration directory already exists, use --force to reset the DrupalCI environment' message.
+      // Output 'configuration directory already exists, use --force to reset the DrupalCI environment' message.
       $output->writeln('<error>WARNING: The ~/.drupalci configuration directory already exists.</error>');
       $output->writeln('<comment>Use the --force option to reset your DrupalCI environment back to default.</comment>');
       $output->writeln('<comment>Note that this will wipe out all files in your ~/.drupalci directory, including existing configuration sets.</comment>');
@@ -70,7 +68,7 @@ class InitConfigCommand extends DrupalCICommandBase {
         }
       }
       // We now have a clean environment.
-      // Create directories
+      // Create directories.
       $configsdir = $homedir . "/.drupalci/configs";
       $configlink = $homedir . "/.drupalci/config";
       if (!file_exists($configsdir)) {
@@ -96,7 +94,7 @@ class InitConfigCommand extends DrupalCICommandBase {
       $output->writeln("<info>Created default configuration sets.</info>");
 
       $helper = new ConfigHelper();
-      // Copy a default setting file over to the current config
+      // Copy a default setting file over to the current config.
       $helper->activateConfig('d8_core_full_php5.5_mysql');
       $output->writeln("<info>Created initial config set at </info><comment>$configlink</comment>");
     }

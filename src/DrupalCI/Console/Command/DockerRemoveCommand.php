@@ -67,7 +67,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
    * (@inheritdoc)
    */
   protected function imageTypes($type, InputInterface $input, OutputInterface $output) {
-    // get list DCI container type
+    // Get list DCI container type.
     $image_type = '';
     switch ($type) {
     case 'containers':
@@ -92,16 +92,16 @@ class DockerRemoveCommand extends DrupalCICommandBase {
 
     Output::setOutput($output);
 
-    // DCI search string
+    // DCI search string.
     $search_string = 'drupalci';
     $image_type = $this->imageTypes($type, $input, $output);
     if(!empty($image_type)){
       $search_string .= "' | egrep '" . $image_type;
     }
 
-    // get list of create DCI containers
+    // Get list of create DCI containers.
     $cmd_docker_psa = "docker ps -a | grep '" . $search_string . "' | awk '{print $1}'";
-    // get list of active DCI containers
+    // Get list of active DCI containers.
     $cmd_docker_ps = "docker ps | grep '" . $search_string . "' | awk '{print $1}'";
     exec($cmd_docker_psa, $createdContainers);
 
@@ -109,23 +109,22 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       Output::writeln('<comment>Removing containers.</comment>');
       exec($cmd_docker_ps, $runningContainers);
       if(!empty($runningContainers)){
-        // kill DCI running containers
+        // Kill DCI running containers.
         $cmd_docker_kill = "docker kill " . implode(' ', $runningContainers);
         exec( $cmd_docker_kill, $killContainers);
       }
 
-      // remove DCI containers
+      // Remove DCI containers.
       $cmd_docker_rm = "docker rm " . implode(' ', $createdContainers);
       exec( $cmd_docker_rm, $rmContainers);
 
-      // list removed containers
+      // List removed containers.
       Output::writeln('Removed Containers:');
       Output::writeln($rmContainers);
 
       // DEBUG
-      //Output::writeln($rmContainers);
-
-      //check to for any DCI after the kill and remove
+      // Output::writeln($rmContainers);
+      // check to for any DCI after the kill and remove.
       exec($cmd_docker_psa, $remove_check);
 
       if (!empty($remove_check)) {
@@ -137,7 +136,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       }
     }
     else {
-      // nothing to remove
+      // Nothing to remove.
       Output::writeln('<comment>Nothing to Remove</comment> ');
     }
 

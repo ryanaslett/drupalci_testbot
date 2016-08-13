@@ -30,12 +30,12 @@ class Fetch extends SetupBase {
     // i) array('url' => '...', 'fetch_dir' => '...')
     // or
     // iii) array(array(...), array(...))
-    // Normalize data to the third format, if necessary
+    // Normalize data to the third format, if necessary.
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
     Output::writeLn("<info>Entering setup_fetch().</info>");
     foreach ($data as $details) {
       // URL and target directory
-      // TODO: Ensure $details contains all required parameters
+      // TODO: Ensure $details contains all required parameters.
       if (empty($details['url'])) {
         Output::error("Fetch error", "No valid target file provided for fetch command.");
         $job->error();
@@ -45,7 +45,7 @@ class Fetch extends SetupBase {
       $workingdir = $job->getJobCodebase()->getWorkingDir();
       $fetchdir = (!empty($details['fetch_directory'])) ? $details['fetch_directory'] : $workingdir;
       if (!($directory = $this->validateDirectory($job, $fetchdir))) {
-        // Invalid checkout directory
+        // Invalid checkout directory.
         Output:error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
         $job->error();
         return;

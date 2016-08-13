@@ -25,7 +25,7 @@ class Patch extends SetupBase {
     // i) array('patch_file' => '...', 'patch_dir' => '...')
     // or
     // iii) array(array(...), array(...))
-    // Normalize data to the third format, if necessary
+    // Normalize data to the third format, if necessary.
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
     Output::writeLn("<info>Entering setup_patch().</info>");
     $codebase = $job->getJobCodebase();
@@ -35,26 +35,25 @@ class Patch extends SetupBase {
         $job->error();
         return;
       }
-      // Create a new patch object
+      // Create a new patch object.
       $patch = new PatchFile($details, $codebase);
-      // Validate our patch's source file and target directory
+      // Validate our patch's source file and target directory.
       if (!$patch->validate()) {
         $job->error();
         return;
       }
 
-      // Apply the patch
+      // Apply the patch.
       if (!$patch->apply()) {
         $job->error();
 
         // Hack to create a xml file for processing by Jenkins.
-        // TODO: Remove once proper job failure processing is in place
-
+        // TODO: Remove once proper job failure processing is in place.
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
-        //
+        // .
         $source_dir = $job->getJobCodebase()->getWorkingDir();
-        // TODO: Temporary hack.  Strip /checkout off the directory
+        // TODO: Temporary hack.  Strip /checkout off the directory.
         $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
 
         // Set up output directory (inside working directory)
@@ -78,7 +77,7 @@ class Patch extends SetupBase {
 
         return;
       };
-      // Update our list of modified files
+      // Update our list of modified files.
       $codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }

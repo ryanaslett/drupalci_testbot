@@ -29,13 +29,13 @@ class CreateArchive extends PluginBase {
     $zip = new ZipArchive();
     $filename = $data;
 
-    // Open the zip archive
+    // Open the zip archive.
     if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
       // TODO: Cannot open zip file ... throw an error.
       return;
     }
 
-    // Add artifact files to zip file
+    // Add artifact files to zip file.
     Output::writeLn("<info>Gathering artifact files:</info>");
     foreach ($files as $file) {
       if (file_exists($file)) {
@@ -47,10 +47,10 @@ class CreateArchive extends PluginBase {
       }
     }
 
-    // Close the zip file
+    // Close the zip file.
     $zip->close();
 
-    // Store the artifacts filename in the job object for future reference
+    // Store the artifacts filename in the job object for future reference.
     $job->setArtifactFilename($data);
 
   }

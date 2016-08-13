@@ -16,7 +16,7 @@ class ConfigHelper extends DrupalCIHelperBase {
    * {@inheritdoc}
    */
   public function getAllConfigSets(){
-    // TODO: Filter out 'directories'
+    // TODO: Filter out 'directories'.
     $homedir = getenv('HOME');
     $configsets = array();
     $options = glob($homedir . '/.drupalci/configs/*');
@@ -33,7 +33,7 @@ class ConfigHelper extends DrupalCIHelperBase {
    */
   public function getDefaultConfigSets() {
     $configsets = array();
-    // TODO: Fix the hardcoded directory
+    // TODO: Fix the hardcoded directory.
     $options = glob('./configsets/*');
     foreach ($options as $option) {
       $optionpart = explode('/', $option);

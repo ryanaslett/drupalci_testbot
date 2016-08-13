@@ -24,7 +24,7 @@ class WebEnvironment extends PhpEnvironment {
   public function run(JobInterface $job, $data) {
     // Data format: '5.5' or array('5.4', '5.5')
     // $data May be a string if one version required, or array if multiple
-    // Normalize data to the array format, if necessary
+    // Normalize data to the array format, if necessary.
     $data = is_array($data) ? $data : [$data];
     Output::writeLn("<info>Parsing required Web container image names ...</info>");
     $containers = $job->getExecContainers();

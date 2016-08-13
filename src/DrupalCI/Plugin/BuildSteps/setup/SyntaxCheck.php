@@ -36,7 +36,7 @@ class SyntaxCheck extends SetupBase {
       $bash_array = "";
       foreach ($modified_files as $file) {
         $file_path = $workingdir . "/" . $file;
-        // Checking for: if in a vendor dir, if the file still exists, or if the first 32 (length - 1) bytes of the file contain <?php
+        // Checking for: if in a vendor dir, if the file still exists, or if the first 32 (length - 1) bytes of the file contain <?php.
         if ((strpos( $file, '/vendor/') === FALSE) && file_exists($file_path) && (strpos(fgets(fopen($file_path, 'r'), 33), '<?php') !== FALSE)) {
           $bash_array .= "$file\n";
         }
@@ -44,7 +44,7 @@ class SyntaxCheck extends SetupBase {
       $lintable_files = 'artifacts/lintable_files.txt';
       Output::writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
       file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
-      // Make sure
+      // Make sure.
       if (0 < filesize($workingdir . "/" . $lintable_files)) {
         // TODO: Remove hardcoded /var/www/html.
         // This should be come JobCodeBase->getLocalDir() or similar

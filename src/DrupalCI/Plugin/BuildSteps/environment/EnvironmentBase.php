@@ -17,7 +17,7 @@ use DrupalCI\Plugin\PluginBase;
 abstract class EnvironmentBase extends PluginBase {
 
   public function validateImageNames($containers, JobInterface $job) {
-    // Verify that the appropriate container images exist
+    // Verify that the appropriate container images exist.
     Output::writeLn("<comment>Validating container images exist</comment>");
     $docker = $job->getDocker();
     $manager = $docker->getImageManager();

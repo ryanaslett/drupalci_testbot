@@ -22,7 +22,6 @@ class DrupalInstall {
     // TODO: Explicitly validate this.
     // How can we validate this?  Perhaps we make it a requirement to specify
     // environment:coreproject:drupal in the job definition?
-
     // Determine drupal core version.
     // TODO: Improve drupal core version detection.
     // We can get core version from DCI_CoreRepositoryBranch ... but that won't
@@ -46,12 +45,11 @@ class DrupalInstall {
   }
 
   protected function process_browser_install(&$definition, $core_version, $dci_variables) {
-    // TODO: Implement browser click-through process
-
+    // TODO: Implement browser click-through process.
   }
 
   protected function process_drush_install(&$definition, $core_version, $dci_variables) {
-    // TODO: Implement drush installation process
+    // TODO: Implement drush installation process.
     if (empty($definition['install']['command'])) {
       $definition['install']['command'] = [];
     }

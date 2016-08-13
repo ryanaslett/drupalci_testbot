@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-//use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,7 +34,7 @@ class InitAllCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    # Generate array of general arguments to pass downstream
+    // Generate array of general arguments to pass downstream.
     $options = array();
     $options['--quiet'] = $input->getOption('quiet');
     $options['--verbose'] = $input->getOption('verbose');
@@ -45,22 +44,20 @@ class InitAllCommand extends DrupalCICommandBase {
     $options_force['--forcebuild'] = $input->getOption('forcebuild');
     $options_force['--all'] = $input->getOption('all');
 
-    # Validate/Install dependencies
+    // Validate/Install dependencies.
     $cmd = $this->getApplication()->find('init:dependencies');
     $arguments = array(
       'command' => 'init:dependencies',
     );
     $cmdinput = new ArrayInput($arguments + $options);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
-
-    # Validate/Install Docker
+    // TODO: Error Handling.
+    // Validate/Install Docker.
     $cmd = $this->getApplication()->find('init:docker');
     $cmdinput = new ArrayInput(array('command' => 'init:docker') + $options);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
-
-    # Generate Database Containers
+    // TODO: Error Handling.
+    // Generate Database Containers.
     $cmd = $this->getApplication()->find('init:database');
 
     $arguments = array(
@@ -74,9 +71,8 @@ class InitAllCommand extends DrupalCICommandBase {
 
     $cmdinput = new ArrayInput($arguments + $options + $options_force);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
-
-    # Generate Web Containers
+    // TODO: Error Handling.
+    // Generate Web Containers.
     $cmd = $this->getApplication()->find('init:web');
 
     $arguments = array(
@@ -90,30 +86,26 @@ class InitAllCommand extends DrupalCICommandBase {
 
     $cmdinput = new ArrayInput($arguments + $options + $options_force);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
-
-
+    // TODO: Error Handling.
     // # Generate PHP Containers
     // $cmd = $this->getApplication()->find('init:php');
     //
     // $arguments = array(
-    //   'command' => 'init:php',
+    // 'command' => 'init:php',
     // );
     //
     // $phptype = $input->getOption('phptype');
     // if(isset($phptype)) {
-    //   $arguments['container_name'] = array($phptype);
+    // $arguments['container_name'] = array($phptype);
     // }
     //
     // $cmdinput = new ArrayInput($arguments + $options + $options_force);
     // $returnCode = $cmd->run($cmdinput, $output);
-    // # TODO: Error Handling
-
-    # Generate Base Config
+    // # TODO: Error Handling.
+    // Generate Base Config.
     $cmd = $this->getApplication()->find('init:config');
     $cmdinput = new ArrayInput(array('command' => 'init:config') + $options);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
-
+    // TODO: Error Handling.
   }
 }

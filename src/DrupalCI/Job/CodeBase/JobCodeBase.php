@@ -94,7 +94,7 @@ class JobCodebase {
     // Core Version and Major Version
     // The default job templates, run commands, and other script requirements
     // may vary depending on core project version.  For example, the simpletest
-    // test execution script resides a different paths in Drupal 8 than Drupal7
+    // test execution script resides a different paths in Drupal 8 than Drupal7.
     $version = $this->determineVersion($job_definition);
     if (!empty($version)) {
       $this->setCoreVersion($version);
@@ -115,16 +115,16 @@ class JobCodebase {
     if ($version = $job_definition->getDCIVariable('DCI_CoreVersion')) {
       return $version;
     }
-    // Option 2: Try to deduce it based on the supplied core branch
+    // Option 2: Try to deduce it based on the supplied core branch.
     elseif ($version = $job_definition->getDCIVariable('DCI_CoreBranch')) {
-      // Define our preg_match patterns
+      // Define our preg_match patterns.
       $drupal_pattern = "/^((\d+)\.(\d+|x)(?:\.(\d+|x))?(?:(?:\-)?(?:alpha|beta|rc|dev)(?:\.)?(\d+)?)?)$/";
       $semantic_pattern = "/^((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/";
-      // Check if the branch matches Drupal branch naming patterns
+      // Check if the branch matches Drupal branch naming patterns.
       if (preg_match($drupal_pattern, $version, $matches) !== 0) {
         return $matches[0];
       }
-      // Check if the branch matches semantic versioning
+      // Check if the branch matches semantic versioning.
       elseif (preg_match($semantic_pattern, $version, $matches) !== 0) {
         return $matches[0];
       }
@@ -148,7 +148,7 @@ class JobCodebase {
     $working_dir = $job_definition->getDCIVariable('DCI_WorkingDir');
     $tmp_directory = sys_get_temp_dir();
 
-    // Generate a default directory name if none specified
+    // Generate a default directory name if none specified.
     if (empty($working_dir)) {
       // Case:  No explicit working directory defined.
       $working_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $job_definition->getDCIVariable('DCI_JobBuildId');
@@ -164,11 +164,11 @@ class JobCodebase {
         }
       }
     }
-    // Create directory if it doesn't already exist
+    // Create directory if it doesn't already exist.
     if (!is_dir($working_dir)) {
       $result = mkdir($working_dir, 0777, TRUE);
       if (!$result) {
-        // Error creating checkout directory
+        // Error creating checkout directory.
         Output::error('Directory Creation Error', 'Error encountered while attempting to create local working directory');
         return FALSE;
       }
@@ -177,7 +177,7 @@ class JobCodebase {
 
     // Validate that the working directory is empty.  If the directory contains
     // an existing git repository, for example, our checkout attempts will fail
-    // TODO: Prompt the user to ask if they'd like to overwrite
+    // TODO: Prompt the user to ask if they'd like to overwrite.
     $iterator = new \FilesystemIterator($working_dir);
     if ($iterator->valid()) {
       // Existing files found in directory.
@@ -185,15 +185,15 @@ class JobCodebase {
       return FALSE;
     };
 
-    // Convert to the full path and ensure our directory is still valid
+    // Convert to the full path and ensure our directory is still valid.
     $working_dir = realpath($working_dir);
     if (!$working_dir) {
-      // Directory not found after conversion to canonicalized absolute path
+      // Directory not found after conversion to canonicalized absolute path.
       Output::error('Directory not found', 'Unable to determine working directory absolute path.');
       return FALSE;
     }
 
-    // Ensure we're still within the system temp directory
+    // Ensure we're still within the system temp directory.
     if (strpos(realpath($working_dir), realpath($tmp_directory)) !== 0) {
       Output::error('Directory error', 'Detected attempt to traverse out of the system temp directory.');
       return FALSE;

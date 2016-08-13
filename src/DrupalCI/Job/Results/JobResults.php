@@ -43,14 +43,14 @@ class JobResults {
 
 
   public function __construct(JobInterface $job) {
-    // Set up our initial $step_result values
+    // Set up our initial $step_result values.
     $this->initStepResults($job);
   }
 
   protected function initStepResults(JobInterface $job) {
-    // Retrieve the build step tree from the job definition
+    // Retrieve the build step tree from the job definition.
     $build_steps = $job->getJobDefinition()->getBuildSteps();
-    // Set up our initial $step_result values
+    // Set up our initial $step_result values.
     $step_results = [];
     foreach ($build_steps as $stage => $steps) {
       foreach ($steps as $step => $value) {

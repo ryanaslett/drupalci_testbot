@@ -114,7 +114,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
    *
    * @var array
    */
-  protected $requiredArguments = array();   // eg:   'DCI_DBVersion' => 'environment:db'
+  protected $requiredArguments = array();   // eg:   'DCI_DBVersion' => 'environment:db'.
   public function getRequiredArguments() {  return $this->requiredArguments;  }
 
   /**
@@ -181,7 +181,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   public $executableContainers = [];
 
 
-  // Holds our DrupalCIResultsAPI API
+  // Holds our DrupalCIResultsAPI API.
   protected $resultsAPI = NULL;
 
   /**
@@ -214,11 +214,11 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     }
     $api->setUrl($config['results']['host']);
     if (!empty($config['results']['username'])) {
-      // Handle case where no password is provided
+      // Handle case where no password is provided.
       if (empty($config['results']['password'])) {
         $config['results']['password'] = '';
       }
-      // Set authorization parameters on the API object
+      // Set authorization parameters on the API object.
       $api->setAuth($config['results']['username'], $config['results']['password']);
     }
     $this->setResultsAPI($api);
@@ -236,7 +236,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     return $config;
   }
 
-  // Stores a drupalci_results server node ID for this job
+  // Stores a drupalci_results server node ID for this job.
   public $resultsServerID;
 
   public function setResultsServerID($resultsServerID)
@@ -292,7 +292,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $configs = $this->executableContainers;
     foreach ($configs as $type => $containers) {
       foreach ($containers as $key => $container) {
-        // Check if container is created.  If not, create it
+        // Check if container is created.  If not, create it.
         if (empty($container['created'])) {
           // TODO: This may be causing duplicate containers to be created
           // due to a race condition during short-running exec calls.
@@ -315,9 +315,9 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $configs = $this->getContainerConfiguration($container['image']);
     $config = $configs[$container['image']];
     // TODO: Allow classes to modify the default configuration before processing
-    // Add service container links
+    // Add service container links.
     $this->createContainerLinks($config);
-    // Add volumes
+    // Add volumes.
     $this->createContainerVolumes($config);
     // Set a default CMD in case the container config does not set one.
     if (empty($config['Cmd'])) {
@@ -357,7 +357,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   protected function createContainerVolumes(&$config) {
     $volumes = array();
-    // Map working directory
+    // Map working directory.
     $working = $this->getJobCodebase()->getWorkingDir();
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
     $config['HostConfig']['Binds'][] = "$working:$mount_point";
@@ -407,7 +407,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       if (in_array($image['image'], array_keys($instances))) {
         // TODO: Determine service container ports, id, etc, and save it to the job.
         Output::writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
-        // TODO: Load up container parameters
+        // TODO: Load up container parameters.
         $container = $manager->find($instances[$image['image']]);
         $container_id = $container->getID();
         $container_name = $container->getName();
@@ -424,7 +424,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $configs = $this->getContainerConfiguration($image['image']);
       $config = $configs[$image['image']];
       // TODO: Allow classes to modify the default configuration before processing
-      // Instantiate container
+      // Instantiate container.
       $container = new Container($config);
       if (!empty($config['name'])) {
         $container->setName($config['name']);
@@ -494,13 +494,13 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $artifacts = array();
 
     // Artifacts common to all jobs:
-    // - job definition
+    // - job definition.
     $artifacts['definition'] = "results/job_definition.txt";
 
-    // - standard output
+    // - standard output.
     $artifacts['stdout'] = "results/stout.txt";
 
-    // - standard error
+    // - standard error.
     $artifacts['stderr'] = "results/sterr.txt";
 
     $artifacts = array_merge($artifacts, $include);
@@ -543,7 +543,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     if (!isset($this->artifacts)) {
       $this->artifacts = New BuildArtifactList();
     }
-    // Load the standard base build artifacts into the list
+    // Load the standard base build artifacts into the list.
     foreach($this->defaultBuildArtifacts as $key => $value) {
       $artifact = New BuildArtifact('file', $value);
       $this->artifacts->addArtifact($key, $artifact);
@@ -561,8 +561,8 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   // Provide the default file locations for standard build artifacts.
   protected $defaultBuildArtifacts = array(
-    //'stdout' => 'stdout.txt',
-    //'stderr' => 'stderr.txt',
+    // 'stdout' => 'stdout.txt',
+    // 'stderr' => 'stderr.txt',.
     'jobDefinition' => 'jobDefinition.txt',
   );
 

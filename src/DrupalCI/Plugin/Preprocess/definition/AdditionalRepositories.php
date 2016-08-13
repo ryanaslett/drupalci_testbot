@@ -66,7 +66,7 @@ class AdditionalRepositories {
      *   )
      */
 
-    // Ensure we're passed a non-empty repository string
+    // Ensure we're passed a non-empty repository string.
     if (empty($repositories)) {
       return;
     }
@@ -77,23 +77,23 @@ class AdditionalRepositories {
       $definition['setup']['checkout'] = [];
     }
     // If it already exists, but has only one entry, we need to normalize it to an array format.
-    // Normalize data to the third format, if necessary
+    // Normalize data to the third format, if necessary.
     elseif (count($definition['setup']['checkout']) == count($definition['setup']['checkout'], COUNT_RECURSIVE)) {
       $definition['setup']['checkout'] = [$definition['setup']['checkout']];
     }
 
-    // Parse the provided repository string into it's components
+    // Parse the provided repository string into it's components.
     $entries = explode(';', $repositories);
     foreach ($entries as $entry) {
       if (empty($entry)) { continue; }
       $components = explode(',', $entry);
-      // Ensure we have at least 3 components
+      // Ensure we have at least 3 components.
       if (count($components) < 4) {
         Output::writeLn("<error>Unable to parse repository information for value <options=bold>$entry</options=bold>.</error>");
         // TODO: Bail out of processing.  For now, we'll just keep going with the next entry.
         continue;
       }
-      // Create the job definition entry
+      // Create the job definition entry.
       $output = array(
         'protocol' => $components[0],
         'repo' => $components[1],

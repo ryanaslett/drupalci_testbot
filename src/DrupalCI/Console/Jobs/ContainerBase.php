@@ -23,12 +23,12 @@ class ContainerBase {
     if (isNull($this->helper)) {
       $this->helper = new ContainerHelper();
     }
-    // Validate container name
+    // Validate container name.
     if (!($this->validateContainerName($container))) {
       // TODO: Invalid container.  Throw an exception.
       return FALSE;
     }
-    // Start container
+    // Start container.
     $output = $this->helper->startContainer($container);
     return $output;
   }
@@ -37,7 +37,7 @@ class ContainerBase {
     if (isNull($this->helper)) {
       $this->helper = new ContainerHelper();
     }
-    // TODO: Stop Container logic
+    // TODO: Stop Container logic.
     $output = $this->helper->stopContainer($container);
     return $output;
   }

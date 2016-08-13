@@ -24,7 +24,7 @@ class UseLocalCodebase {
    * job definition to use the local codebase.
    */
   public function process(array &$definition, $source_directory, $dci_variables) {
-    // Override all job checkout steps
+    // Override all job checkout steps.
     $definition['setup']['checkout'] = [];
     $definition['setup']['checkout']['protocol'] = 'local';
     $definition['setup']['checkout']['source_dir'] = $source_directory;

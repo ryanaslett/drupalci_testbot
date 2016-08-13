@@ -21,7 +21,7 @@ class Drush extends ContainerCommand {
   public function run(JobInterface $job, $data) {
     // Data format: 'drush arguments' or array('drush arguments', 'drush arguments')
     // $data May be a string if one version required, or array if multiple
-    // Normalize data to the array format, if necessary
+    // Normalize data to the array format, if necessary.
     $data = is_array($data) ? $data : [$data];
 
     foreach ($data as $command) {

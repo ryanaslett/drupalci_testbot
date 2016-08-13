@@ -23,7 +23,7 @@ class CreateDirectory extends ContainerCommand {
   public function run(JobInterface $job, $directories) {
     // Data format: 'directory' or array('directory1', 'directory2')
     // $data May be a string if one directory required, or array if multiple
-    // Normalize data to the array format, if necessary
+    // Normalize data to the array format, if necessary.
     $directories = is_array($directories) ? $directories : [$directories];
     foreach ($directories as $directory) {
       $cmd = "mkdir -p $directory";

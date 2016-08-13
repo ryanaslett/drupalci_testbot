@@ -44,13 +44,13 @@ class ConfigLoadCommand extends DrupalCICommandBase {
     $selected = $input->getArgument('configset');
 
     if (empty($selected)) {
-      // If no argument passed, prompt the user for which config set to display
+      // If no argument passed, prompt the user for which config set to display.
       $qhelper = $this->getHelper('question');
       $message = "<question>Choose the number corresponding to which configuration set to load:</question> ";
       $options = array_keys($configsets);
       $question = new ChoiceQuestion($message, $options, 0);
       $selected = $qhelper->ask($input, $output, $question);
-      // TODO: Validate argument is a valid config set
+      // TODO: Validate argument is a valid config set.
     }
 
     if (empty($configsets[$selected])) {

@@ -43,19 +43,19 @@ class DrupalInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTest
       "cd /var/www/html && /.composer/vendor/bin/drush en -y simpletest 2>&1"
     ];
     return [
-      // Test when DrupalCoreVersion is specified
+      // Test when DrupalCoreVersion is specified.
       [['DCI_DrupalCoreVersion' => '7.x'], $d7_result],
       [['DCI_DrupalCoreVersion' => '8.x'], $d8_result],
       [['DCI_DrupalCoreVersion' => '8.0.x'], $d8_result],
       [['DCI_DrupalCoreVersion' => '8.1.x'], $d8_result],
       [['DCI_DrupalCoreVersion' => '8.2.x'], $d8_result],
-      // Test when DCI_CoreBranch is specified
+      // Test when DCI_CoreBranch is specified.
       [['DCI_CoreBranch' => '7.x'], $d7_result],
       [['DCI_CoreBranch' => '8.x'], $d8_result],
       [['DCI_CoreBranch' => '8.0.x'], $d8_result],
       [['DCI_CoreBranch' => '8.1.x'], $d8_result],
       [['DCI_CoreBranch' => '8.2.x'], $d8_result],
-      // Test when neither is specified
+      // Test when neither is specified.
       [[], $d8_result]
     ];
   }

@@ -20,7 +20,7 @@ class PatchDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
    */
   public function testPatchDefinitionPreprocessor($patch_value, $expected_result) {
     // Adds $definition['setup']['patch'] = [ ... patches ...] section to the definition array.
-    // Each element contains the keys 'patch_file' and 'patch_directory'
+    // Each element contains the keys 'patch_file' and 'patch_directory'.
     $definition = $this->getDefinitionTemplate();
     $plugin = new Patch();
     $plugin->process($definition, $patch_value, []);
@@ -29,20 +29,20 @@ class PatchDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
 
   public function providePatchDefinitionPreprocessorInputDefinitions() {
     return [
-      // Test single patch with no directory specified
+      // Test single patch with no directory specified.
       ['file1.patch', [['patch_file' => 'file1.patch', 'patch_dir' => '.']]],
-      // Test single patch with directory specified
+      // Test single patch with directory specified.
       ['file1.patch,dir1', [['patch_file' => 'file1.patch', 'patch_dir' => 'dir1']]],
-      // Test multiple patches with no directory specified
+      // Test multiple patches with no directory specified.
       ['file1.patch;file2.patch', [['patch_file' => 'file1.patch', 'patch_dir' => '.'],['patch_file' => 'file2.patch', 'patch_dir' => '.']]],
-      // Test multiple patches with some directories specified
+      // Test multiple patches with some directories specified.
       ['file1.patch,dir1;file2.patch', [['patch_file' => 'file1.patch', 'patch_dir' => 'dir1'],['patch_file' => 'file2.patch', 'patch_dir' => '.']]],
       ['file1.patch;file2.patch,dir2', [['patch_file' => 'file1.patch', 'patch_dir' => '.'],['patch_file' => 'file2.patch', 'patch_dir' => 'dir2']]],
-      // Test multiple patches with all directories specified
+      // Test multiple patches with all directories specified.
       ['file1.patch,dir1;file2.patch,dir2', [['patch_file' => 'file1.patch', 'patch_dir' => 'dir1'],['patch_file' => 'file2.patch', 'patch_dir' => 'dir2']]],
-      // Test single patch with trailing comma
+      // Test single patch with trailing comma.
       ['file1.patch,', [['patch_file' => 'file1.patch', 'patch_dir' => '.']]],
-      // Test single patch with trailing semicolon
+      // Test single patch with trailing semicolon.
       ['file1.patch;', [['patch_file' => 'file1.patch', 'patch_dir' => '.']]],
     ];
   }

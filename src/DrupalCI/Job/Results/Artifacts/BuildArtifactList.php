@@ -35,7 +35,7 @@ class BuildArtifactList {
       return $this->artifacts[$key];
     }
     else {
-      // TODO: Error Handling
+      // TODO: Error Handling.
     }
   }
 

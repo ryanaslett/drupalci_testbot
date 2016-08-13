@@ -57,7 +57,7 @@ class RunCommand extends DrupalCICommandBase {
     $this
       ->setName('run')
       ->setDescription('Execute a given job run.')
-      // Argument may be the job type or a specific job definition file
+      // Argument may be the job type or a specific job definition file.
       ->addArgument('definition', InputArgument::OPTIONAL, 'Job definition.');
   }
 
@@ -70,26 +70,26 @@ class RunCommand extends DrupalCICommandBase {
     $config_helper = new ConfigHelper();
     $local_overrides = $config_helper->getCurrentConfigSetParsed();
 
-    // Determine the Job Type based on the first argument to the run command
+    // Determine the Job Type based on the first argument to the run command.
     if ($arg) {
       $job_type = (strtolower(substr(trim($arg), -4)) == ".yml") ? "generic" : trim($arg);
     }
     else {
-      // If no argument defined, then check for a default in the local overrides
+      // If no argument defined, then check for a default in the local overrides.
       $job_type = (!empty($local_overrides['DCI_JobType'])) ? $local_overrides['DCI_JobType'] : 'generic';
     }
 
-    // Load the associated class for this job type
-    /** @var PluginManager $job_plugin_manager */
+    // Load the associated class for this job type.
+    /** @var \DrupalCI\Plugin\PluginManager $job_plugin_manager */
     $job_plugin_manager = $this->container['plugin.manager.factory']->create('JobTypes');
 
-    /** @var $job JobInterface */
+    /** @var \DrupalCI\Plugin\JobTypes\JobInterface $job */
     $this->job = $job_plugin_manager->getPlugin($job_type, $job_type);
 
     // Link our $output variable to the job, so that jobs can display their work.
     Output::setOutput($output);
 
-    // Generate a unique job build_id, and store it within the job object
+    // Generate a unique job build_id, and store it within the job object.
     $this->job->generateBuildId();
 
     // Create our job Codebase object and attach it to the job.
@@ -100,13 +100,13 @@ class RunCommand extends DrupalCICommandBase {
     $job_definition = new JobDefinition();
     $this->job->setJobDefinition($job_definition);
 
-    // Compile our complete list of DCI_* variables
+    // Compile our complete list of DCI_* variables.
     $job_definition->compile($this->job);
 
-    // Setup our project and version metadata
+    // Setup our project and version metadata.
     $job_codebase->setupProject($job_definition);
 
-    // Determine the job definition template to be used
+    // Determine the job definition template to be used.
     if ($arg && strtolower(substr(trim($arg), -4)) == ".yml") {
       $template_file = $arg;
     }
@@ -121,7 +121,7 @@ class RunCommand extends DrupalCICommandBase {
     $job_definition->loadTemplateFile($template_file);
 
     // Process the complete job definition, taking into account DCI_* variable
-    // and definition preprocessors, along with job-specific arguments
+    // and definition preprocessors, along with job-specific arguments.
     $job_definition->preprocess($this->job);
 
     // Validate the resulting job definition, to ensure all required parameters
@@ -133,7 +133,7 @@ class RunCommand extends DrupalCICommandBase {
       return;
     }
 
-    // Set up the local working directory
+    // Set up the local working directory.
     $result = $job_codebase->setupWorkingDirectory($job_definition);
     if ($result === FALSE) {
       // Error encountered while setting up the working directory. Error output
@@ -148,10 +148,10 @@ class RunCommand extends DrupalCICommandBase {
 
     // The job should now have a fully merged job definition file, including
     // any local or DrupalCI defaults not otherwise defined in the passed job
-    // definition
+    // definition.
     $definition = $job_definition->getDefinition();
 
-    // Iterate over the build stages
+    // Iterate over the build stages.
     foreach ($definition as $build_stage => $steps) {
       if (empty($steps)) {
         $job_results->updateStageStatus($build_stage, 'Skipped');
@@ -159,16 +159,16 @@ class RunCommand extends DrupalCICommandBase {
       }
       $job_results->updateStageStatus($build_stage, 'Executing');
 
-      // Iterate over the build steps
+      // Iterate over the build steps.
       foreach ($steps as $build_step => $data) {
         $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
-        // Execute the build step
+        // Execute the build step.
         /** @var PluginManager $build_steps_plugin_manager */
         $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
         $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->job, $data);
 
 
-        // Check for errors / failures after build step execution
+        // Check for errors / failures after build step execution.
         $status = $job_results->getResultByStep($build_stage, $build_step);
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
@@ -188,6 +188,5 @@ class RunCommand extends DrupalCICommandBase {
     // This should be moved out of the 'build steps' logic, as an error in any
     // build step halts execution of the entire loop, and the artifacts are not
     // processed.
-
   }
 }

@@ -30,6 +30,12 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
     'DCI_Patch=does_not_apply.patch',
   ];
 
+  /**
+   * @todo: Poke around in artifacts to verify that the testbot is telling
+   *   d.o or other consumers that this is a failed test. Currently the result
+   *   code of the failed patch does not bubble up to the exit code of the
+   *   drupalci run command.
+   */
   public function testBadPatch() {
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
@@ -41,12 +47,7 @@ class PatchFailTest extends DrupalCIFunctionalTestBase {
 
     $this->assertRegExp('/.*The patch attempt returned an error.*/', $app_tester->getDisplay());
     // The testbot should not return 0 if there was an error.
-    // @todo: Poke around in artifacts to verify that the testbot is telling
-    //   d.o or other consumers that this is a failed test.
-
-    // Currently the result code of the failed patch does not bubble up to the exit code of the
-    // drupalci run command.
-    //$this->assertNotEquals(0, $app_tester->getStatusCode());
+    // $this->assertNotEquals(0, $app_tester->getStatusCode());
   }
 
 }

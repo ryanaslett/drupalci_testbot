@@ -23,13 +23,13 @@ class ContainerCommand extends PluginBase {
   public function run(JobInterface $job, $data) {
     // Data format: 'command [arguments]' or array('command [arguments]', 'command [arguments]')
     // $data May be a string if one version required, or array if multiple
-    // Normalize data to the array format, if necessary
+    // Normalize data to the array format, if necessary.
     $data = is_array($data) ? $data : [$data];
     $docker = $job->getDocker();
     $manager = $docker->getContainerManager();
 
     if (!empty($data)) {
-      // Check that we have a container to execute on
+      // Check that we have a container to execute on.
       $configs = $job->getExecContainers();
       foreach ($configs as $type => $containers) {
         foreach ($containers as $container) {
@@ -50,7 +50,7 @@ class ContainerCommand extends PluginBase {
                 Output::error('Error', $result);
               }
             });
-            // Response stream is never read you need to simulate a wait in order to get output
+            // Response stream is never read you need to simulate a wait in order to get output.
             $result->getBody()->getContents();
             Output::writeLn((string) $result);
             $inspection = $manager->execinspect($exec_id);

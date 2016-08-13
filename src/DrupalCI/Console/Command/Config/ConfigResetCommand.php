@@ -37,17 +37,17 @@ class ConfigResetCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    // Get available config sets
+    // Get available config sets.
     $helper = new ConfigHelper();
     $qhelper = $this->getHelper('question');
     $configsets = $helper->getAllConfigSets();
-    // Get default config sets
+    // Get default config sets.
     $defaultsets = $helper->getDefaultConfigSets();
     $homedir = getenv('HOME');
     $configdir = $homedir . "/.drupalci/configs/";
-    // TODO: configdir absolute path
+    // TODO: configdir absolute path.
     $sourcedir = "./configsets/";
-    // Check if passed argument is 'all'
+    // Check if passed argument is 'all'.
     $names = $input->getArgument('setting');
     if (in_array('all', $names)) {
       $names = array_keys($configsets);
@@ -62,19 +62,19 @@ class ConfigResetCommand extends DrupalCICommandBase {
         if (!$qhelper->ask($input, $output, $question)) {
           continue;
         }
-        // Copy defaultset from code dir to ~/.drupalci/config
+        // Copy defaultset from code dir to ~/.drupalci/config.
         $output->writeln("<comment>Resetting the <options=bold>$name</options=bold> configuration set.</comment>");
         $file = $sourcedir . $name;
         copy($file, $configdir . $name);
       }
       elseif (in_array($name, array_keys($configsets))) {
-        // TODO: Prompt user (This action will delete the $name configuration set
+        // TODO: Prompt user (This action will delete the $name configuration set.
         $output->writeln("<comment>This action will delete the <options=bold>$name</options=bold> configuration set.</comment>");
         $question = new ConfirmationQuestion("<question>Do you wish to continue? (yes/no)</question> ", false);
         if (!$qhelper->ask($input, $output, $question)) {
           continue;
         }
-        // Delete configset file
+        // Delete configset file.
         $file = $configdir . $name;
         unlink($file);
       }

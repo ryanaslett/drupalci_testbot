@@ -52,21 +52,21 @@ class AdditionalRepositoriesDefinitionPreprocessorTest extends DefinitionPreproc
 
 
     return [
-      // Single repo
+      // Single repo.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token', $repo1, []],
-      // Single repo with checkout depth
+      // Single repo with checkout depth.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token,1', $repo1depth, []],
-      // Single repo, trailing semicolon
+      // Single repo, trailing semicolon.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token;', $repo1, []],
-      // Multiple repos, first with checkout depth
+      // Multiple repos, first with checkout depth.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token,1;git,http://git.drupal.org/project/pathauto.git,8.x-1.x,sites/all/modules/pathauto', $repo1depth, $repo2],
-      // Multiple repos, second with checkout depth
+      // Multiple repos, second with checkout depth.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token;git,http://git.drupal.org/project/pathauto.git,8.x-1.x,sites/all/modules/pathauto,1', $repo1, $repo2depth],
-      // Multiple repos, both with checkout depth
+      // Multiple repos, both with checkout depth.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token,1;git,http://git.drupal.org/project/pathauto.git,8.x-1.x,sites/all/modules/pathauto,1', $repo1depth, $repo2depth],
-      // Multiple repos, trailing semicolon
+      // Multiple repos, trailing semicolon.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token;git,http://git.drupal.org/project/pathauto.git,8.x-1.x,sites/all/modules/pathauto;', $repo1, $repo2],
-      // Multiple repos with checkout depth and trailing semicolon
+      // Multiple repos with checkout depth and trailing semicolon.
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token;git,http://git.drupal.org/project/pathauto.git,8.x-1.x,sites/all/modules/pathauto,1;', $repo1, $repo2depth],
     ];
   }

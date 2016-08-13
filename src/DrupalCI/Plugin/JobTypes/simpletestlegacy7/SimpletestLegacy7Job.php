@@ -81,7 +81,7 @@ class SimpletestLegacy7Job extends JobBase {
     // 'DCI_DBVersion' => 'environment:db',
     // 'DCI_PHPVersion' => 'environment:web',
     // 'DCI_RunScript' => 'execute:command',
-    // 'DCI_TestGroups' => 'execute:command'
+    // 'DCI_TestGroups' => 'execute:command'.
   );
 
   /**
@@ -94,7 +94,7 @@ class SimpletestLegacy7Job extends JobBase {
    * for the array and the description used as the array values.
    */
   public $availableArguments = array(
-    // ***** Variables Available for any job type *****
+    // ***** Variables Available for any job type *****.
     'DCI_UseLocalCodebase' => 'Used to define a local codebase to be cloned (instead of performing a Git checkout)',
     'DCI_CheckoutDir' => 'Defines the location to be used in creating the local copy of the codebase, to be mapped into the container as a container volume.  Default: /tmp/simpletestlegacy7-[random string]',
     'DCI_ResultsServer' => 'Specifies the url string of a DrupalCI results server for which to publish job results',
@@ -102,9 +102,9 @@ class SimpletestLegacy7Job extends JobBase {
     'DCI_JobBuildId' => 'Specifies a unique build ID assigned to this job from an upstream server',
     'DCI_JobId' => 'Specifies a unique results server node ID to use when publishing results for this job.',
     'DCI_JobType' => 'Specifies a default job type to assume for a "drupalci run" command',
-    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',  //TODO: Check logic, may be reversed.
+    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',  // TODO: Check logic, may be reversed.
 
-     // ***** Default Variables defined for every simpletest job *****
+     // ***** Default Variables defined for every simpletest job *****.
     'DCI_DBVersion' => 'Defines the database version for this particular simpletest run. May map to a required service container. Default: mysql-5.5',
     'DCI_PHPVersion' => 'Defines the PHP Version used within the executable container for this job type.  Default: 5.5',
     'DCI_CoreRepository' => 'Defines the primary repository to be checked out while building the codebase to test.  Default: git://drupalcode.org/project/drupal.git',
@@ -119,17 +119,16 @@ class SimpletestLegacy7Job extends JobBase {
     'DCI_Concurrency' => 'Defines the value to pass to the --concurrency argument of the run script.  Default: 4',
     'DCI_XMLOutput' => 'Defines the directory where xml results will be stored.  Default: output/var/www/html/results/xml',
     'DCI_PHPInterpreter' => 'Defines the php interpreter to be passed to the Run Script in the --php argument.  Default: /opt/phpenv/shims/php',
-    // Default: 'color;'
-
-    // ***** Optional arguments *****
+    // Default: 'color;'.
+    // ***** Optional arguments *****.
     'DCI_DieOnFail' => 'Defines whether to include the --die-on-fail flag in the Run Script options',
     'DCI_Fetch' => 'Used to specify any files which should be downloaded while building out the codebase.',
-    // Syntax: 'url1,relativelocaldirectory1;url2,relativelocaldirectory2;...'
+    // Syntax: 'url1,relativelocaldirectory1;url2,relativelocaldirectory2;...'.
     'DCI_Patch' => 'Defines any patches which should be applied while building out the codebase.',
-    // Syntax: 'localfile1,applydirectory1;localfile2,applydirectory2;...'
+    // Syntax: 'localfile1,applydirectory1;localfile2,applydirectory2;...'.
     'DCI_ResultsDirectory' => 'Defines the local directory within the container where the xml results file should be written.',
     'DCI_RunScriptArguments' => 'An array of other build script options which will be added to the runScript command when executing a job.',
-    // Syntax: 'argkey1,argvalue1;argkey2,argvalue2;argkey3;argkey4,argvalue4;'
+    // Syntax: 'argkey1,argvalue1;argkey2,argvalue2;argkey3;argkey4,argvalue4;'.
   );
 
   /**
@@ -139,12 +138,12 @@ class SimpletestLegacy7Job extends JobBase {
    * any other DCI_* variable preprocessors are executed.
    */
   public $priorityArguments = array(
-    // IsDrupal doesn't *need* to run first, but it seems like a good idea
+    // IsDrupal doesn't *need* to run first, but it seems like a good idea.
     'DCI_IsDrupal',
-    // Expand run options to their argument format, before adding arguments
+    // Expand run options to their argument format, before adding arguments.
     'DCI_RunOptions',
     // CoreBranch needs to be able to override the SQLite variable before the
-    // SQLite option is added to RunOptions
+    // SQLite option is added to RunOptions.
     'DCI_CoreBranch',
   );
 
@@ -174,7 +173,7 @@ class SimpletestLegacy7Job extends JobBase {
     // array('php_error_log', 'TODO: Locate'),
     // array('apache_access_log', 'TODO: Locate'),
     // array('apache_error_log', 'TODO: Locate'),
-    // array('run_tests_verbose', 'TODO: Locate', 'directory'),
+    // array('run_tests_verbose', 'TODO: Locate', 'directory'),.
   );
 
 }

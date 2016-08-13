@@ -1,6 +1,6 @@
 <?php
 
-// Allow long-running scripts
+// Allow long-running scripts.
 set_time_limit(0);
 
 // Sets the socket timeout to a very long time so that

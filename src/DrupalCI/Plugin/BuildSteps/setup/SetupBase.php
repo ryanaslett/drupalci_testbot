@@ -34,7 +34,7 @@ abstract class SetupBase extends PluginBase {
     }
     $directory = realpath($dir);
     // TODO: Ensure we don't have double slashes
-    // Check whether this is a pre-existing directory
+    // Check whether this is a pre-existing directory.
     if ($directory === FALSE) {
       // Directory doesn't exist. Create and then validate.
       mkdir($dir, 0777, TRUE);
@@ -42,7 +42,7 @@ abstract class SetupBase extends PluginBase {
     }
     // Validate that resulting directory is still within the working directory path.
     if (!strpos(realpath($directory), realpath($working_dir)) === 0) {
-      // Invalid checkout directory
+      // Invalid checkout directory.
       Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
       $job->error();
       return FALSE;

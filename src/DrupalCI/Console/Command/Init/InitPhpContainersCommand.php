@@ -1,7 +1,6 @@
 <?php
 
 // TODO : Currently not used since we don't have php containers and use web containers at the moment.
-
 /**
  * @file
  * Command class for init.
@@ -9,7 +8,6 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-//use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +38,7 @@ class InitPhpContainersCommand extends DrupalCICommandBase {
   public function execute(InputInterface $input, OutputInterface $output) {
     $output->writeln("<info>Executing init:php</info>");
 
-    # Generate array of general arguments to pass downstream
+    // Generate array of general arguments to pass downstream.
     $options = array();
     $options['--quiet'] = $input->getOption('quiet');
     $options['--verbose'] = $input->getOption('verbose');
@@ -54,10 +52,10 @@ class InitPhpContainersCommand extends DrupalCICommandBase {
 
     $names = array();
     if ($names = $input->getArgument('container_name')) {
-      // We've been passed a container name, validate it
+      // We've been passed a container name, validate it.
       foreach ($names as $key => $name) {
         if (!in_array($name, $container_names)) {
-          // Not a valid web container.  Remove it and warn the user
+          // Not a valid web container.  Remove it and warn the user.
           unset($names[$key]);
           $output->writeln("<error>Received an invalid php container name. Skipping build of the $name container.");
         }
@@ -103,13 +101,13 @@ class InitPhpContainersCommand extends DrupalCICommandBase {
       );
       $cmdinput = new ArrayInput($arguments + $options);
       $returnCode = $cmd->run($cmdinput, $output);
-      // TODO: Error handling
+      // TODO: Error handling.
     }
     $output->writeln('');
   }
 
   protected function getPhpContainerNames($containers, InputInterface $input, OutputInterface $output) {
-    # Prompt the user
+    // Prompt the user.
     $helper = $this->getHelperSet()->get('question');
     $defaultcontainer = array_flip($containers);
     $containers[] = 'all';

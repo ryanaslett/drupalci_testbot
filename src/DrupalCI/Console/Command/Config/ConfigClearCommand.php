@@ -34,20 +34,20 @@ class ConfigClearCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    // Retrieve passed argument
+    // Retrieve passed argument.
     $arguments = $input->getArgument('variable');
     $helper = new ConfigHelper();
 
-    // Retrieve current config
+    // Retrieve current config.
     $config = $helper->getCurrentConfigSetParsed();
 
     foreach ($arguments as $argument) {
-      // Check that the variable exists
+      // Check that the variable exists.
       if (!array_key_exists($argument, $config)) {
         $output->writeln("<info>The <option=bold>$argument</option=bold> variable does not exist.  No action taken.");
       }
       else {
-        // Prompt the user that this will overwrite the existing setting
+        // Prompt the user that this will overwrite the existing setting.
         $qhelper = $this->getHelper('question');
         $output->writeln("<info>This will remove the <option=bold>$argument</option=bold> variable from your current configuration set.</info>");
         $message = "<question>Are you sure you wish to continue? (yes/no)</question> ";
