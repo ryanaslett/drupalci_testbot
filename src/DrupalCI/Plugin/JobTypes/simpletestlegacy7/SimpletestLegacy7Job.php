@@ -42,6 +42,7 @@ class SimpletestLegacy7Job extends JobBase {
     'DCI_CoreRepository' => 'git://drupalcode.org/project/drupal.git',
     'DCI_CoreBranch' => '7.x',
     'DCI_GitCheckoutDepth' => '1',
+    'DCI_GitCommitHash' => '',
     'DCI_RunScript' => '/var/www/html/scripts/run-tests.sh ',
     'DCI_DBUser' => 'drupaltestbot',
     'DCI_DBPassword' => 'drupaltestbotpw',
