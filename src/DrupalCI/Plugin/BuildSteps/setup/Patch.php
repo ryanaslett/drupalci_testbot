@@ -9,13 +9,15 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildSteps\BuildStepInterface;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Job\CodeBase\Patch as PatchFile;
+use DrupalCI\Job\Exception\JobFailException;
 
 /**
  * @PluginID("patch")
  */
-class Patch extends SetupBase {
+class Patch extends SetupBase implements BuildStepInterface {
 
   /**
    * {@inheritdoc}
@@ -30,23 +32,28 @@ class Patch extends SetupBase {
     Output::writeLn("<info>Entering setup_patch().</info>");
     $codebase = $job->getJobCodebase();
     foreach ($data as $key => $details) {
-      if (empty($details['patch_file'])) {
-        Output::error("Patch error", "No valid patch file provided for the patch command.");
-        $job->error();
-        return;
-      }
-      // Create a new patch object
-      $patch = new PatchFile($details, $codebase);
-      // Validate our patch's source file and target directory
-      if (!$patch->validate()) {
-        $job->error();
-        return;
-      }
+      try {
+        if (empty($details['patch_file'])) {
+          Output::error("Patch error", "No valid patch file provided for the patch command.");
+          $job->fail();
+          throw new JobFailException('No valid patch file provided for the patch command.');
+        }
+        // Create a new patch object
+        $patch = new PatchFile($details, $codebase);
+        // Validate our patch's source file and target directory
+        if (!$patch->validate()) {
+          $job->fail();
+          throw new JobFailException('Failed to validate the patch source and/or target directory.');
+        }
 
-      // Apply the patch
-      if (!$patch->apply()) {
-        $job->error();
+        // Apply the patch
+        if (!$patch->apply()) {
+          $job->fail();
 
+          throw new JobFailException('Unable to apply the patch.');
+        };
+      }
+      catch (JobException $e) {
         // Hack to create a xml file for processing by Jenkins.
         // TODO: Remove once proper job failure processing is in place
 
@@ -76,8 +83,8 @@ class Patch extends SetupBase {
                       </testsuite>';
         file_put_contents($output_directory . "/patchfailure.xml", $xml_error);
 
-        return;
-      };
+        throw $e;
+      }
       // Update our list of modified files
       $codebase->addModifiedFiles($patch->getModifiedFiles());
     }

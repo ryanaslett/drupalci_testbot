@@ -11,6 +11,9 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
 use DrupalCI\Job\CodeBase\JobCodeBase;
 use DrupalCI\Job\Definition\JobDefinition;
+use DrupalCI\Job\Exception\JobErrorException;
+use DrupalCI\Job\Exception\JobException;
+use DrupalCI\Job\Exception\JobFailException;
 use DrupalCI\Job\Results\JobResults;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginManager;
@@ -165,8 +168,18 @@ class RunCommand extends DrupalCICommandBase {
         // Execute the build step
         /** @var PluginManager $build_steps_plugin_manager */
         $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
-        $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->job, $data);
-
+        try {
+          $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->job, $data);
+        }
+        catch (JobException $e) {
+          $this->container['console']->renderException($e, $output);
+          if ($e instanceof JobFailException) {
+            return 1;
+          }
+          if ($e instanceof JobErrorException) {
+            return 2;
+          }
+        }
 
         // Check for errors / failures after build step execution
         $status = $job_results->getResultByStep($build_stage, $build_step);
