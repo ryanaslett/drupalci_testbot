@@ -27,6 +27,7 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
     'DCI_ComposerInstall=true',
     'DCI_CoreBranch=8.3.x',
     'DCI_CoreRepository=file:///tmp/drupal',
+    'DCI_GitCommitHash=c187f1d',
     'DCI_JobType=simpletest',
     'DCI_JunitXml=xml',
     'DCI_TestGroups=Url',
@@ -45,8 +46,9 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
       'command' => 'run',
     ], $options);
     $job = $this->getCommand('run')->getJob();
+    $display = $app_tester->getDisplay();
     $this->assertNotRegExp('/.*simpletestlegacy7*/', $app_tester->getDisplay());
-    $this->assertRegExp('/.*Drupal\\\\system\\\\Tests\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
+    $this->assertRegExp('/.*Drupal\\\\KernelTests\\\\Core\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
     // Look for junit xml results file
     $output_file = $job->getJobCodebase()
         ->getWorkingDir() . "/artifacts/" . $job->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
