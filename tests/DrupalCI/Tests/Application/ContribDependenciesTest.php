@@ -30,7 +30,7 @@ class ContribDependenciesTest extends DrupalCIFunctionalTestBase {
     'DCI_DBVersion=mysql-5.5',
     'DCI_GitCommitHash=24343f9',
     'DCI_JobType=simpletest',
-    'DCI_PHPVersion=5.5',
+    'DCI_PHPVersion=7',
     'DCI_TestItem=directory:modules/token',
   ];
 

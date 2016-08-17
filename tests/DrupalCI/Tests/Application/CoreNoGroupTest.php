@@ -32,7 +32,7 @@ class CoreNoGroupTest extends DrupalCIFunctionalTestBase {
     'DCI_Fetch=https://www.drupal.org/files/issues/2675066-12.patch,.',
     'DCI_GitCommitHash=04038f4',
     'DCI_JobType=simpletest',
-    'DCI_PHPVersion=5.5',
+    'DCI_PHPVersion=7',
     'DCI_Patch=2675066-12.patch,.',
     'DCI_RunScript=/var/www/html/core/scripts/run-tests.sh',
   ];

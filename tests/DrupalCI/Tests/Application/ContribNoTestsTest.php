@@ -31,7 +31,7 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
     'DCI_CoreRepository=file:///tmp/drupal',
     'DCI_DBVersion=mysql-5.5',
     'DCI_JobType=simpletest',
-    'DCI_PHPVersion=5.5',
+    'DCI_PHPVersion=7',
     'DCI_TestItem=directory:modules/drupalci_d8_module_no_tests',
   ];
 

@@ -31,7 +31,7 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
     'DCI_JobType=simpletest',
     'DCI_JunitXml=xml',
     'DCI_TestGroups=Url',
-    'DCI_PHPVersion=5.5',
+    'DCI_PHPVersion=7',
     'DCI_DBVersion=mysql-5.5',
   ];
 
