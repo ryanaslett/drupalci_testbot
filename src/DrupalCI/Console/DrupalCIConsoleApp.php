@@ -48,6 +48,8 @@ class DrupalCIConsoleApp extends Application {
     $this->container = $container;
     $container->register(new ConsoleCommandProvider());
     $this->addCommands($container['commands']);
+    // Explicitly catch exceptions.
+    $this->setCatchExceptions(TRUE);
   }
 
   /**

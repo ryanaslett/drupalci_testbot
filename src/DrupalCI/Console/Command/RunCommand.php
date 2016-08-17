@@ -173,12 +173,7 @@ class RunCommand extends DrupalCICommandBase {
         }
         catch (JobException $e) {
           $this->container['console']->renderException($e, $output);
-          if ($e instanceof JobFailException) {
-            return 1;
-          }
-          if ($e instanceof JobErrorException) {
-            return 2;
-          }
+          return $e->getCode();
         }
 
         // Check for errors / failures after build step execution
