@@ -30,8 +30,8 @@ class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
     'DCI_JunitXml=xml',
     'DCI_GitCommitHash=3d5bcd3',
     'DCI_RunScript=/var/www/html/scripts/run-tests.sh',
-    'DCI_TestGroups=Blog',
-    'DCI_PHPVersion=5.3',
+    'DCI_TestGroups=Syslog',
+    'DCI_PHPVersion=7',
     'DCI_DBVersion=mysql-5.5',
   ];
 
@@ -46,7 +46,7 @@ class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
     ], $options);
     $job = $this->getCommand('run')->getJob();
     $this->assertRegExp('/.*simpletestlegacy7*/', $app_tester->getDisplay());
-    $this->assertRegExp('/.*Blog functionality 244 passes, 0 fails, and 0 exceptions*/', $app_tester->getDisplay());
+    $this->assertRegExp('/.*Syslog functionality 17 passes, 0 fails, and 0 exceptions*/', $app_tester->getDisplay());
     // Look for junit xml results file
     $output_file = $job->getJobCodebase()
         ->getWorkingDir() . "/artifacts/" . $job->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
