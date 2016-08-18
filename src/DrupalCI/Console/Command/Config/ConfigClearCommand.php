@@ -7,12 +7,11 @@
 namespace DrupalCI\Console\Command\Config;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\DrupalCIStyle;
 use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  *   clear               Used to remove a configuration variable from the
@@ -26,39 +25,63 @@ class ConfigClearCommand extends DrupalCICommandBase {
   protected function configure() {
     $this
       ->setName('config:clear')
-      ->setDescription('Reset/remove a single config variable.')
-      ->addArgument('variable', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'Variable name to remove from the config.');
+      ->setDescription('Reset/remove config variables.')
+      ->addArgument('variable', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'List of variable names to remove from the config.');
   }
 
   /**
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    // Retrieve passed argument
-    $arguments = $input->getArgument('variable');
+    $variables = $input->getArgument('variable');
+    if (empty($variables)) {
+      return;
+    }
     $helper = new ConfigHelper();
+    foreach($variables as $variable) {
+        $helper->clearConfigVariable($variable);
+    }
+    $deleted = implode(', ', $variables);
+    $io = new DrupalCIStyle($input, $output);
+    $io->success("Variables deleted from the current config set: $deleted");
+  }
 
-    // Retrieve current config
+  /**
+   * {@inheritdoc}
+   */
+  public function interact(InputInterface $input, OutputInterface $output) {
+    $variables = $input->getArgument('variable');
+    $helper = new ConfigHelper();
     $config = $helper->getCurrentConfigSetParsed();
 
-    foreach ($arguments as $argument) {
+    $missing_variables = [];
+    $remove_variables = [];
+
+    foreach ($variables as $variable) {
       // Check that the variable exists
-      if (!array_key_exists($argument, $config)) {
-        $output->writeln("<info>The <option=bold>$argument</option=bold> variable does not exist.  No action taken.");
+      if (!array_key_exists($variable, $config)) {
+        $missing_variables[] = $variable;
       }
       else {
-        // Prompt the user that this will overwrite the existing setting
-        $qhelper = $this->getHelper('question');
-        $output->writeln("<info>This will remove the <option=bold>$argument</option=bold> variable from your current configuration set.</info>");
-        $message = "<question>Are you sure you wish to continue? (yes/no)</question> ";
-        $question = new ConfirmationQuestion($message, false);
-        if (!$qhelper->ask($input, $output, $question)) {
-          $output->writeln("<comment>Action cancelled.</comment>");
-          return;
-        }
-        $helper->clearConfigVariable($argument);
-        $output->writeln("<comment>The <info>$argument</info> variable has been deleted from the current config set.</comment>");
+        $remove_variables[] = $variable;
       }
     }
+
+    $io = new DrupalCIStyle($input, $output);
+
+    if (!empty($missing_variables)) {
+      $variables = array_diff($variables, $missing_variables);
+      $some_variables = implode(', ', $missing_variables);
+      $io->note("These variables do not exist. No action taken on them: $some_variables");
+    }
+    if (!empty($remove_variables)) {
+      $some_variables = implode(', ', $remove_variables);
+      if (!$io->confirm("Are you sure you wish to remove these variables? $some_variables", TRUE)) {
+        $variables = [];
+      }
+    }
+    // Set our validated list back to the input argument.
+    $input->setArgument('variable', $variables);
   }
+
 }

@@ -21,9 +21,7 @@ class ConfigClearCommandTest extends CommandTestBase {
       'variable' => ['foof'],
     ]);
     $display = $commandTester->getDisplay(TRUE);
-    $this->assertRegExp('`(The foof variable does not exist.  No action taken.)|(The foof variable has been deleted from the current config set.)`', $display);
+    $this->assertRegExp('`(These variables do not exist. No action taken on them: foof)`', $display);
   }
-
-
 
 }
