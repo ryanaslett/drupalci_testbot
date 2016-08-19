@@ -30,10 +30,10 @@ class PhpEnvironment extends EnvironmentBase {
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
     $data = is_array($data) ? $data : [$data];
-    $output->writeLn("<info>Parsing required PHP container image names ...</info>");
+    $this->output->writeLn("<info>Parsing required PHP container image names ...</info>");
     $containers = $job->getExecContainers();
-    $containers['php'] = $this->buildImageNames($data, $job, $output);
-    $valid = $this->validateImageNames($containers['php'], $job, $output);
+    $containers['php'] = $this->buildImageNames($data, $job);
+    $valid = $this->validateImageNames($containers['php'], $job);
     if (!empty($valid)) {
       $job->setExecContainers($containers);
       // Actual creation and configuration of the executable containers occurs
@@ -51,11 +51,11 @@ class PhpEnvironment extends EnvironmentBase {
    * @return array
    *   List of Docker images.
    */
-  protected function buildImageNames($data, JobInterface $job, OutputInterface $output) {
+  protected function buildImageNames($data, JobInterface $job) {
     $images = [];
     foreach ($data as $key => $php_version) {
       $images["php-$php_version"]['image'] = "drupalci/php-$php_version";
-      $output->writeLn("<comment>Adding image: <options=bold>drupalci/php-$php_version</options=bold></comment>");
+      $this->output->writeLn("<comment>Adding image: <options=bold>drupalci/php-$php_version</options=bold></comment>");
     }
     return $images;
   }

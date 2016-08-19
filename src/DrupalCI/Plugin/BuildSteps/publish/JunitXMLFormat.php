@@ -35,7 +35,6 @@ class JunitXMLFormat extends PluginBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $output_directory) {
-    $output = $this->container['console.output'];
     // Set up initial variable to store tests
     $CoreBranch = $job->getBuildVars()["DCI_CoreBranch"];
     $DBUrlArray = parse_url($job->getBuildVars()["DCI_DBUrl"]);
@@ -143,7 +142,7 @@ class JunitXMLFormat extends PluginBase {
       }
     }
     $this->_build_xml($classes, $output_directory);
-    $output->writeln("<info>Reformatted test results written to <options=bold>" . $output_directory . '/testresults.xml</options=bold></info>');
+    $this->output->writeln("<info>Reformatted test results written to <options=bold>" . $output_directory . '/testresults.xml</options=bold></info>');
   }
 
   private function _build_xml($test_result_data, $output_dir) {

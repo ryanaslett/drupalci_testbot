@@ -21,7 +21,7 @@ class ContainerCommand extends PluginBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
-    $output = $this->container['console.output'];
+    $output = $this->output;
 
     // Data format: 'command [arguments]' or array('command [arguments]', 'command [arguments]')
     // $data May be a string if one version required, or array if multiple
@@ -69,7 +69,7 @@ class ContainerCommand extends PluginBase {
 
   protected function checkCommandStatus($signal) {
     if ($signal !==0) {
-      Output::error('Error', "Received a non-zero return code from the last command executed on the container.  (Return status: " . $signal . ")", $this->container['console.output']);
+      Output::error('Error', "Received a non-zero return code from the last command executed on the container.  (Return status: " . $signal . ")", $this->output);
       return 1;
     }
     else {

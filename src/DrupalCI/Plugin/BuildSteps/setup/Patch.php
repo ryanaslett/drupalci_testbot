@@ -21,23 +21,22 @@ class Patch extends SetupBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
-    $output = $this->container['console.output'];
     // Data format:
     // i) array('patch_file' => '...', 'patch_dir' => '...')
     // or
     // iii) array(array(...), array(...))
     // Normalize data to the third format, if necessary
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
-    $output->writeLn("<info>Entering setup_patch().</info>");
+    $this->output->writeLn("<info>Entering setup_patch().</info>");
     $codebase = $job->getJobCodebase();
     foreach ($data as $key => $details) {
       if (empty($details['patch_file'])) {
-        Output::error("Patch error", "No valid patch file provided for the patch command.", $output);
+        Output::error("Patch error", "No valid patch file provided for the patch command.", $this->output);
         $job->error();
         return;
       }
       // Create a new patch object
-      $patch = new PatchFile($details, $codebase, $output);
+      $patch = new PatchFile($details, $codebase, $this->output);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
         $job->error();

@@ -18,6 +18,13 @@ use Symfony\Component\Console\Input\InputOption;
 class DockerRemoveCommand extends DrupalCICommandBase {
 
   /**
+   * The console output.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * {@inheritdoc}
    */
   protected function configure() {
@@ -32,6 +39,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
+    $this->output = $output;
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     $types = array(
@@ -44,29 +52,27 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     }
 
     if ($input->getOption('list')) {
-      $this->listContainers($type, $input, $output);
+      $this->listContainers($type);
     }
     else {
-      $this->removeContainers($type, $input, $output);
+      $this->removeContainers($type);
     }
   }
 
   /**
-   * (@inheritdoc)
    */
-  protected function listContainers($type, InputInterface $input, OutputInterface $output) {
-    Output::setOutput($output);
+  protected function listContainers($type) {
+    Output::setOutput($this->output);
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     foreach ($containers as $containerLabel => $containerName) {
-      $output->writeln("<comment>$containerLabel, $containerName</comment>");
+      $this->output->writeln("<comment>$containerLabel, $containerName</comment>");
     }
   }
 
   /**
-   * (@inheritdoc)
    */
-  protected function imageTypes($type, InputInterface $input, OutputInterface $output) {
+  protected function imageTypes($type) {
     // get list DCI container type
     $image_type = '';
     switch ($type) {
@@ -86,15 +92,14 @@ class DockerRemoveCommand extends DrupalCICommandBase {
   }
 
   /**
-   * (@inheritdoc)
    */
-  protected function removeContainers($type, InputInterface $input,OutputInterface $output) {
+  protected function removeContainers($type) {
 
-    Output::setOutput($output);
+    Output::setOutput($this->output);
 
     // DCI search string
     $search_string = 'drupalci';
-    $image_type = $this->imageTypes($type, $input, $output);
+    $image_type = $this->imageTypes($type);
     if(!empty($image_type)){
       $search_string .= "' | egrep '" . $image_type;
     }
@@ -106,7 +111,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     exec($cmd_docker_psa, $createdContainers);
 
     if($createdContainers) {
-      $output->writeln('<comment>Removing containers.</comment>');
+      $this->output->writeln('<comment>Removing containers.</comment>');
       exec($cmd_docker_ps, $runningContainers);
       if(!empty($runningContainers)){
         // kill DCI running containers
@@ -119,8 +124,8 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec( $cmd_docker_rm, $rmContainers);
 
       // list removed containers
-      $output->writeln('Removed Containers:');
-      $output->writeln($rmContainers);
+      $this->output->writeln('Removed Containers:');
+      $this->output->writeln($rmContainers);
 
       // DEBUG
       //Output::writeln($rmContainers);
@@ -129,16 +134,16 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec($cmd_docker_psa, $remove_check);
 
       if (!empty($remove_check)) {
-        $output->writeln('<error>Error:</error>');
-        $output->writeln($remove_check);
+        $this->output->writeln('<error>Error:</error>');
+        $this->output->writeln($remove_check);
       }
       else {
-        $output->writeln('<comment>Remove complete.</comment>');
+        $this->output->writeln('<comment>Remove complete.</comment>');
       }
     }
     else {
       // nothing to remove
-      $output->writeln('<comment>Nothing to Remove</comment> ');
+      $this->output->writeln('<comment>Nothing to Remove</comment> ');
     }
 
   }

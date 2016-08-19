@@ -8,31 +8,45 @@
  */
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
+
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginBase;
+use DrupalCI\Plugin\PluginManagerInterface;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
+use Pimple\Container;
 
 /**
  * @PluginID("gather_artifacts")
  */
 class GatherArtifacts extends PluginBase {
 
+
+  /**
+   * Plugin manager for BuildSteps.
+   *
+   * @var \DrupalCI\Plugin\PluginManagerInterface
+   */
+  protected $pluginManager;
+
+  public function setContainer(Container $container) {
+    parent::setContainer($container);
+    $this->pluginManager = $container['plugin.manager.factory']->create('BuildSteps');
+  }
+
   /**
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $target_directory) {
-    $output = $this->container['console.output'];
 
     $docker = $job->getDocker();
     $manager = $docker->getContainerManager();
 
-    $output->writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
+    $this->output->writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
 
     // We'll need a ContainerCommand object to work with each artifact item, so
     // let's make one now.
-    $plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
-    $container_command = $plugin_manager->getPlugin('generic', 'command');
+    $container_command = $this->pluginManager->getPlugin('generic', 'command');
 
     // Create the destination directory
     if (!empty($target_directory)) {
@@ -61,7 +75,7 @@ class GatherArtifacts extends PluginBase {
         }
         else {
           // TODO: Exception handling
-          $output->writeLn('<info>Error generating job definition build artifact.');
+          $this->output->writeLn('<info>Error generating job definition build artifact.');
         }
       }
       elseif (strtolower($artifact->getType()) == 'file' || $artifact->getType() == 'directory') {
@@ -73,7 +87,7 @@ class GatherArtifacts extends PluginBase {
           $container_command->run($job, $cmd);
         }
         else {
-          $output->writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
+          $this->output->writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
         }
       }
       elseif (strtolower($artifact->getType) == 'string') {

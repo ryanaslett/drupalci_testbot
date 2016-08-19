@@ -9,13 +9,26 @@ namespace DrupalCI\Plugin;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
 use DrupalCI\Plugin\JobTypes\JobInterface;
+use Pimple\Container;
 
 /**
  * Base class for plugins.
  */
 abstract class PluginBase implements Injectable {
 
-  use InjectableTrait;
+  /**
+   * The console output.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setContainer(Container $container) {
+    $this->output = $container['console.output'];
+  }
 
   /**
    * The plugin_id.

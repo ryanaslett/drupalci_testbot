@@ -21,6 +21,13 @@ use Symfony\Component\Console\Helper\ProgressBar;
 class PullCommand extends DrupalCICommandBase {
 
   /**
+   * The console output.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * {@inheritdoc}
    */
   protected function configure() {
@@ -36,6 +43,7 @@ class PullCommand extends DrupalCICommandBase {
    */
   public function execute(InputInterface $input, OutputInterface $output) {
     Output::setOutput($output);
+    $this->output = $output;
     $output->writeln("<info>Executing pull ...</info>");
     $images = $input->getArgument('container_name');
     // TODO: Validate passed arguments
@@ -56,9 +64,9 @@ class PullCommand extends DrupalCICommandBase {
   }
 
   /**
-   * (#inheritdoc)
    */
-  protected function pull($name, $tag, OutputInterface $console_output) {
+  protected function pull($name, $tag) {
+    $console_output = $this->output;
     $manager = $this->getManager();
     $progressInformation = array();
     $response = $manager->pull($name, $tag, function ($output) use (&$progressInformation, $console_output) {

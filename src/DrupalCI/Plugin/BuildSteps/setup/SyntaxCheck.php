@@ -20,9 +20,8 @@ class SyntaxCheck extends SetupBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
-    $output = $this->container['console.output'];
     if ($data != FALSE) {
-      $output->writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
+      $this->output->writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
 
       $codebase = $job->getJobCodebase();
       $modified_files = $codebase->getModifiedFiles();
@@ -42,7 +41,7 @@ class SyntaxCheck extends SetupBase {
         }
       }
       $lintable_files = 'artifacts/lintable_files.txt';
-      $output->writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
+      $this->output->writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
       file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
       // Make sure
       if (0 < filesize($workingdir . "/" . $lintable_files)) {

@@ -21,7 +21,7 @@ class Checkout extends SetupBase {
    * {@inheritdoc}
    */
   public function run(JobInterface $job, $data) {
-    $output = $this->container['console.output'];
+    $output = $this->output;
     // Data format:
     // i) array('protocol' => 'local', 'srcdir' => '/tmp/drupal', 'checkout_dir' => '/tmp/checkout')
     // checkout_dir is optional.
@@ -33,16 +33,16 @@ class Checkout extends SetupBase {
     // Normalize data to the third format, if necessary
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
 
-    $output->writeLn("<info>Populating container codebase data volume.</info>");
+    $this->output->writeLn("<info>Populating container codebase data volume.</info>");
     foreach ($data as $details ) {
       // TODO: Ensure $details contains all required parameters
       $details += ['protocol' => 'git'];
       switch ($details['protocol']) {
         case 'local':
-          $this->setupCheckoutLocal($job, $details, $output);
+          $this->setupCheckoutLocal($job, $details, $this->output);
           break;
         case 'git':
-          $this->setupCheckoutGit($job, $details, $output);
+          $this->setupCheckoutGit($job, $details, $this->output);
           break;
       }
       // Break out of loop if we've encountered any errors

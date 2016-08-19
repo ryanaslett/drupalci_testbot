@@ -7,14 +7,22 @@
 
 namespace DrupalCI\Job\Results;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
-use DrupalCI\InjectableTrait;
 use DrupalCI\Plugin\JobTypes\JobInterface;
+use Pimple\Container;
 
 class JobResults implements Injectable {
 
-  use InjectableTrait;
+  /**
+   * The console output.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  public function setContainer(Container $container) {
+    $this->output = $container['console.output'];
+  }
 
   protected $current_stage;
   public function getCurrentStage() {  return $this->current_stage;  }
@@ -68,13 +76,13 @@ class JobResults implements Injectable {
     $this->setCurrentStage($build_stage);
     $this->setResultByStage($build_stage, $status);
     // TODO: Determine if we have any publishers, and progress the build step if we do.
-    $this->container['console.output']->writeln("<comment><options=bold>$status</options=bold> $build_stage</comment>");
+    $this->output->writeln("<comment><options=bold>$status</options=bold> $build_stage</comment>");
   }
 
   public function updateStepStatus($build_stage, $build_step, $status) {
     $this->setCurrentStep($build_step);
     $this->setResultByStep($build_stage, $build_step, $status);
-    $this->container['console.output']->writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
+    $this->output->writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
   }
 
 

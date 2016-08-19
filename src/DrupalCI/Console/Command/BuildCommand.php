@@ -17,6 +17,13 @@ use Docker\Context\Context;
 class BuildCommand extends DrupalCICommandBase {
 
   /**
+   * The console output.
+   *
+   * @var \Symfony\Component\Console\Output\OutputInterface
+   */
+  protected $output;
+
+  /**
    * {@inheritdoc}
    */
   protected function configure() {
@@ -38,6 +45,7 @@ class BuildCommand extends DrupalCICommandBase {
    */
   public function execute(InputInterface $input, OutputInterface $output) {
     Output::setOutput($output);
+    $this->output = $output;
     $output->writeln("<info>Executing build ...</info>");
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
@@ -46,7 +54,7 @@ class BuildCommand extends DrupalCICommandBase {
     foreach ($names as $name) {
       if (in_array($name, array_keys($containers))) {
         $output->writeln("<comment>Building <options=bold>$name</options=bold> container</comment>");
-        $this->build($name, $output);
+        $this->build($name);
       }
       else {
         // Container name not found.  Skip build.
@@ -57,15 +65,15 @@ class BuildCommand extends DrupalCICommandBase {
   }
 
   /**
-   * (#inheritdoc)
+   * Builds the container.
    */
-  protected function build($name, OutputInterface $output) {
+  protected function build($name) {
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     $container_path = $containers[$name];
     $docker = $this->getDocker();
     $context = new Context($container_path);
-    $output->writeln("-------------------- Start build script --------------------");
+    $this->output->writeln("-------------------- Start build script --------------------");
     $response = $docker->build($context, $name, function ($output) {
       if (isset($output['stream'])) {
         $output->writeLn('<info>' . $output['stream'] . '</info>');
@@ -75,9 +83,9 @@ class BuildCommand extends DrupalCICommandBase {
       }
     });
 
-    $output->writeln("--------------------- End build script ---------------------");
+    $this->output->writeln("--------------------- End build script ---------------------");
     $response->getBody()->getContents();
-    $output->writeln((string) $response);
+    $this->output->writeln((string) $response);
 
     // TODO: Capture return value and determine whether build was successful or not, throwing an error if it isn't.
     // (This may already automatically throw an exception within docker-php)
