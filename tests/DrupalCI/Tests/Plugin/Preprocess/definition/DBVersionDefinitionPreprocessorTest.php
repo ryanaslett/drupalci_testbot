@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class DBVersionDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class DBVersionDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   public function testDBVersionDefinitionPreprocessor() {
 
     $definition = $this->getDefinitionTemplate();
@@ -25,4 +24,5 @@ class DBVersionDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
     $this->assertEquals($expected_result, $definition['dbcreate']);
 
    }
+
 }

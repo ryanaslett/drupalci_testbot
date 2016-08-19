@@ -8,12 +8,9 @@
 namespace DrupalCI\Console\Command\Status;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
 use DrupalCI\Console\Helpers\DockerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class StatusCommand extends DrupalCICommandBase {
 

@@ -100,7 +100,7 @@ class SimpletestJob extends JobBase {
     'DCI_JobBuildId' => 'Specifies a unique build ID assigned to this job from an upstream server',
     'DCI_JobId' => 'Specifies a unique results server node ID to use when publishing results for this job.',
     'DCI_JobType' => 'Specifies a default job type to assume for a "drupalci run" command',
-    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',  //TODO: Check logic, may be reversed.
+    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.', //TODO: Check logic, may be reversed.
 
      // ***** Default Variables defined for every simpletest job *****
     'DCI_DBVersion' => 'Defines the database version for this particular simpletest run. May map to a required service container. Default: mysql-5.5',

@@ -11,7 +11,6 @@ namespace DrupalCI\Console\Command\Init;
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArrayInput;
 
@@ -26,8 +25,8 @@ class InitAllCommand extends DrupalCICommandBase {
       ->setDescription('Setup the DrupalCI Environment with sane defaults for testing')
       ->addOption('dbtype', '', InputOption::VALUE_OPTIONAL, 'Database types to support')
       ->addOption('phptype', '', InputOption::VALUE_OPTIONAL, 'PHP Versions to support')
-      ->addOption('forcebuild', null, InputOption::VALUE_NONE, 'Force Building Environments locally rather than pulling the fslayers')
-      ->addOption('all', null, InputOption::VALUE_NONE, 'Pull/Build all containers')
+      ->addOption('forcebuild', NULL, InputOption::VALUE_NONE, 'Force Building Environments locally rather than pulling the fslayers')
+      ->addOption('all', NULL, InputOption::VALUE_NONE, 'Pull/Build all containers')
     ;
   }
 
@@ -116,4 +115,5 @@ class InitAllCommand extends DrupalCICommandBase {
     # TODO: Error Handling
 
   }
+
 }

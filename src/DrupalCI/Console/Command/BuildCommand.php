@@ -92,4 +92,5 @@ class BuildCommand extends DrupalCICommandBase {
     }
     */
   }
+
 }

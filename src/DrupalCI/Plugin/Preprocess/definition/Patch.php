@@ -55,4 +55,5 @@ class Patch {
           $definition['setup']['composer'] = $composer_step;
     }
   }
+
 }

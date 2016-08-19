@@ -13,7 +13,6 @@ use DrupalCI\Job\CodeBase\JobCodeBase;
 use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Job\Results\JobResults;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -190,4 +189,5 @@ class RunCommand extends DrupalCICommandBase {
     // processed.
 
   }
+
 }

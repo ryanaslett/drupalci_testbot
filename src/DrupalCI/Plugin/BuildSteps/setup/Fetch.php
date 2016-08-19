@@ -70,7 +70,7 @@ class Fetch extends SetupBase {
    */
   protected function httpClient() {
     if (!isset($this->httpClient)) {
-      $this->httpClient = new Client;
+      $this->httpClient = new Client();
     }
     return $this->httpClient;
   }

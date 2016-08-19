@@ -55,4 +55,5 @@ class SyntaxCheck extends SetupBase {
       }
     }
   }
+
 }

@@ -8,7 +8,6 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Console\Output;
 
 /**
  * @PluginID("composer")

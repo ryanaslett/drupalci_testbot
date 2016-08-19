@@ -129,7 +129,7 @@ class JobDefinition Implements Injectable {
               $eval = $eval[$key][0];
             }
             else {
-              $eval=$eval[$key];
+              $eval = $eval[$key];
             }
           }
           else {

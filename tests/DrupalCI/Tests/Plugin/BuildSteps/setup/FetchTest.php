@@ -45,6 +45,7 @@ class FetchTest extends DrupalCITestCase {
     $fetch->setHttpClient($http_client);
     $fetch->run($job, [['url' => $url]]);
   }
+
 }
 
 class TestFetch extends Fetch {
@@ -53,4 +54,5 @@ class TestFetch extends Fetch {
   function setHttpClient(ClientInterface $http_client) {
     $this->httpClient = $http_client;
   }
+
 }

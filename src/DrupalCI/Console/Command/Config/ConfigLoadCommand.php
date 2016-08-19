@@ -12,7 +12,6 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
@@ -63,11 +62,12 @@ class ConfigLoadCommand extends DrupalCICommandBase {
     $qhelper = $this->getHelper('question');
     $output->writeln("<info>This will wipe out your current DrupalCI defaults and replace them with the values from the <option=bold>$selected</option=bold> configset.</info>");
     $message = "<question>Are you sure you wish to continue? (y/n)</question> ";
-    $question = new ConfirmationQuestion($message, false);
+    $question = new ConfirmationQuestion($message, FALSE);
     if (!$qhelper->ask($input, $output, $question)) {
       $output->writeln("<comment>Action cancelled.</comment>");
       return;
     }
     $helper->activateConfig($selected);
   }
+
 }

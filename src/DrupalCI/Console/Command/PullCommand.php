@@ -7,13 +7,9 @@
 
 namespace DrupalCI\Console\Command;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Docker\Context\Context;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -40,7 +36,7 @@ class PullCommand extends DrupalCICommandBase {
     $images = $input->getArgument('container_name');
     // TODO: Validate passed arguments
     foreach ($images as $image) {
-        $name = explode (':',$image);
+        $name = explode (':', $image);
         $container = $name[0];
         // check if we have a tag in the input
         if(!empty($name[1])) {
@@ -51,7 +47,7 @@ class PullCommand extends DrupalCICommandBase {
           $tag = 'latest';
         }
         Output::writeln("<comment>Pulling <options=bold>$container:$tag</options=bold> container</comment>");
-        $this->pull($container ,$tag , $input);
+        $this->pull($container, $tag, $input);
     }
   }
 
@@ -96,4 +92,5 @@ class PullCommand extends DrupalCICommandBase {
     // Output::writeln((string) $response);
     Output::writeln("");
   }
+
 }

@@ -4,7 +4,6 @@ namespace DrupalCI\Tests\Console\Command\Config;
 
 use DrupalCI\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class ConfigClearCommandTest extends CommandTestBase {
 
@@ -23,7 +22,5 @@ class ConfigClearCommandTest extends CommandTestBase {
     $display = $commandTester->getDisplay(TRUE);
     $this->assertRegExp('`(The foof variable does not exist.  No action taken.)|(The foof variable has been deleted from the current config set.)`', $display);
   }
-
-
 
 }

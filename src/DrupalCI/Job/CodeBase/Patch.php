@@ -8,16 +8,13 @@
 namespace DrupalCI\Job\CodeBase;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Job\CodeBase\JobCodeBase;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 
 /**
  * Class Patch
  * @package DrupalCI\Job\CodeBase
  */
-class Patch
-{
+class Patch {
 
   /**
    * Local or Remote Patch File
@@ -195,7 +192,7 @@ class Patch
     $this->setLocalSource($local_source);
 
     // Set initial 'applied' state
-    $this->applied = false;
+    $this->applied = FALSE;
 
     // Attach this patch to the codebase object
     $codebase->addPatch($this);
@@ -328,8 +325,9 @@ class Patch
   protected function httpClient()
   {
     if (!isset($this->httpClient)) {
-      $this->httpClient = new Client;
+      $this->httpClient = new Client();
     }
     return $this->httpClient;
   }
+
 }

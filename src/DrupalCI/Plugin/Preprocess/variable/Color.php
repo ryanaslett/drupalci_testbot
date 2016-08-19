@@ -25,7 +25,7 @@ class Color extends PluginBase {
    */
   public function process($run_options, $source_value) {
     if (strtolower($source_value) === 'true') {
-      $run_options .=  ' --color';
+      $run_options .= ' --color';
     }
     return $run_options;
   }

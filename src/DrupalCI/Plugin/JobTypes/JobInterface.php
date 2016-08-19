@@ -207,4 +207,5 @@ interface JobInterface {
   public function error();
 
   public function fail();
+
 }

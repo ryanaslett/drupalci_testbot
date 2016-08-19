@@ -30,7 +30,7 @@ class CreateArchive extends PluginBase {
     $filename = $data;
 
     // Open the zip archive
-    if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
+    if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
       // TODO: Cannot open zip file ... throw an error.
       return;
     }
@@ -54,4 +54,5 @@ class CreateArchive extends PluginBase {
     $job->setArtifactFilename($data);
 
   }
+
 }

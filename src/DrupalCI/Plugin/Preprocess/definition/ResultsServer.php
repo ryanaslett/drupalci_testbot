@@ -61,5 +61,5 @@ class ResultsServer {
 
     $definition['publish']['drupalci_results'][] = $server;
   }
-}
 
+}

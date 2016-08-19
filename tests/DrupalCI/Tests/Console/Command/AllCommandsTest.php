@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use DrupalCI\Tests\Console\Command\CommandTestBase;
 
 /**
  * Tests dealing with all of the expected commands.

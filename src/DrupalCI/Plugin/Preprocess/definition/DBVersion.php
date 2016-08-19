@@ -19,4 +19,5 @@ class DBVersion {
       ['dbcreate' => [$dbtype => FALSE]] +
       array_slice($definition, $length, NULL, TRUE);
   }
+
 }

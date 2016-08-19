@@ -6,8 +6,6 @@
 
 namespace DrupalCI\Plugin\JobTypes;
 
-use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
@@ -18,7 +16,6 @@ use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Job\Results\JobResults;
 use DrupalCIResultsApi\Api;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
 use DrupalCI\Console\Jobs\ContainerBase;
 use Docker\Docker;
@@ -26,8 +23,6 @@ use Docker\Http\DockerClient as Client;
 use Symfony\Component\Yaml\Yaml;
 use Docker\Container;
 use PDO;
-use Symfony\Component\Console\Event\ConsoleExceptionEvent;
-use Symfony\Component\Console\ConsoleEvents;
 
 class JobBase extends ContainerBase implements JobInterface, Injectable {
 
@@ -152,7 +147,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   public function getDocker()
   {
     $client = Client::createWithEnv();
-    if (null === $this->docker) {
+    if (NULL === $this->docker) {
       $this->docker = new Docker($client);
     }
     return $this->docker;
@@ -281,7 +276,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   public function shellCommand($cmd) {
     $process = new Process($cmd);
-    $process->setTimeout(3600*6);
+    $process->setTimeout(3600 * 6);
     $process->setIdleTimeout(3600);
     $process->run(function ($type, $buffer) {
         Output::writeln($buffer);
@@ -329,7 +324,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
     $manager->run($instance, function($output, $type) {
       fputs($type === 1 ? STDOUT : STDERR, $output);
-    }, [], true);
+    }, [], TRUE);
 
     $container['id'] = $instance->getID();
     $container['name'] = $instance->getName();
@@ -400,7 +395,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $repo = $running->getImage()->getRepository();
       $tag = $running->getImage()->getTag();
       $id = substr($running->getID(), 0, 8);
-      $instance_key = !strcmp('latest',$tag) ? $repo : $repo . ':' . $tag;
+      $instance_key = !strcmp('latest', $tag) ? $repo : $repo . ':' . $tag;
       $instances[$instance_key] = $id;
     };
     foreach ($this->serviceContainers[$container_type] as $key => $image) {
@@ -433,7 +428,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
       $manager->run($container, function($output, $type) {
         fputs($type === 1 ? STDOUT : STDERR, $output);
-      }, [], true);
+      }, [], TRUE);
       $container_id = $container->getID();
       $container_name = $container->getName();
       $container_ip = $container->getRuntimeInformations()["NetworkSettings"]["IPAddress"];
@@ -469,7 +464,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   public function checkDBStatus($dburl_parts)
   {
-    if(strcmp('mariadb',$dburl_parts['scheme']) === 1){
+    if(strcmp('mariadb', $dburl_parts['scheme']) === 1){
       $dburl_parts['scheme'] = 'mysql';
     }
     try {

@@ -27,7 +27,7 @@ abstract class EnvironmentBase extends PluginBase {
       $tag = empty($container_string[1]) ? 'latest' : $container_string[1];
 
       try {
-        $image = $manager->find($name,$tag);
+        $image = $manager->find($name, $tag);
       }
       catch (ImageNotFoundException $e) {
         Output::error("Missing Image", "Required container image <options=bold>'$name:$tag'</options=bold> not found.");
@@ -39,4 +39,5 @@ abstract class EnvironmentBase extends PluginBase {
     }
     return TRUE;
   }
+
 }

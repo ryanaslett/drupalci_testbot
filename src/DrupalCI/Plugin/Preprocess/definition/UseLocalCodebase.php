@@ -29,4 +29,5 @@ class UseLocalCodebase {
     $definition['setup']['checkout']['protocol'] = 'local';
     $definition['setup']['checkout']['source_dir'] = $source_directory;
   }
+
 }

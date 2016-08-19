@@ -1,6 +1,5 @@
 <?php
 use DrupalCI\Plugin\Preprocess\definition\ComposerInstall;
-use DrupalCI\Plugin\Preprocess\definition\DrupalInstall;
 use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
 
 /**
@@ -11,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class ComposerInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class ComposerInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
 
   /**
    * @param string $value        The value of DCI_ComposerInstall
@@ -85,4 +83,5 @@ class ComposerInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTe
     // TODO: Test when $composer already exists (i.e. does not overwrite), once plugin contains this logic
     return [$definition, $definition1, $definition2];
   }
+
 }

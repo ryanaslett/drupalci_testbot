@@ -45,5 +45,5 @@ class ResultsServerConfig {
     }
     $definition['publish']['drupalci_results'][] = array('config' => $value);
   }
-}
 
+}

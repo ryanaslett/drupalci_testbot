@@ -25,7 +25,7 @@ class DieOnFail extends PluginBase {
    */
   public function process($run_options, $source_value) {
     if (strtolower($source_value) === 'true') {
-      $run_options .=  ' --die-on-fail';
+      $run_options .= ' --die-on-fail';
     }
     return $run_options;
   }

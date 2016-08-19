@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Helpers;
 
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -89,4 +88,5 @@ class ContainerHelper extends DrupalCIHelperBase {
     }
     return;
   }
+
 }

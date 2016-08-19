@@ -28,5 +28,5 @@ class JunitXml {
     // TODO: Sanitize to ensure we're not traversing out of the working directory
     $definition['publish']['junit_xmlformat'] = $value;
   }
-}
 
+}

@@ -9,8 +9,6 @@ namespace DrupalCI\Job\CodeBase;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Job\Definition\JobDefinition;
-use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Job\CodeBase\Repository;
 
 class JobCodebase {
 
@@ -203,4 +201,5 @@ class JobCodebase {
     $this->setWorkingDir($working_dir);
     $job_definition->setDCIVariable('DCI_WorkingDir', $working_dir);
   }
+
 }

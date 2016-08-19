@@ -82,4 +82,5 @@ class Patch extends SetupBase {
       $codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }
+
 }

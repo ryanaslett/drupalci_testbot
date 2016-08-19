@@ -61,4 +61,5 @@ class Fetch {
           $definition['setup']['composer'] = $composer_step;
     }
   }
+
 }

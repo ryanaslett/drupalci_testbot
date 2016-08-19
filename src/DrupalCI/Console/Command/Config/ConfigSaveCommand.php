@@ -12,7 +12,6 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
@@ -53,7 +52,7 @@ class ConfigSaveCommand extends DrupalCICommandBase {
       $output->writeln("<error>The <option=bold>$config_name</option=bold> config set already exists.</error>");
       $output->writeln("<info>Continuing will overwrite the existing file with the current configuration values.</info>");
       $message = "<question>Are you sure you wish to continue? (yes/no)</question> ";
-      $question = new ConfirmationQuestion($message, false);
+      $question = new ConfirmationQuestion($message, FALSE);
       if (!$qhelper->ask($input, $output, $question)) {
         $output->writeln("<comment>Action cancelled.</comment>");
         return;
@@ -62,4 +61,5 @@ class ConfigSaveCommand extends DrupalCICommandBase {
     $helper->saveCurrentConfig($config_name);
     $output->writeln("<info>Configuration <option=bold>$config_name</option=bold> saved.</info>");
   }
+
 }

@@ -12,7 +12,6 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
 /**
@@ -52,7 +51,7 @@ class ConfigShowCommand extends DrupalCICommandBase {
       $qhelper = $this->getHelper('question');
       $message = "<question>Choose the number corresponding to which configuration set(s) to display:</question> ";
       $output->writeln($message);
-      $message="<comment>Separate multiple values with commas.</comment>";
+      $message = "<comment>Separate multiple values with commas.</comment>";
       $options = array_merge(array_keys($configsets), array('current', 'all'));
       $question = new ChoiceQuestion($message, $options, 0);
       $question->setMultiselect(TRUE);
@@ -96,4 +95,5 @@ class ConfigShowCommand extends DrupalCICommandBase {
       }
     }
   }
+
 }

@@ -40,8 +40,10 @@ class CheckoutTest extends DrupalCITestCase {
     $checkout->run($this->job, $data);
     $this->assertSame(["rsync -a   $tmp_dir/. test/dir"], $checkout->getCommands());
   }
+
 }
 
 class TestCheckout extends Checkout {
   use TestSetupBaseTrait;
+
 }

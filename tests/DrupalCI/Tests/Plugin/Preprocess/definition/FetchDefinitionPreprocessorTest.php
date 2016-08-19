@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class FetchDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class FetchDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   /**
    * @param string $fetch_value      The value passed into the patch command
    * @param array  $expected_result   Expected Result
@@ -35,12 +34,12 @@ class FetchDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
       // Test single fetch with directory specified
       ['http://example.com/file1.patch,dir1', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => 'dir1']]],
       // Test multiple fetches with no directory specified
-      ['http://example.com/file1.patch;http://example.com/file2.patch', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => '.'],['url' => 'http://example.com/file2.patch', 'fetch_directory' => '.']]],
+      ['http://example.com/file1.patch;http://example.com/file2.patch', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => '.'], ['url' => 'http://example.com/file2.patch', 'fetch_directory' => '.']]],
       // Test multiple fetches with some directories specified
-      ['http://example.com/file1.patch,dir1;http://example.com/file2.patch', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => 'dir1'],['url' => 'http://example.com/file2.patch', 'fetch_directory' => '.']]],
-      ['http://example.com/file1.patch;http://example.com/file2.patch,dir2', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => '.'],['url' => 'http://example.com/file2.patch', 'fetch_directory' => 'dir2']]],
+      ['http://example.com/file1.patch,dir1;http://example.com/file2.patch', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => 'dir1'], ['url' => 'http://example.com/file2.patch', 'fetch_directory' => '.']]],
+      ['http://example.com/file1.patch;http://example.com/file2.patch,dir2', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => '.'], ['url' => 'http://example.com/file2.patch', 'fetch_directory' => 'dir2']]],
       // Test multiple fetches with all directories specified
-      ['http://example.com/file1.patch,dir1;http://example.com/file2.patch,dir2', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => 'dir1'],['url' => 'http://example.com/file2.patch', 'fetch_directory' => 'dir2']]],
+      ['http://example.com/file1.patch,dir1;http://example.com/file2.patch,dir2', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => 'dir1'], ['url' => 'http://example.com/file2.patch', 'fetch_directory' => 'dir2']]],
       // Test single fetch with trailing comma
       ['http://example.com/file1.patch,', [['url' => 'http://example.com/file1.patch', 'fetch_directory' => '.']]],
       // Test single fetch with trailing semicolon

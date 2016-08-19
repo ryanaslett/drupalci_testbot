@@ -25,7 +25,7 @@ class Verbose extends PluginBase {
    */
   public function process($run_options, $source_value) {
     if (strtolower($source_value) === 'true') {
-      $run_options .=  ' --verbose';
+      $run_options .= ' --verbose';
     }
     return $run_options;
   }

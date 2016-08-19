@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class DrupalInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class DrupalInstallDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   /**
    * @param array $dci_overrides     Array of key=>value pairs to use as overrides in $dci_variables
    * @param array $expected_result   Expected value of the $definition['install']['command'] array

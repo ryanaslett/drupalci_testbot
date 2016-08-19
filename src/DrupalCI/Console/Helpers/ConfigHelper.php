@@ -7,8 +7,6 @@
 
 namespace DrupalCI\Console\Helpers;
 
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
-use DrupalCI\Console\Output;
 
 class ConfigHelper extends DrupalCIHelperBase {
 
@@ -53,7 +51,7 @@ class ConfigHelper extends DrupalCIHelperBase {
     if (file_exists($filename)) {
       $handle = fopen($filename, "r");
       if ($handle) {
-        while (($line = fgets($handle)) !== false) {
+        while (($line = fgets($handle)) !== FALSE) {
           $options[] = str_replace(array("\r", "\n"), "", $line);
         }
       }
@@ -86,10 +84,10 @@ class ConfigHelper extends DrupalCIHelperBase {
     if (in_array($configset, array_keys($configsets))) {
       $destination = $homedir . '/.drupalci/config';
       if (copy($configsets[$configset], $destination)) {
-        return true;
+        return TRUE;
       }
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -159,4 +157,5 @@ class ConfigHelper extends DrupalCIHelperBase {
       copy($current, $filename);
     }
   }
+
 }

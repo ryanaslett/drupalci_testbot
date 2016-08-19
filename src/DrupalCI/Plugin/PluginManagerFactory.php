@@ -14,4 +14,5 @@ class PluginManagerFactory {
   public function create($plugin_type) {
     return new PluginManager($plugin_type, $this->container);
   }
+
 }

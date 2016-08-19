@@ -11,7 +11,6 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
@@ -51,7 +50,7 @@ class ConfigClearCommand extends DrupalCICommandBase {
         $qhelper = $this->getHelper('question');
         $output->writeln("<info>This will remove the <option=bold>$argument</option=bold> variable from your current configuration set.</info>");
         $message = "<question>Are you sure you wish to continue? (yes/no)</question> ";
-        $question = new ConfirmationQuestion($message, false);
+        $question = new ConfirmationQuestion($message, FALSE);
         if (!$qhelper->ask($input, $output, $question)) {
           $output->writeln("<comment>Action cancelled.</comment>");
           return;
@@ -61,4 +60,5 @@ class ConfigClearCommand extends DrupalCICommandBase {
       }
     }
   }
+
 }

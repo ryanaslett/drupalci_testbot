@@ -82,4 +82,5 @@ class PluginManager implements Injectable {
     }
     return $this->plugins[$type][$plugin_id];
   }
+
 }

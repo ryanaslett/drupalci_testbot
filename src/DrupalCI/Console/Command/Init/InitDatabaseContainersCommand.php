@@ -27,8 +27,8 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
       ->setName('init:database')
       ->setDescription('Build initial DrupalCI database containers')
       ->addArgument('container_name', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Docker container image(s) to build.')
-      ->addOption('forcebuild', null, InputOption::VALUE_NONE, 'Force Building Environments locally rather than pulling the fslayers')
-      ->addOption('all', null, InputOption::VALUE_NONE, 'Pull/Build all database containers')
+      ->addOption('forcebuild', NULL, InputOption::VALUE_NONE, 'Force Building Environments locally rather than pulling the fslayers')
+      ->addOption('all', NULL, InputOption::VALUE_NONE, 'Pull/Build all database containers')
     ;
   }
 
@@ -113,10 +113,11 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
       $containers,
       $defaultcontainer[$this->default_build['database']]
     );
-    $question->setMultiselect(true);
+    $question->setMultiselect(TRUE);
 
     $results = $helper->ask($input, $output, $question);
 
     return $results;
   }
+
 }

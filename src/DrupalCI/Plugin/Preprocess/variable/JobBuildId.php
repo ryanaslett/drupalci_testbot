@@ -19,4 +19,5 @@ class JobBuildId extends DBUrlBase {
     $db_name = preg_replace('/[^0-9_A-Za-z]/', '', $db_name);
     return $this->changeUrlPart($db_url, 'path', "/$db_name");
   }
+
 }

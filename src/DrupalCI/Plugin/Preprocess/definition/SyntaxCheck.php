@@ -27,4 +27,5 @@ class SyntaxCheck {
     unset($definition['setup']['syntaxcheck']);
     $definition['setup']['syntaxcheck'] = $value ? "TRUE" : "FALSE";
   }
+
 }

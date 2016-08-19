@@ -2,9 +2,7 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use DrupalCI\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class DockerRemoveCommandTest extends CommandTestBase {
 

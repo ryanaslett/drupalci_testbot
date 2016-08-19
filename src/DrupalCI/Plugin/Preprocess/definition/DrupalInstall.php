@@ -62,4 +62,5 @@ class DrupalInstall {
       $definition['install']['command'][] = "cd /var/www/html && /.composer/vendor/bin/drush en -y simpletest 2>&1";
     }
   }
+
 }

@@ -2,8 +2,7 @@
 
  namespace DrupalCI\Tests\Plugin\Preprocess\definition;
 
-class DefinitionPreprocessorTestBase extends \PHPUnit_Framework_TestCase
-{
+class DefinitionPreprocessorTestBase extends \PHPUnit_Framework_TestCase {
 
   /**
    * @param array $key_overrides    An array of key=>value pairs to be used as overrides of the default template
@@ -57,7 +56,7 @@ class DefinitionPreprocessorTestBase extends \PHPUnit_Framework_TestCase
     $key1_position = array_search($key1, array_keys($source_array));
     $key2_position = array_search($key2, array_keys($source_array));
     $this->assertGreaterThan($key2_position, $key1_position);
-    $this->assertEquals(1, $key2_position-$key1_position);
+    $this->assertEquals(1, $key2_position - $key1_position);
   }
 
   /**
@@ -68,7 +67,7 @@ class DefinitionPreprocessorTestBase extends \PHPUnit_Framework_TestCase
   public function assertKeyImmediatelyPrecedesKey($key1, $key2, $source_array) {
     $key1_position = array_search($key1, array_keys($source_array));
     $key2_position = array_search($key2, array_keys($source_array));
-    $this->assertEquals(1, $key2_position-$key1_position, "Key1: $key1 Key2: $key2 Position1: $key1_position Position2: $key2_position");
+    $this->assertEquals(1, $key2_position - $key1_position, "Key1: $key1 Key2: $key2 Position1: $key1_position Position2: $key2_position");
   }
 
   /**
@@ -80,7 +79,7 @@ class DefinitionPreprocessorTestBase extends \PHPUnit_Framework_TestCase
     $key1_position = array_search($key1, array_keys($source_array));
     $key2_position = array_search($key2, array_keys($source_array));
     $this->assertLessThan($key2_position, $key1_position);
-    $this->assertEquals(1, $key2_position-$key1_position);
+    $this->assertEquals(1, $key2_position - $key1_position);
   }
 
   /**
@@ -91,8 +90,8 @@ class DefinitionPreprocessorTestBase extends \PHPUnit_Framework_TestCase
   public function assertKeyImmediatelyFollowsKey($key1, $key2, $source_array) {
     $key1_position = array_search($key1, array_keys($source_array));
     $key2_position = array_search($key2, array_keys($source_array));
-    $this->assertEquals(1, $key1_position-$key2_position);
-    $this->assertEquals(1, $key2_position-$key1_position);
+    $this->assertEquals(1, $key1_position - $key2_position);
+    $this->assertEquals(1, $key2_position - $key1_position);
   }
 
 }

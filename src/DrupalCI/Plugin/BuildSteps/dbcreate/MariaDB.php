@@ -27,4 +27,5 @@ class MariaDB extends ContainerCommand {
     $cmd = "mysql -h $host -u $user -p$pass -e 'CREATE DATABASE $db_name'";
     parent::run($job, $cmd);
   }
+
 }

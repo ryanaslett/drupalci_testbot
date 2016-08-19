@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Command;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Console\Helpers\ContainerHelper;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Input\InputInterface;
@@ -88,7 +87,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
   /**
    * (@inheritdoc)
    */
-  protected function removeContainers($type, InputInterface $input,OutputInterface $output) {
+  protected function removeContainers($type, InputInterface $input, OutputInterface $output) {
 
     Output::setOutput($output);
 
@@ -142,4 +141,5 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     }
 
   }
+
 }

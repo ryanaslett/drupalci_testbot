@@ -12,7 +12,6 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
@@ -69,7 +68,7 @@ class ConfigSetCommand extends DrupalCICommandBase {
         $qhelper = $this->getHelper('question');
         $output->writeln("<info>The <option=bold>$key</option=bold> variable already exists.</info>");
         $message = "<question>Are you sure you wish to override it? (yes/no)</question> ";
-        $question = new ConfirmationQuestion($message, false);
+        $question = new ConfirmationQuestion($message, FALSE);
         if (!$qhelper->ask($input, $output, $question)) {
           $output->writeln("<comment>Action cancelled.</comment>");
           return;

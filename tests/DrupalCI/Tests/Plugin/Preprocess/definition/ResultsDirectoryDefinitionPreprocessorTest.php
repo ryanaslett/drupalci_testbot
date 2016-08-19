@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class ResultsDirectoryDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class ResultsDirectoryDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   public function testResultsDirectoryDefinitionPreprocessor() {
 
     $definition = $this->getDefinitionTemplate();
@@ -24,4 +23,5 @@ class ResultsDirectoryDefinitionPreprocessorTest extends DefinitionPreprocessorT
     $this->assertKeyImmediatelyPrecedesKey('pre-install', 'install', $definition);
     $this->assertEquals($expected_result, $definition['pre-install']);
    }
+
 }

@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
-use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 
 /**
@@ -30,4 +29,5 @@ class CreateDirectory extends ContainerCommand {
       parent::run($job, $cmd);
     }
   }
+
 }

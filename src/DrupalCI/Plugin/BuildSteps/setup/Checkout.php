@@ -103,7 +103,7 @@ class Checkout extends SetupBase {
     $cmd = "git clone -b $git_branch $git_depth $repo '$directory'";
     Output::writeLn("Git Command: $cmd");
     $this->exec($cmd, $cmdoutput, $result);
-    if ($result !==0) {
+    if ($result !== 0) {
       // Git threw an error.
       Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result");
       $job->error();
@@ -111,11 +111,11 @@ class Checkout extends SetupBase {
     }
 
     if (!empty($details['commit_hash'])) {
-      $cmd =  "cd " . $directory . " && git reset -q --hard " . $details['commit_hash'] . " ";
+      $cmd = "cd " . $directory . " && git reset -q --hard " . $details['commit_hash'] . " ";
       Output::writeLn("Git Command: $cmd");
       $this->exec($cmd, $cmdoutput, $result);
     }
-    if ($result !==0) {
+    if ($result !== 0) {
       // Git threw an error.
       $job->errorOutput("Checkout failed", "The git checkout returned an error.");
       // TODO: Pass on the actual return value for the git checkout

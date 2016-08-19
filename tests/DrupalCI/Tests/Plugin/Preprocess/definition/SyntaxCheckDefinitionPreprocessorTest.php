@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class SyntaxCheckDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class SyntaxCheckDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   /**
    * @param array|null $definition_overrides  Override value for the 'setup' key
    * @param boolean $value                    Whether Syntax Check should be enabled
@@ -33,13 +32,14 @@ class SyntaxCheckDefinitionPreprocessorTest extends DefinitionPreprocessorTestBa
   public function provideSyntaxCheckDefinitionPreprocessorInputDefinitions() {
     return [
       // Test enabling syntaxcheck
-      [['setup' => []], true, ['syntaxcheck' => "TRUE"]],
+      [['setup' => []], TRUE, ['syntaxcheck' => "TRUE"]],
       // Test disabling syntaxcheck
-      [['setup' => []], false, ['syntaxcheck' => "FALSE"]],
+      [['setup' => []], FALSE, ['syntaxcheck' => "FALSE"]],
       // Test that syntaxcheck is the last element of the setup array after processing
-      [['setup' => ['syntaxcheck' => "TRUE", 'otherkey' => 'otherkeyvalue']], true, ['otherkey' => 'otherkeyvalue', 'syntaxcheck' => "TRUE"]],
+      [['setup' => ['syntaxcheck' => "TRUE", 'otherkey' => 'otherkeyvalue']], TRUE, ['otherkey' => 'otherkeyvalue', 'syntaxcheck' => "TRUE"]],
       // Prove that changing the key order results in a different array
-      [['setup' => ['syntaxcheck' => "TRUE", 'otherkey' => 'otherkeyvalue']], true, ['syntaxcheck' => "TRUE", 'otherkey' => 'otherkeyvalue']],
+      [['setup' => ['syntaxcheck' => "TRUE", 'otherkey' => 'otherkeyvalue']], TRUE, ['syntaxcheck' => "TRUE", 'otherkey' => 'otherkeyvalue']],
     ];
   }
+
 }

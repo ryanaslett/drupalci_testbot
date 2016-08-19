@@ -7,7 +7,6 @@
 
 namespace DrupalCI\Console\Helpers;
 
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

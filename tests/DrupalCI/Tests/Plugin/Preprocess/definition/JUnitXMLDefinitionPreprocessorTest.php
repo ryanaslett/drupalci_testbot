@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class JUnitXmlDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class JUnitXmlDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   public function testJUnitXmlDefinitionPreprocessor() {
     $definition = $this->getDefinitionTemplate();
     $target_directory = 'my/target/directory';

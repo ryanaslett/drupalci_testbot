@@ -106,5 +106,5 @@ class AdditionalRepositories {
       $definition['setup']['checkout'][] = $output;
     }
   }
-}
 
+}

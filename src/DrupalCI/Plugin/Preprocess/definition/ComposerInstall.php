@@ -5,7 +5,6 @@
  */
 
 namespace DrupalCI\Plugin\Preprocess\definition;
-use DrupalCI\Console\Output;
 
 /**
  * @PluginID("composerinstall")
@@ -47,4 +46,5 @@ class ComposerInstall {
 
     $definition['setup']['composer'][] = "install --prefer-dist --working-dir ";
   }
+
 }

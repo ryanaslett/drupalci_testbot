@@ -88,7 +88,7 @@ class PHPUnitJob extends JobBase {
     'DCI_JobBuildId' => 'Specifies a unique build ID assigned to this job from an upstream server',
     'DCI_JobId' => 'Specifies a unique results server node ID to use when publishing results for this job.',
     'DCI_JobType' => 'Specifies a default job type to assume for a "drupalci run" command',
-    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',  //TODO: Check logic, may be reversed.
+    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.', //TODO: Check logic, may be reversed.
 
     // ***** Default Variables defined for every phpUnit job *****
     'DCI_PHPVersion' => 'Defines the PHP Version used within the executable container for this job type.  Default: 5.4',
@@ -111,4 +111,5 @@ class PHPUnitJob extends JobBase {
     'DCI_ListGroups' => 'Directs the test runner to list available test groups instead of executing tests.  (i.e. Specifies --list-groups).',
     'DCI_PHPUnitBootstrapFile',
   );
+
 }

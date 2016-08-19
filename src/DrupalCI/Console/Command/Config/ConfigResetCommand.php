@@ -12,7 +12,6 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 
@@ -58,7 +57,7 @@ class ConfigResetCommand extends DrupalCICommandBase {
       if (in_array($name, array_keys($defaultsets))) {
         // TODO: Prompt user (You are about to overwrite the $name configuration set. (Y/N/All)
         $output->writeln("<comment>This action will overwrite any local changes you have made to the <options=bold>$name</options=bold> configuration set.</comment>");
-        $question = new ConfirmationQuestion("<question>Do you wish to continue? (yes/no)</question> ", false);
+        $question = new ConfirmationQuestion("<question>Do you wish to continue? (yes/no)</question> ", FALSE);
         if (!$qhelper->ask($input, $output, $question)) {
           continue;
         }
@@ -70,7 +69,7 @@ class ConfigResetCommand extends DrupalCICommandBase {
       elseif (in_array($name, array_keys($configsets))) {
         // TODO: Prompt user (This action will delete the $name configuration set
         $output->writeln("<comment>This action will delete the <options=bold>$name</options=bold> configuration set.</comment>");
-        $question = new ConfirmationQuestion("<question>Do you wish to continue? (yes/no)</question> ", false);
+        $question = new ConfirmationQuestion("<question>Do you wish to continue? (yes/no)</question> ", FALSE);
         if (!$qhelper->ask($input, $output, $question)) {
           continue;
         }
@@ -84,4 +83,5 @@ class ConfigResetCommand extends DrupalCICommandBase {
       }
     }
   }
+
 }

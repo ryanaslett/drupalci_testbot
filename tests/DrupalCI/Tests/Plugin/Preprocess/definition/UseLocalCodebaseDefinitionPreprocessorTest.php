@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class UseLocalCodebaseDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class UseLocalCodebaseDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   public function testUseLocalCodebaseDefinitionPreprocessor() {
 
     $definition = $this->getDefinitionTemplate();
@@ -29,4 +28,5 @@ class UseLocalCodebaseDefinitionPreprocessorTest extends DefinitionPreprocessorT
     $plugin->process($definition, $source_directory, $dci_variables);
     $this->assertEquals($expected_result, $definition['setup']);
    }
+
 }

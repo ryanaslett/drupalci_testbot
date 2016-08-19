@@ -2,10 +2,8 @@
 
  namespace DrupalCI\Tests\Plugin\Preprocess\variable;
 
-use DrupalCI\Plugin\Preprocess\VariableInterface;
 
-class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
-{
+class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @param string $plugin_name        Name of the plugin being tested
@@ -35,7 +33,7 @@ class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
       // DCI_Concurrency
       ['Concurrency', 'abc', '1', 'abc --concurrency 1'],
       ['Concurrency', 'abc', '2', 'abc --concurrency 2'],
-      ['Concurrency', 'abc', '', 'abc --concurrency '],   // TODO: Fix logic for empty input
+      ['Concurrency', 'abc', '', 'abc --concurrency '], // TODO: Fix logic for empty input
       // DCI_DieOnFail
       ['DieOnFail', 'abc', 'true', 'abc --die-on-fail'],
       ['DieOnFail', 'abc', 'false', 'abc'],
@@ -44,15 +42,15 @@ class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
       // DCI_PHPInterpreter
       ['PHPInterpreter', 'abc', '/mypath', 'abc --php /mypath'],
       ['PHPInterpreter', 'abc', 'mypath', 'abc --php mypath'],
-      ['PHPInterpreter', 'abc', '', 'abc'],       // TODO: Fix logic for empty input
+      ['PHPInterpreter', 'abc', '', 'abc'], // TODO: Fix logic for empty input
       // DCI_RunOptions
       ['RunOptions', 'abc', 'arg1', ' --arg1'],
-      ['RunOptions', 'abc', 'arg1,', ' --arg1 '],    // TODO: Fix logic for trailing comma input
+      ['RunOptions', 'abc', 'arg1,', ' --arg1 '], // TODO: Fix logic for trailing comma input
       ['RunOptions', 'abc', 'arg1;', ' --arg1'],
       ['RunOptions', 'abc', 'arg1,val1', ' --arg1 val1'],
       ['RunOptions', 'abc', 'arg1,val1;', ' --arg1 val1'],
       ['RunOptions', 'abc', 'arg1,val1;arg2', ' --arg1 val1 --arg2'],
-      ['RunOptions', 'abc', 'arg1,val1;arg2,', ' --arg1 val1 --arg2 '],  // TODO: Fix logic for trailing comma input
+      ['RunOptions', 'abc', 'arg1,val1;arg2,', ' --arg1 val1 --arg2 '], // TODO: Fix logic for trailing comma input
       ['RunOptions', 'abc', 'arg1,val1;arg2,val2', ' --arg1 val1 --arg2 val2'],
       ['RunOptions', 'abc', 'arg1,val1;arg2,val2;', ' --arg1 val1 --arg2 val2'],
       ['RunOptions', 'abc', '', ''],
@@ -76,9 +74,8 @@ class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
       // DCI_XMLOutput
       ['XMLOutput', 'abc', 'myfile', 'abc --xml myfile'],
       ['XMLOutput', 'abc', '\myfile', 'abc --xml \myfile'],
-      ['XMLOutput', 'abc', '', 'abc --xml '],     // TODO: Fix logic for empty input
+      ['XMLOutput', 'abc', '', 'abc --xml '], // TODO: Fix logic for empty input
     ];
   }
-
 
 }

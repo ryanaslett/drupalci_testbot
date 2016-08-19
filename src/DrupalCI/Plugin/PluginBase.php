@@ -6,7 +6,6 @@
 
 namespace DrupalCI\Plugin;
 
-use DrupalCI\Plugin\JobTypes\JobInterface;
 
 /**
  * Base class for plugins.

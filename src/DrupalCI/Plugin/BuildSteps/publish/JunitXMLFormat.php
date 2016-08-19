@@ -9,7 +9,6 @@
  */
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
-use Docker\Docker;
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginBase;
@@ -42,7 +41,7 @@ class JunitXMLFormat extends PluginBase {
     $DBScheme = $DBUrlArray["scheme"];
     $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
     $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
-    $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
+    $DBDatabase = str_replace('/', '', $DBUrlArray["path"]);
     $DBIp = $job->getServiceContainers()["db"][$DBVersion]["ip"];
     $tests = [];
 
@@ -62,12 +61,12 @@ class JunitXMLFormat extends PluginBase {
     $group = 'nogroup';
     // Iterate through and process the test list
     $test_list = $this->getTestlist();
-    if(strcmp($CoreBranch,'7.x') === 0 || strcmp($CoreBranch,'6.x') === 0){
+    if(strcmp($CoreBranch, '7.x') === 0 || strcmp($CoreBranch, '6.x') === 0){
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
           // This is a class
-          $class = str_replace(array('(',')'),'',end(explode(' ', $output_line)));
+          $class = str_replace(array('(', ')'), '', end(explode(' ', $output_line)));
           $test_groups[$class] = $group;
         }
         else {
@@ -131,11 +130,11 @@ class JunitXMLFormat extends PluginBase {
         $test_method = substr($test_method, 0, strlen($test_method) - 2);
 
         //$classes[$test_group][$test_class][$test_method]['classname'] = $classname;
-        $result['file'] = substr($result['file'],14); // Trim off /var/www/html
+        $result['file'] = substr($result['file'], 14); // Trim off /var/www/html
         $classes[$test_group][$test_class][$test_method][] = array(
           'status' => $result['status'],
           'type' => $result['message_group'],
-          'message' => strip_tags(htmlspecialchars_decode($result['message'],ENT_QUOTES)),
+          'message' => strip_tags(htmlspecialchars_decode($result['message'], ENT_QUOTES)),
           'line' => $result['line'],
           'file' => $result['file'],
         );

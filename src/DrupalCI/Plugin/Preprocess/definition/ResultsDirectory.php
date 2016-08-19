@@ -30,5 +30,5 @@ class ResultsDirectory {
     // TODO: Sanitize to ensure we're not traversing out of the working directory
     $definition['pre-install']['mkdir'][] = $value;
   }
-}
 
+}

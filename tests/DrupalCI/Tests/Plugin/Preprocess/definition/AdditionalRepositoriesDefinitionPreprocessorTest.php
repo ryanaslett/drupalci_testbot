@@ -10,8 +10,7 @@ use DrupalCI\Tests\Plugin\Preprocess\definition\DefinitionPreprocessorTestBase;
  * @group DefinitionPreprocessor
  */
 
-class AdditionalRepositoriesDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
-{
+class AdditionalRepositoriesDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase {
   /**
    * @param string $input_value       The value of the DCI_AdditionalRepositories variable
    * @param array $expected_result   An expected array subset for the $definition['setup']['checkout'] elements
@@ -70,4 +69,5 @@ class AdditionalRepositoriesDefinitionPreprocessorTest extends DefinitionPreproc
       ['git,http://git.drupal.org/project/token.git,8.x-1.x,sites/all/modules/token;git,http://git.drupal.org/project/pathauto.git,8.x-1.x,sites/all/modules/pathauto,1;', $repo1, $repo2depth],
     ];
   }
+
 }

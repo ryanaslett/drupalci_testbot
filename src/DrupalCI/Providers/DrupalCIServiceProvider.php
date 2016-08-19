@@ -4,7 +4,6 @@ namespace DrupalCI\Providers;
 
 use DrupalCI\Console\DrupalCIConsoleApp;
 use DrupalCI\Plugin\PluginManagerFactory;
-use DrupalCI\Providers\DockerServiceProvider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
