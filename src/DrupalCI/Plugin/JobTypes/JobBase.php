@@ -10,7 +10,6 @@ use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
-use DrupalCI\InjectableTrait;
 use DrupalCI\Job\Results\Artifacts\BuildArtifact;
 use DrupalCI\Job\Results\Artifacts\BuildArtifactList;
 use DrupalCI\Job\CodeBase\JobCodeBase;
@@ -25,13 +24,27 @@ use Docker\Docker;
 use Docker\Http\DockerClient as Client;
 use Symfony\Component\Yaml\Yaml;
 use Docker\Container;
+use Pimple\Container as ServiceContainer;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
 
 class JobBase extends ContainerBase implements JobInterface, Injectable {
 
-  use InjectableTrait;
+  /**
+   * The service container.
+   *
+   * @var \Pimple\Container
+   */
+  protected $container;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setContainer(ServiceContainer $container) {
+    $this->container = $container;
+    $this->setOutput($container['console.output']);
+  }
 
   /**
    * Stores the job type
@@ -283,7 +296,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $process = new Process($cmd);
     $process->setTimeout(3600*6);
     $process->setIdleTimeout(3600);
-    $output = $this->container['console.output'];
+    $output = $this->getOutput();
     $process->run(function ($type, $buffer) use ($output) {
         $output->writeln($buffer);
     });
@@ -336,7 +349,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $container['name'] = $instance->getName();
     $container['created'] = TRUE;
     $short_id = substr($container['id'], 0, 8);
-    $this->container['console.output']->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
+    $this->getOutput()->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
   }
 
   protected function setDefaultCommand(&$config) {
@@ -393,7 +406,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   }
 
   public function startServiceContainerDaemons($container_type) {
-    $output = $this->container['console.output'];
+    $output = $this->getOutput();
     $needs_sleep = FALSE;
     $docker = $this->getDocker();
     $manager = $docker->getContainerManager();
@@ -471,16 +484,15 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   public function checkDBStatus($dburl_parts)
   {
-    $output = $this->container['console.output'];
     if(strcmp('mariadb',$dburl_parts['scheme']) === 1){
       $dburl_parts['scheme'] = 'mysql';
     }
     try {
       $conn_string = $dburl_parts['scheme'] . ':host=' . $dburl_parts['host'];
-      $output->writeln("<comment>Attempting to connect to database server.</comment>");
+      $this->getOutput()->writeln("<comment>Attempting to connect to database server.</comment>");
       $conn = new PDO($conn_string, $dburl_parts['user'], $dburl_parts['pass']);
     } catch (\PDOException $e) {
-      $output->writeln("<comment>Could not connect to database server.</comment>");
+      $this->getOutput()->writeln("<comment>Could not connect to database server.</comment>");
       return FALSE;
     }
     return TRUE;
@@ -631,7 +643,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $build_id = $this->getJobType() . '_' . time();
     }
     $this->setBuildId($build_id);
-    $this->container['console.output']->writeLn("<info>Executing job with build ID: <options=bold>$build_id</options=bold></info>");
+    $this->getOutput()->writeLn("<info>Executing job with build ID: <options=bold>$build_id</options=bold></info>");
   }
 
 }

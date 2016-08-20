@@ -12,7 +12,7 @@ use Pimple\Container;
 interface Injectable {
 
   /**
-   * The container object.
+   * Inject the container object.
    *
    * @param Pimple\Container $container
    */

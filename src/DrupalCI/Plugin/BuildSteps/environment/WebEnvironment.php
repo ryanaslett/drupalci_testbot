@@ -10,9 +10,7 @@
 
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @PluginID("web")

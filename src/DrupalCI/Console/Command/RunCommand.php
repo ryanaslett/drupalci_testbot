@@ -66,6 +66,9 @@ class RunCommand extends DrupalCICommandBase {
    */
   public function execute(InputInterface $input, OutputInterface $output) {
     $this->container['console.output'] = $output;
+    // Link our $output variable to the job, so that jobs can display their work.
+    Output::setOutput($output);
+
     $arg = $input->getArgument('definition');
 
     $config_helper = new ConfigHelper();
@@ -86,9 +89,6 @@ class RunCommand extends DrupalCICommandBase {
 
     /** @var $job JobInterface */
     $this->job = $job_plugin_manager->getPlugin($job_type, $job_type);
-
-    // Link our $output variable to the job, so that jobs can display their work.
-    Output::setOutput($output);
 
     // Generate a unique job build_id, and store it within the job object
     $this->job->generateBuildId();

@@ -32,7 +32,7 @@ class DbEnvironment extends EnvironmentBase {
     // Normalize data to the array format, if necessary
     $data = is_array($data) ? $data : [$data];
     $this->output->writeLn("<info>Parsing required database container image names ...</info>");
-    $containers = $this->buildImageNames($data, $job, $this->output);
+    $containers = $this->buildImageNames($data, $job);
     if ($valid = $this->validateImageNames($containers, $job)) {
       $service_containers = $job->getServiceContainers();
       $service_containers['db'] = $containers;

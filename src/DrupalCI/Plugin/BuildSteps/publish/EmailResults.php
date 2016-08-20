@@ -19,8 +19,7 @@ class EmailResults extends PluginBase {
    * {@inheritdoc}
    */
   public function run() {
-    $output = $this->container['console.output'];
-    $output->writeLn('<error>EmailResults plugin not yet implemented.</error>');
+    $this->output->writeLn('<error>EmailResults plugin not yet implemented.</error>');
   }
 
 }

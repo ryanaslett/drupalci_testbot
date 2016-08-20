@@ -10,7 +10,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
 use Docker\Docker;
-use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginBase;
 use PDO;

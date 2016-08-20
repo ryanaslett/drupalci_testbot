@@ -39,10 +39,10 @@ class Checkout extends SetupBase {
       $details += ['protocol' => 'git'];
       switch ($details['protocol']) {
         case 'local':
-          $this->setupCheckoutLocal($job, $details, $this->output);
+          $this->setupCheckoutLocal($job, $details);
           break;
         case 'git':
-          $this->setupCheckoutGit($job, $details, $this->output);
+          $this->setupCheckoutGit($job, $details);
           break;
       }
       // Break out of loop if we've encountered any errors
@@ -53,68 +53,68 @@ class Checkout extends SetupBase {
     return;
   }
 
-  protected function setupCheckoutLocal(JobInterface $job, $details, OutputInterface $output) {
+  protected function setupCheckoutLocal(JobInterface $job, $details) {
     $source_dir = isset($details['source_dir']) ? $details['source_dir'] : './';
     $checkout_dir = isset($details['checkout_dir']) ? $details['checkout_dir'] : $job->getJobCodebase()->getWorkingDir();
     // TODO: Ensure we don't end up with double slashes
     // Validate source directory
     if (!is_dir($source_dir)) {
-      Output::error("Directory error", "The source directory <info>$source_dir</info> does not exist.", $output);
+      Output::error("Directory error", "The source directory <info>$source_dir</info> does not exist.", $this->output);
       $job->error();
       return;
     }
     // Validate target directory.  Must be within workingdir.
-    if (!($directory = $this->validateDirectory($job, $checkout_dir, $output))) {
+    if (!($directory = $this->validateDirectory($job, $checkout_dir))) {
       // Invalidate checkout directory
-      Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.", $output);
+      Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.", $this->output);
       $job->error();
       return;
     }
-    $output->writeln("<comment>Copying files from <options=bold>$source_dir</options=bold> to the local checkout directory <options=bold>$directory</options=bold> ... </comment>");
+    $this->output->writeln("<comment>Copying files from <options=bold>$source_dir</options=bold> to the local checkout directory <options=bold>$directory</options=bold> ... </comment>");
     // TODO: Make sure target directory is empty
 #    $this->exec("cp -r $source_dir/. $directory", $cmdoutput, $result);
     $exclude_var = isset($details['DCI_EXCLUDE']) ? '--exclude="' . $details['DCI_EXCLUDE'] . '"' : "";
     $this->exec("rsync -a $exclude_var  $source_dir/. $directory", $cmdoutput, $result);
     if ($result !== 0) {
-      Output::error("Copy error", "Error encountered while attempting to copy code to the local checkout directory.", $output);
+      Output::error("Copy error", "Error encountered while attempting to copy code to the local checkout directory.", $this->output);
       $job->error();
       return;
     }
-    $output->writeLn("<comment>DONE</comment>");
+    $this->output->writeLn("<comment>DONE</comment>");
   }
 
-  protected function setupCheckoutGit(JobInterface $job, $details, OutputInterface $output) {
-    $output->writeLn("<info>Entering setup_checkout_git().</info>");
+  protected function setupCheckoutGit(JobInterface $job, $details) {
+    $this->output->writeLn("<info>Entering setup_checkout_git().</info>");
     $repo = isset($details['repo']) ? $details['repo'] : 'git://drupalcode.org/project/drupal.git';
     $git_branch = isset($details['branch']) ? $details['branch'] : 'master';
     $checkout_directory = isset($details['checkout_dir']) ? $details['checkout_dir'] : $job->getJobCodebase()->getWorkingDir();
     // TODO: Ensure we don't end up with double slashes
     // Validate target directory.  Must be within workingdir.
-    if (!($directory = $this->validateDirectory($job, $checkout_directory, $output))) {
+    if (!($directory = $this->validateDirectory($job, $checkout_directory))) {
       // Invalid checkout directory
-      Output::error("Directory Error", "The checkout directory <info>$directory</info> is invalid.", $output);
+      Output::error("Directory Error", "The checkout directory <info>$directory</info> is invalid.", $this->output);
       $job->error();
       return;
     }
-    $output->writeLn("<comment>Performing git checkout of $repo $git_branch branch to $directory.</comment>");
+    $this->output->writeLn("<comment>Performing git checkout of $repo $git_branch branch to $directory.</comment>");
     // TODO: Make sure target directory is empty
     $git_depth = '';
     if (isset($details['depth']) && empty($details['commit_hash'])) {
       $git_depth = '--depth ' . $details['depth'];
     }
     $cmd = "git clone -b $git_branch $git_depth $repo '$directory'";
-    $output->writeLn("Git Command: $cmd");
+    $this->output->writeLn("Git Command: $cmd");
     $this->exec($cmd, $cmdoutput, $result);
     if ($result !==0) {
       // Git threw an error.
-      Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result", $output);
+      Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result", $this->output);
       $job->error();
       return;
     }
 
     if (!empty($details['commit_hash'])) {
       $cmd =  "cd " . $directory . " && git reset -q --hard " . $details['commit_hash'] . " ";
-      $output->writeLn("Git Command: $cmd");
+      $this->output->writeLn("Git Command: $cmd");
       $this->exec($cmd, $cmdoutput, $result);
     }
     if ($result !==0) {
@@ -126,10 +126,10 @@ class Checkout extends SetupBase {
 
     $cmd = "cd '$directory' && git log --oneline -n 1 --decorate";
     $this->exec($cmd, $cmdoutput, $result);
-    $output->writeLn("<comment>Git commit info:</comment>");
-    $output->writeLn("<comment>\t" . implode($cmdoutput));
+    $this->output->writeLn("<comment>Git commit info:</comment>");
+    $this->output->writeLn("<comment>\t" . implode($cmdoutput));
 
-    $output->writeLn("<comment>Checkout complete.</comment>");
+    $this->output->writeLn("<comment>Checkout complete.</comment>");
   }
 
 }

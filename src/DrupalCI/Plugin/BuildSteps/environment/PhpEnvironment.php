@@ -25,7 +25,6 @@ class PhpEnvironment extends EnvironmentBase {
    * @param type $data
    */
   public function run(JobInterface $job, $data) {
-    $output = $this->container['console.output'];
     // Data format: '5.5' or array('5.4', '5.5')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
@@ -45,8 +44,6 @@ class PhpEnvironment extends EnvironmentBase {
    *
    * @param array $data
    * @param JobInterface $job
-   * @param OutputInterface $output
-   *   Console output.
    *
    * @return array
    *   List of Docker images.
