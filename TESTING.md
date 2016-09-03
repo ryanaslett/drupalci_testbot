@@ -24,7 +24,6 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         // Pull down all the images.
         $ cd /tmp
         $ git clone https://git.drupal.org/project/drupal.git
-        $ cd ~/drupalci_testbot
         $ cd /tmp/drupal
         $ composer install
         $ ./bin/phpunit
