@@ -71,9 +71,7 @@ class JobResults {
     global $stepstart;
     if ($status == 'Executing'){
         $stepstart[$build_stage][$build_step] = microtime(TRUE);
-      $foo = $stepstart[$build_stage][$build_step];
       // Output::writeln("<comment><options=bold>Current: $foo</options=bold> </comment>");
-
     }
 
     $this->setCurrentStep($build_step);
@@ -81,11 +79,9 @@ class JobResults {
 
     if ($status == 'Completed'){
       $elasped = microtime(TRUE) - $stepstart[$build_stage][$build_step];
-      Output::writeln("<comment>Elapsed: $elasped <options=bold>$status</options=bold> $build_stage:$build_step </comment>");
-    } else {
-      Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
-
+      // Output::writeln("<comment>Elapsed: $elasped <options=bold>$status</options=bold> $build_stage:$build_step </comment>");
     }
+    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
   }
 
 
