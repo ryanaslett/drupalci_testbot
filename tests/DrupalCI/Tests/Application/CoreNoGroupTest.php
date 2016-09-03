@@ -11,9 +11,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  * This test comes from:
  * https://dispatcher.drupalci.org/job/default/92908/
  *
- * NOTE: This test assumes you have checked out Drupal 8.1.x branch into a
- * directory called /tmp/drupal.git, using a command like this:
- * git clone --bare https://git.drupal.org/project/drupal.git
+ * NOTE: This test assumes you have followed the setup instructions in TESTING.md
  *
  * @group Application
  *
