@@ -14,7 +14,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class PatchFailTest extends DrupalCIFunctionalTestBase {
+class CorePatchFailTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}

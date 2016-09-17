@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
+class CoreD7PassingTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,7 @@ class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
     'DCI_DBVersion=mysql-5.5',
   ];
 
-  public function testBasicTest() {
+  public function testCoreD7Passes() {
 
     $this->setUp();
     $app = $this->getConsoleApp();
@@ -51,7 +51,7 @@ class PassingSimpletestLegacy7Test extends DrupalCIFunctionalTestBase {
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.
     //$this->assertFileEquals();
-    $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/PassingSimpletestLegacy7Test_testresults.xml', $output_file);
+    $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/CoreD7PassingTest_testresults.xml', $output_file);
 
   }
 }

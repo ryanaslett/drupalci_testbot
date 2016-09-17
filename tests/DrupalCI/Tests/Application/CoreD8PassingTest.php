@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
+class CoreD8PassingTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
@@ -53,6 +53,6 @@ class PassingSimpletestTest extends DrupalCIFunctionalTestBase {
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.
     //$this->assertFileEquals();
-    $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/PassingSimpletestTest_testresults.xml', $output_file);
+    $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/CoreD8PassingTest_testresults.xml', $output_file);
   }
 }

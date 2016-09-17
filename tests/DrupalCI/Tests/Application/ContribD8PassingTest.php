@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class ContribDependenciesTest extends DrupalCIFunctionalTestBase {
+class ContribD8PassingTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
@@ -32,7 +32,7 @@ class ContribDependenciesTest extends DrupalCIFunctionalTestBase {
     'DCI_TestItem=directory:modules/token',
   ];
 
-  public function testContribDependencies() {
+  public function testD8Contrib() {
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
     $app_tester = new ApplicationTester($app);

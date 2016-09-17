@@ -6,7 +6,7 @@ use DrupalCI\Tests\DrupalCIFunctionalTestBase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
- * Test what happens when a D7 Contrib module has dependencies.
+ * Test a passing d7 contrib test.
  *
  *
  * NOTE: This test assumes you have followed the setup instructions in TESTING.md
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class ContribDependenciesLegacy7Test extends DrupalCIFunctionalTestBase {
+class ContribD7PassingTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,7 @@ class ContribDependenciesLegacy7Test extends DrupalCIFunctionalTestBase {
     'DCI_TestItem=directory:sites/all/modules/forena',
   ];
 
-  public function testContribDependenciesLegacy7() {
+  public function testD7Contrib() {
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
     $app_tester = new ApplicationTester($app);

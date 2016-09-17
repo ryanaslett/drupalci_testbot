@@ -17,7 +17,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
+class ContribD8NoTestsTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,7 @@ class ContribNoTestsTest extends DrupalCIFunctionalTestBase {
     'DCI_TestItem=directory:modules/drupalci_d8_module_no_tests',
   ];
 
-  public function testContribNoTests() {
+  public function testD8ContribNoTests() {
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
     $app_tester = new ApplicationTester($app);
