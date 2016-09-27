@@ -26,6 +26,7 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         $ git clone https://git.drupal.org/project/drupal.git
         $ cd /tmp/drupal
         $ composer install
+        $ cd ~/drupalci_testbot
         $ ./bin/phpunit
         // Tests run.
         $ ./bin/phpunit --exclude-group docker
