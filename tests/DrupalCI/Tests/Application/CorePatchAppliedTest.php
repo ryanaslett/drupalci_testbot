@@ -45,7 +45,6 @@ class CorePatchAppliedTest extends DrupalCIFunctionalTestBase {
     ], $options);
     $this->assertRegExp('/.*Generic.PHP_.UpperCaseConstant-2572307-24.patch applied.*/', $app_tester->getDisplay());
     $this->assertRegExp('/.*Drupal\\\\system\\\\Tests\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
-    fwrite(STDERR, print_r($app_tester->getDisplay(), TRUE));
     $this->assertEquals(0, $app_tester->getStatusCode());
   }
 }

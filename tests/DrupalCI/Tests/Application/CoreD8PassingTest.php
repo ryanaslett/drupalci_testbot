@@ -36,7 +36,6 @@ class CoreD8PassingTest extends DrupalCIFunctionalTestBase {
 
 
   public function testBasicTest() {
-    $this->setUp();
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
     $app_tester = new ApplicationTester($app);

@@ -68,6 +68,7 @@ class JobResults {
   }
 
   public function updateStepStatus($build_stage, $build_step, $status) {
+    // @todo: figure out how to show timing without a global.
     global $stepstart;
     if ($status == 'Executing'){
         $stepstart[$build_stage][$build_step] = microtime(TRUE);

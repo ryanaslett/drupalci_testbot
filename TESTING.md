@@ -21,12 +21,18 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         $ sudo docker -d &
         $ rm -rf ~/.drupalci
         $ ./drupalci init
-        // Pull down all the images.
+        // Pull down the images.
+        // You'll need the stable versions of PHP 5.3, 5.5, and 7.0.
+        // These are in the web-*.* images.
+        // Re-run drupalci init to pick more images.
         $ cd /tmp
         $ git clone https://git.drupal.org/project/drupal.git
         $ cd /tmp/drupal
         $ composer install
         $ cd ~/drupalci_testbot
+        // Remove existing containers.
+        $ ./drupalci docker-rm containers
+        // Run the tests.
         $ ./bin/phpunit
         // Tests run.
         $ ./bin/phpunit --exclude-group docker
