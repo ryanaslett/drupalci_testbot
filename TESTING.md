@@ -27,8 +27,9 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         // Re-run drupalci init to pick more images.
         $ cd /tmp
         $ git clone https://git.drupal.org/project/drupal.git
+        // Install dependencies for Drupal
         $ cd /tmp/drupal
-        $ composer install
+        $ ~/drupalci_testbot/composer.phar install
         $ cd ~/drupalci_testbot
         // Remove existing containers.
         $ ./drupalci docker-rm containers
