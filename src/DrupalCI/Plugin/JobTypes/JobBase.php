@@ -273,14 +273,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $results->setResultByStep($stage, $step, 'Fail');
   }
 
-  public function shellCommand($cmd) {
-    $process = new Process($cmd);
-    $process->setTimeout(3600*6);
-    $process->setIdleTimeout(3600);
-    $process->run(function ($type, $buffer) {
-        Output::writeln($buffer);
-    });
-   }
 
   public function getExecContainers() {
     $configs = $this->executableContainers;

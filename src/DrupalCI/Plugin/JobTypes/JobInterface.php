@@ -137,16 +137,6 @@ interface JobInterface {
    */
   public function getDocker();
 
-  /**
-   * Execute a shell command.
-   *
-   * @param string $cmd
-   *   The commmand line.
-   *
-   * @see \Symfony\Component\Process\Process::__construct().
-   */
-  public function shellCommand($cmd);
-
   public function configureResultsAPI($config);
   /**
    * Get a list of containers to run Docker exec in.
