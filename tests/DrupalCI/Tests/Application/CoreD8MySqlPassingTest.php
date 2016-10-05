@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class CoreD8PassingTest extends DrupalCIFunctionalTestBase {
+class CoreD8MySqlPassingTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
