@@ -22,7 +22,7 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         $ rm -rf ~/.drupalci
         $ ./drupalci init
         // Pull down the images.
-        // You'll need the stable versions of PHP 5.3, 5.5, and 7.0.
+        // You'll need the stable versions of PHP 5.3, 5.5, 5.6, and 7.0, as well as mysql5.5, pgsql9.1
         // These are in the web-*.* images.
         // Re-run drupalci init to pick more images.
         $ cd /tmp
