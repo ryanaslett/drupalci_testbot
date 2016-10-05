@@ -137,7 +137,6 @@ interface JobInterface {
    */
   public function getDocker();
 
-  public function configureResultsAPI($config);
   /**
    * Get a list of containers to run Docker exec in.
    *
@@ -162,17 +161,6 @@ interface JobInterface {
   public function getServiceContainers();
 
   public function setServiceContainers(array $service_containers);
-
-  public function setResultsServerID($id);
-
-  public function getResultsServerID();
-
-  /**
-   * @return \DrupalCIResultsAPI\API
-   */
-  public function getResultsAPI();
-
-  public function setResultsAPI($api);
 
   public function getArtifacts();
 
