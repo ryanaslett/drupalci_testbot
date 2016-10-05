@@ -158,12 +158,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     return $this->docker;
   }
 
-
-
-
-
-
-
   /**
    * @var array
    */
@@ -488,46 +482,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     return ($results->getResultByStep($results->getCurrentStage(), $results->getCurrentStep()) === "Error");
   }
 
-  public function getArtifactList($include = array()) {
-    // Returns a list of build artifacts relevant to this job type.
-    // Syntax: array(filename1, filename2, ...)
-    $artifacts = array();
-
-    // Artifacts common to all jobs:
-    // - job definition
-    $artifacts['definition'] = "results/job_definition.txt";
-
-    // - standard output
-    $artifacts['stdout'] = "results/stout.txt";
-
-    // - standard error
-    $artifacts['stderr'] = "results/sterr.txt";
-
-    $artifacts = array_merge($artifacts, $include);
-
-    $this->setArtifacts($artifacts);
-
-    return $artifacts;
-  }
-
-  public $artifactFilename;
-
-  /**
-   * @param mixed $artifactFilename
-   */
-  public function setArtifactFilename($artifactFilename)
-  {
-    $this->artifactFilename = $artifactFilename;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getArtifactFilename()
-  {
-    return $this->artifactFilename;
-  }
-
   /**
    * @var /DrupalCI/Job/Artifacts/BuildArtifactList
    */
@@ -591,14 +545,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   public function setArtifactDirectory($artifactDirectory)
   {
     $this->artifactDirectory = $artifactDirectory;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getArtifactDirectory()
-  {
-    return $this->artifactDirectory;
   }
 
   /**

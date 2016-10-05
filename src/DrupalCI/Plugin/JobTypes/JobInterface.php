@@ -167,14 +167,11 @@ interface JobInterface {
 
   public function getErrorState();
 
-
-
   public function getPlatformDefaults();
 
   public function getServiceContainers();
 
   public function setServiceContainers(array $service_containers);
-
 
   public function setResultsServerID($id);
 
@@ -191,16 +188,9 @@ interface JobInterface {
 
   public function setArtifacts($artifacts);
 
-  public function getArtifactFilename();
-
-  public function setArtifactFilename($filename);
-
-  public function getArtifactDirectory();
-
   public function setArtifactDirectory($directory);
 
   public function getDefaultDefinitionTemplate($job_type);
-
 
   public function generateBuildId();
 
