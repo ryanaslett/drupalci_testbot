@@ -55,7 +55,7 @@ else
   apt-get autoclean && apt-get autoremove -y
 
   echo "Installing docker"
-  curl -sSL get.docker.io | sh 2>&1 | egrep -i -v "Ctrl|docker installed"
+  curl -sSL get.docker.io | sed 's/docker-engine/docker-engine=1.6.0-0~trusty/' | sh 2>&1 | egrep -i -v "Ctrl|docker installed"
   usermod -a -G docker vagrant
   cd /home/vagrant/drupalci_testbot
 

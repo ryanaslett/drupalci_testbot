@@ -18,14 +18,22 @@ At this point, the tests for drupalci are somewhat coupled to the environment, s
         $ vagrant up
         // Wait a while...
         $ vagrant ssh
+        $ sudo docker -d &
         $ rm -rf ~/.drupalci
         $ ./drupalci init
-        // Pull down all the images.
+        // Pull down the images.
+        // You'll need the stable versions of PHP 5.3, 5.5, and 7.0.
+        // These are in the web-*.* images.
+        // Re-run drupalci init to pick more images.
         $ cd /tmp
-        $ git clone --branch 8.1.x https://git.drupal.org/project/drupal.git
-        $ cd drupal
-        $ ~/drupalci_testbot/bin/composer install
+        $ git clone https://git.drupal.org/project/drupal.git
+        // Install dependencies for Drupal
+        $ cd /tmp/drupal
+        $ ~/drupalci_testbot/composer.phar install
         $ cd ~/drupalci_testbot
+        // Remove existing containers.
+        $ ./drupalci docker-rm containers
+        // Run the tests.
         $ ./bin/phpunit
         // Tests run.
         $ ./bin/phpunit --exclude-group docker

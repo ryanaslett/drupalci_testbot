@@ -8,29 +8,31 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 /**
  * Test what happens when a patch fails to apply properly.
  *
- * NOTE: This test assumes you have checked out Drupal 8.1.x branch into a
- * directory called /tmp/drupal, using a command like this:
- * git clone --branch 8.1.x https://git.drupal.org/project/drupal.git
+ * NOTE: This test assumes you have followed the setup instructions in TESTING.md
  *
  * @group Application
  *
  * @see TESTING.md
  */
-class PatchFailTest extends DrupalCIFunctionalTestBase {
+class CorePatchFailTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_UseLocalCodebase=/tmp/drupal',
-    'DCI_JobType=simpletest',
     'DCI_CoreBranch=8.1.x',
-    'DCI_TestGroups=ban',
+    'DCI_CoreRepository=file:///tmp/drupal',
+    'DCI_DBVersion=mysql-5.5',
     'DCI_Fetch=http://drupal.org/files/issues/does_not_apply.patch',
+    'DCI_JobType=simpletest',
+    'DCI_JunitXml=xml',
+    'DCI_PHPVersion=7',
     'DCI_Patch=does_not_apply.patch',
+    'DCI_TestGroups=ban',
   ];
 
   public function testBadPatch() {
+
     $app = $this->getConsoleApp();
     $options = ['interactive' => FALSE];
 

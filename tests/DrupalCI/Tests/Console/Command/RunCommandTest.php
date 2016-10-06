@@ -11,7 +11,7 @@ class RunCommandTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_UseLocalCodebase=/tmp/drupal',
+    'DCI_CoreRepository=file:///tmp/drupal',
     'DCI_JobType=simpletest',
     'DCI_TestGroups=ban',
   ];

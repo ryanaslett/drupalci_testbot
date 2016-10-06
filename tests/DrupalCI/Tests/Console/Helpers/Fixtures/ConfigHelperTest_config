@@ -1,0 +1,10 @@
+DCI_RunScript=/var/www/html/core/scripts/run-tests.sh
+DCI_PHPVersion=5.5
+DCI_JobType=simpletest
+DCI_ComposerInstall=True
+DCI_CoreBranch=8.1.x
+DCI_Color=True
+DCI_JunitXml=xml
+DCI_DBVersion=mysql-5.5
+DCI_Concurrency=2
+DCI_TestGroups=Url

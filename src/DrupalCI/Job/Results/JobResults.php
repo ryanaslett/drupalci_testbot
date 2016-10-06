@@ -68,8 +68,20 @@ class JobResults {
   }
 
   public function updateStepStatus($build_stage, $build_step, $status) {
+    // @todo: figure out how to show timing without a global.
+    global $stepstart;
+    if ($status == 'Executing'){
+        $stepstart[$build_stage][$build_step] = microtime(TRUE);
+      // Output::writeln("<comment><options=bold>Current: $foo</options=bold> </comment>");
+    }
+
     $this->setCurrentStep($build_step);
     $this->setResultByStep($build_stage, $build_step, $status);
+
+    if ($status == 'Completed'){
+      $elasped = microtime(TRUE) - $stepstart[$build_stage][$build_step];
+      // Output::writeln("<comment>Elapsed: $elasped <options=bold>$status</options=bold> $build_stage:$build_step </comment>");
+    }
     Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
   }
 
