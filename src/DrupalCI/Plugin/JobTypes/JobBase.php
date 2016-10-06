@@ -157,12 +157,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     return $this->docker;
   }
 
-
-
-
-
-
-
   /**
    * @var array
    */
@@ -178,81 +172,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   // Holds the name and Docker IDs of our executable containers.
   public $executableContainers = [];
-
-
-  // Holds our DrupalCIResultsAPI API
-  protected $resultsAPI = NULL;
-
-  /**
-   * @param API
-   */
-  public function setResultsAPI($resultsAPI)
-  {
-    $this->resultsAPI = $resultsAPI;
-  }
-
-  /**
-   * @return API
-   */
-  public function getResultsAPI()
-  {
-    if (is_null($this->resultsAPI)) {
-      $api = new API();
-      $this->setResultsAPI($api);
-    }
-    return $this->resultsAPI;
-  }
-
-  public function configureResultsAPI($instance) {
-    $api = $this->getResultsAPI();
-    if (!empty($instance['config'])) {
-      $config = $this->loadAPIConfig($instance['config']);
-    }
-    else {
-      $config['results'] = $instance;
-    }
-    $api->setUrl($config['results']['host']);
-    if (!empty($config['results']['username'])) {
-      // Handle case where no password is provided
-      if (empty($config['results']['password'])) {
-        $config['results']['password'] = '';
-      }
-      // Set authorization parameters on the API object
-      $api->setAuth($config['results']['username'], $config['results']['password']);
-    }
-    $this->setResultsAPI($api);
-  }
-
-  protected function loadAPIConfig($source) {
-    $config = array();
-    $source = realpath($source);
-    if ($content = file_get_contents($source)) {
-      $parsed = Yaml::parse($content);
-      $config['results']['host'] = $parsed['results']['host'];
-      $config['results']['username'] = $parsed['results']['username'];
-      $config['results']['password'] = $parsed['results']['password'];
-    }
-    return $config;
-  }
-
-  // Stores a drupalci_results server node ID for this job
-  public $resultsServerID;
-
-  public function setResultsServerID($resultsServerID)
-  {
-    $this->resultsServerID = $resultsServerID;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getResultsServerID()
-  {
-    return $this->resultsServerID;
-  }
-
-
-
 
   public function getServiceContainers() {
     return $this->serviceContainers;
@@ -278,14 +197,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $results->setResultByStep($stage, $step, 'Fail');
   }
 
-  public function shellCommand($cmd) {
-    $process = new Process($cmd);
-    $process->setTimeout(3600*6);
-    $process->setIdleTimeout(3600);
-    $process->run(function ($type, $buffer) {
-        Output::writeln($buffer);
-    });
-   }
 
   public function getExecContainers() {
     $configs = $this->executableContainers;
@@ -520,46 +431,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     return ($results->getResultByStep($results->getCurrentStage(), $results->getCurrentStep()) === "Error");
   }
 
-  public function getArtifactList($include = array()) {
-    // Returns a list of build artifacts relevant to this job type.
-    // Syntax: array(filename1, filename2, ...)
-    $artifacts = array();
-
-    // Artifacts common to all jobs:
-    // - job definition
-    $artifacts['definition'] = "results/job_definition.txt";
-
-    // - standard output
-    $artifacts['stdout'] = "results/stout.txt";
-
-    // - standard error
-    $artifacts['stderr'] = "results/sterr.txt";
-
-    $artifacts = array_merge($artifacts, $include);
-
-    $this->setArtifacts($artifacts);
-
-    return $artifacts;
-  }
-
-  public $artifactFilename;
-
-  /**
-   * @param mixed $artifactFilename
-   */
-  public function setArtifactFilename($artifactFilename)
-  {
-    $this->artifactFilename = $artifactFilename;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getArtifactFilename()
-  {
-    return $this->artifactFilename;
-  }
-
   /**
    * @var /DrupalCI/Job/Artifacts/BuildArtifactList
    */
@@ -623,14 +494,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   public function setArtifactDirectory($artifactDirectory)
   {
     $this->artifactDirectory = $artifactDirectory;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getArtifactDirectory()
-  {
-    return $this->artifactDirectory;
   }
 
   /**

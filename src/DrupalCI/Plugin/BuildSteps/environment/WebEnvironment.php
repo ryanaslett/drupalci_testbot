@@ -16,7 +16,7 @@ use DrupalCI\Plugin\JobTypes\JobInterface;
 /**
  * @PluginID("web")
  */
-class WebEnvironment extends PhpEnvironment {
+class WebEnvironment extends EnvironmentBase {
 
   /**
    * {@inheritdoc}
