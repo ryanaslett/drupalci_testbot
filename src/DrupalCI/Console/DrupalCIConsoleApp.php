@@ -30,7 +30,6 @@ use DrupalCI\Console\Command\Config\ConfigSetCommand;
 use DrupalCI\Console\Command\Config\ConfigShowCommand;
 use DrupalCI\Console\Command\Config\ConfigClearCommand;
 use DrupalCI\Console\Command\Status\StatusCommand;
-use PrivateTravis\PrivateTravisCommand;
 use DrupalCI\Providers\ConsoleCommandProvider;
 
 class DrupalCIConsoleApp extends Application {
