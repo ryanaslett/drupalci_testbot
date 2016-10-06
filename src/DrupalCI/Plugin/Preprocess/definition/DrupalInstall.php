@@ -45,11 +45,6 @@ class DrupalInstall {
     $this->$function($definition, $core_version, $dci_variables);
   }
 
-  protected function process_browser_install(&$definition, $core_version, $dci_variables) {
-    // TODO: Implement browser click-through process
-
-  }
-
   protected function process_drush_install(&$definition, $core_version, $dci_variables) {
     // TODO: Implement drush installation process
     if (empty($definition['install']['command'])) {
