@@ -243,7 +243,9 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $container_config->setCmd($config['Cmd']);
     $host_config = new HostConfig();
     $host_config->setBinds($config['HostConfig']['Binds']);
-    $host_config->setLinks($config['HostConfig']['Links']);
+    if (!empty($config['HostConfig']['Links'])) {
+      $host_config->setLinks($config['HostConfig']['Links']);
+    }
     $container_config->setHostConfig($host_config);
     $parameters = [];
     if (!empty($config['name'])) {
