@@ -6,6 +6,8 @@
 
 namespace DrupalCI\Plugin\JobTypes;
 
+use Docker\API\Model\ContainerConfig;
+use Docker\API\Model\HostConfig;
 use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Console\Output;
@@ -22,9 +24,8 @@ use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
 use DrupalCI\Console\Jobs\ContainerBase;
 use Docker\Docker;
-use Docker\Http\DockerClient as Client;
+use Docker\DockerClient as Client;
 use Symfony\Component\Yaml\Yaml;
-use Docker\Container;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
@@ -151,18 +152,12 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
    */
   public function getDocker()
   {
-    $client = Client::createWithEnv();
+    $client = Client::createFromEnv();
     if (null === $this->docker) {
       $this->docker = new Docker($client);
     }
     return $this->docker;
   }
-
-
-
-
-
-
 
   /**
    * @var array
@@ -179,81 +174,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
 
   // Holds the name and Docker IDs of our executable containers.
   public $executableContainers = [];
-
-
-  // Holds our DrupalCIResultsAPI API
-  protected $resultsAPI = NULL;
-
-  /**
-   * @param API
-   */
-  public function setResultsAPI($resultsAPI)
-  {
-    $this->resultsAPI = $resultsAPI;
-  }
-
-  /**
-   * @return API
-   */
-  public function getResultsAPI()
-  {
-    if (is_null($this->resultsAPI)) {
-      $api = new API();
-      $this->setResultsAPI($api);
-    }
-    return $this->resultsAPI;
-  }
-
-  public function configureResultsAPI($instance) {
-    $api = $this->getResultsAPI();
-    if (!empty($instance['config'])) {
-      $config = $this->loadAPIConfig($instance['config']);
-    }
-    else {
-      $config['results'] = $instance;
-    }
-    $api->setUrl($config['results']['host']);
-    if (!empty($config['results']['username'])) {
-      // Handle case where no password is provided
-      if (empty($config['results']['password'])) {
-        $config['results']['password'] = '';
-      }
-      // Set authorization parameters on the API object
-      $api->setAuth($config['results']['username'], $config['results']['password']);
-    }
-    $this->setResultsAPI($api);
-  }
-
-  protected function loadAPIConfig($source) {
-    $config = array();
-    $source = realpath($source);
-    if ($content = file_get_contents($source)) {
-      $parsed = Yaml::parse($content);
-      $config['results']['host'] = $parsed['results']['host'];
-      $config['results']['username'] = $parsed['results']['username'];
-      $config['results']['password'] = $parsed['results']['password'];
-    }
-    return $config;
-  }
-
-  // Stores a drupalci_results server node ID for this job
-  public $resultsServerID;
-
-  public function setResultsServerID($resultsServerID)
-  {
-    $this->resultsServerID = $resultsServerID;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getResultsServerID()
-  {
-    return $this->resultsServerID;
-  }
-
-
-
 
   public function getServiceContainers() {
     return $this->serviceContainers;
@@ -279,14 +199,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $results->setResultByStep($stage, $step, 'Fail');
   }
 
-  public function shellCommand($cmd) {
-    $process = new Process($cmd);
-    $process->setTimeout(3600*6);
-    $process->setIdleTimeout(3600);
-    $process->run(function ($type, $buffer) {
-        Output::writeln($buffer);
-    });
-   }
 
   public function getExecContainers() {
     $configs = $this->executableContainers;
@@ -324,15 +236,31 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $this->setDefaultCommand($config);
     }
 
-    $instance = new Container($config);
-    $manager->create($instance);
+    // Instantiate container
+    // TODO: Use a normalizer
+    $container_config = new ContainerConfig();
+    $container_config->setImage($config['Image']);
+    $container_config->setCmd($config['Cmd']);
+    $host_config = new HostConfig();
+    $host_config->setBinds($config['HostConfig']['Binds']);
+    $host_config->setLinks($config['HostConfig']['Links']);
+    $container_config->setHostConfig($host_config);
+    $parameters = [];
+    if (!empty($config['name'])) {
+      $parameters = [ 'name' => $config['name'] ];
+    }
 
-    $manager->run($instance, function($output, $type) {
-      fputs($type === 1 ? STDOUT : STDERR, $output);
-    }, [], true);
+    $create_result = $manager->create($container_config, $parameters);
+    $container_id = $create_result->getId();
 
-    $container['id'] = $instance->getID();
-    $container['name'] = $instance->getName();
+    // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
+    $response = $manager->start($container_id);
+    // TODO: Catch and exception if doesn't return 204.
+
+    $service_container = $manager->find($container_id);
+    $container['id'] = $service_container->getID();
+    $container['name'] = $service_container->getName();
+    $container['ip'] = $service_container->getNetworkSettings()->getIPAddress();
     $container['created'] = TRUE;
     $short_id = substr($container['id'], 0, 8);
     Output::writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
@@ -396,12 +324,13 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $docker = $this->getDocker();
     $manager = $docker->getContainerManager();
     $instances = array();
+
+    $images = $manager->findAll();
+
     foreach ($manager->findAll() as $running) {
-      $repo = $running->getImage()->getRepository();
-      $tag = $running->getImage()->getTag();
+      $running_container_name = explode(':',$running->getImage());
       $id = substr($running->getID(), 0, 8);
-      $instance_key = !strcmp('latest',$tag) ? $repo : $repo . ':' . $tag;
-      $instances[$instance_key] = $id;
+      $instances[$running_container_name[0]] = $id;
     };
     foreach ($this->serviceContainers[$container_type] as $key => $image) {
       if (in_array($image['image'], array_keys($instances))) {
@@ -411,7 +340,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
         $container = $manager->find($instances[$image['image']]);
         $container_id = $container->getID();
         $container_name = $container->getName();
-        $container_ip = $container->getRuntimeInformations()["NetworkSettings"]["IPAddress"];
+        $container_ip = $container->getNetworkSettings()->getIPAddress();
         $this->serviceContainers[$container_type][$key]['id'] = $container_id;
         $this->serviceContainers[$container_type][$key]['name'] = $container_name;
         $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
@@ -425,18 +354,32 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       $config = $configs[$image['image']];
       // TODO: Allow classes to modify the default configuration before processing
       // Instantiate container
-      $container = new Container($config);
+
+      // TODO: Use a normalizer
+      $container_config = new ContainerConfig();
+      $container_config->setImage($config['Image']);
+      $host_config = new HostConfig();
+      $host_config->setBinds($config['HostConfig']['Binds']);
+      $container_config->setHostConfig($host_config);
+      $parameters = [];
       if (!empty($config['name'])) {
-        $container->setName($config['name']);
+        $parameters = [ 'name' => $config['name'] ];
       }
+
+      $create_result = $manager->create($container_config, $parameters);
+      $container_id = $create_result->getId();
+
       // Create the docker container instance, running as a daemon.
       // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
-      $manager->run($container, function($output, $type) {
-        fputs($type === 1 ? STDOUT : STDERR, $output);
-      }, [], true);
+      $response = $manager->start($container_id);
+      // TODO: Catch and exception if doesn't return 204.
+
+      $container = $manager->find($container_id);
+
       $container_id = $container->getID();
       $container_name = $container->getName();
-      $container_ip = $container->getRuntimeInformations()["NetworkSettings"]["IPAddress"];
+      $container_ip = $container->getNetworkSettings()->getIPAddress();
+
       $this->serviceContainers[$container_type][$key]['id'] = $container_id;
       $this->serviceContainers[$container_type][$key]['name'] = $container_name;
       $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
@@ -486,46 +429,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   public function getErrorState() {
     $results = $this->getJobResults();
     return ($results->getResultByStep($results->getCurrentStage(), $results->getCurrentStep()) === "Error");
-  }
-
-  public function getArtifactList($include = array()) {
-    // Returns a list of build artifacts relevant to this job type.
-    // Syntax: array(filename1, filename2, ...)
-    $artifacts = array();
-
-    // Artifacts common to all jobs:
-    // - job definition
-    $artifacts['definition'] = "results/job_definition.txt";
-
-    // - standard output
-    $artifacts['stdout'] = "results/stout.txt";
-
-    // - standard error
-    $artifacts['stderr'] = "results/sterr.txt";
-
-    $artifacts = array_merge($artifacts, $include);
-
-    $this->setArtifacts($artifacts);
-
-    return $artifacts;
-  }
-
-  public $artifactFilename;
-
-  /**
-   * @param mixed $artifactFilename
-   */
-  public function setArtifactFilename($artifactFilename)
-  {
-    $this->artifactFilename = $artifactFilename;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getArtifactFilename()
-  {
-    return $this->artifactFilename;
   }
 
   /**
@@ -591,14 +494,6 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
   public function setArtifactDirectory($artifactDirectory)
   {
     $this->artifactDirectory = $artifactDirectory;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getArtifactDirectory()
-  {
-    return $this->artifactDirectory;
   }
 
   /**

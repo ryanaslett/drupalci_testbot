@@ -18,19 +18,16 @@ class PullCommandTest extends CommandTestBase {
     $c = $this->getConsoleApp();
     $command = $c->find('pull');
     $commandTester = new CommandTester($command);
-    try {
-      $commandTester->execute([
-        'command' => $command->getName(),
-        'container_name' => ['foof'],
-      ]);
-    }
-    catch (ImageNotFoundException $e) {
-      $display = $commandTester->getDisplay(TRUE);
-      $this->assertRegExp('`Executing pull ...`', $display);
-      $this->assertRegExp('`Pulling foof:latest container`', $display);
-      return;
-    }
-    $this->fail('Run command did not throw exception or display status info.');
+
+    $commandTester->execute([
+      'command' => $command->getName(),
+      'container_name' => ['foof'],
+    ]);
+
+    $display = $commandTester->getDisplay(TRUE);
+    $this->assertRegExp('`Executing pull ...`', $display);
+    $this->assertRegExp('`Pulling foof:latest container`', $display);
+    return;
   }
 
 }

@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Docker\Context\Context;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Docker\API\Model\CreateImageInfo;
 
 
 class PullCommand extends DrupalCICommandBase {
@@ -60,40 +61,24 @@ class PullCommand extends DrupalCICommandBase {
    */
   protected function pull($name, $tag, InputInterface $input) {
     $manager = $this->getManager();
-    $progressInformation = array();
-    $response = $manager->pull($name, $tag, function ($output) use (&$progressInformation) {
+    $progressInformation = null;
+    $response = $manager->create('', ['fromImage' => $name],  $manager::FETCH_STREAM);
 
-      // Initialize the Counting on how far we are away from completing the docker pull process
-      $current_transfer = 0;
-      $total_transfer = 0;
-      foreach ($progressInformation as $value ) {
-        $current_transfer = $current_transfer + $value['current'];
-        $total_transfer = $total_transfer + $value['total'];
-      }
-
-      // Add the progress data to the array we store in the closure
-      if (isset($output['progressDetail']['total'])) {
-        $progressInformation[$output['id']]['current'] = $output['progressDetail']['current'];
-        $progressInformation[$output['id']]['total'] = $output['progressDetail']['total'];
-        $progressInformation[$output['id']]['status'] = $output['status'];
-        $progressInformation[$output['id']]['id'] = $output['id'];
-      }
-
-      // Start the progress bar and advance it all the time we run the output function
-      $advance = ($current_transfer > $total_transfer) ? $total_transfer : $current_transfer;
-      $progressbar = new ProgressBar(Output::getOutput(), $total_transfer);
-      $progressbar->start();
-      $progressbar->advance($advance);
-
-      // foreach($progressInformation as $status){
-      //   if(isset($status['status']) && isset($status['id'])){
-      //     Output::write("<comment>".$status['id']." - ".$status['status']."</comment>");
-      //     Output::write("<comment>".$status['id']."</comment>");
-      //   }
-      // }
+    //$response->onFrame(function (CreateImageInfo $createImageInfo) use (&$progressInformation) {
+    $response->onFrame(function (CreateImageInfo $createImageInfo) use (&$progressInformation) {
+      $createImageInfoList[] = $createImageInfo;
+        if ($createImageInfo->getStatus() === "Downloading") {
+          $progress = $createImageInfo->getProgress();
+          preg_match("/\]\s+(?P<current>(?:[0-9\.]+)?)\s[kM]*B\/(?P<total>(?:[0-9\.]+)?)\s/",$progress,$status);
+          $progressbar = new ProgressBar(Output::getOutput(), $status['total']);
+          $progressbar->start();
+          $progressbar->advance($status['current']);
+        } else {
+          Output::writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
+        }
     });
-    // $response->getBody()->getContents();
-    // Output::writeln((string) $response);
+    $response->wait();
+
     Output::writeln("");
   }
 }
