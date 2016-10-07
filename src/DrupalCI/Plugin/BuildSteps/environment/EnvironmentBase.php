@@ -29,7 +29,7 @@ abstract class EnvironmentBase extends PluginBase {
         $image = $manager->find($name);
       }
       catch (ClientErrorException $e) {
-        Output::error("Missing Image", "Required container image <options=bold>'$name:$tag'</options=bold> not found.");
+        Output::error("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
         $job->error();
         return FALSE;
       }

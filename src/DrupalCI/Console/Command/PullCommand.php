@@ -43,23 +43,15 @@ class PullCommand extends DrupalCICommandBase {
     foreach ($images as $image) {
         $name = explode (':',$image);
         $container = $name[0];
-        // check if we have a tag in the input
-        if(!empty($name[1])) {
-          $tag = $name[1];
-        }
-        else
-        {
-          $tag = 'latest';
-        }
-        Output::writeln("<comment>Pulling <options=bold>$container:$tag</options=bold> container</comment>");
-        $this->pull($container ,$tag , $input);
+        Output::writeln("<comment>Pulling <options=bold>$container</options=bold> container</comment>");
+        $this->pull($container, $input);
     }
   }
 
   /**
    * (#inheritdoc)
    */
-  protected function pull($name, $tag, InputInterface $input) {
+  protected function pull($name, InputInterface $input) {
     $manager = $this->getManager();
     $progressInformation = null;
     $response = $manager->create('', ['fromImage' => $name],  $manager::FETCH_STREAM);

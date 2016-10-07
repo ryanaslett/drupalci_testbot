@@ -26,7 +26,7 @@ class PullCommandTest extends CommandTestBase {
 
     $display = $commandTester->getDisplay(TRUE);
     $this->assertRegExp('`Executing pull ...`', $display);
-    $this->assertRegExp('`Pulling foof:latest container`', $display);
+    $this->assertRegExp('`Pulling foof container`', $display);
     return;
   }
 
