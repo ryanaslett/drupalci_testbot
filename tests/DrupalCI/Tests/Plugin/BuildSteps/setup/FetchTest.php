@@ -23,7 +23,6 @@ class FetchTest extends DrupalCITestCase {
     $file = 'file.patch';
     $url = 'http://example.com/site/dir/' . $file;
     $dir = 'test/dir';
-    $param = ['send_to' => "$dir/$file"];
 
     $request = $this->getMock('GuzzleHttp\Message\RequestInterface');
 

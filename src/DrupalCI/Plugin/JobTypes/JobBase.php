@@ -350,9 +350,7 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
       // Get container configuration, which defines parameters such as exposed ports, etc.
       $configs = $this->getContainerConfiguration($image['image']);
       $config = $configs[$image['image']];
-
       // TODO: Allow classes to modify the default configuration before processing
-
       // Instantiate container
 
       // TODO: Use a normalizer
