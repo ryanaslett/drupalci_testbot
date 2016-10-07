@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Docker\Context\Context;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Docker\API\Model\CreateImageInfo;
 
 
 class PullCommand extends DrupalCICommandBase {
@@ -60,10 +61,24 @@ class PullCommand extends DrupalCICommandBase {
    */
   protected function pull($name, $tag, InputInterface $input) {
     $manager = $this->getManager();
-    $progressInformation = array();
-    $response = $manager->create('', ['fromImage' => $name, 'tag' => $tag]);
-    // TODO: The Create method returns chunk-encoded json. Rather than trying
-    // to parse this, it was easier to just remove the progress bar for now.
-    Output::writeln("<info>Pull Complete.</info>");
+    $progressInformation = null;
+    $response = $manager->create('', ['fromImage' => $name],  $manager::FETCH_STREAM);
+
+    //$response->onFrame(function (CreateImageInfo $createImageInfo) use (&$progressInformation) {
+    $response->onFrame(function (CreateImageInfo $createImageInfo) use (&$progressInformation) {
+      $createImageInfoList[] = $createImageInfo;
+        if ($createImageInfo->getStatus() === "Downloading") {
+          $progress = $createImageInfo->getProgress();
+          preg_match("/\]\s+(?P<current>(?:[0-9\.]+)?)\s[kM]*B\/(?P<total>(?:[0-9\.]+)?)\s/",$progress,$status);
+          $progressbar = new ProgressBar(Output::getOutput(), $status['total']);
+          $progressbar->start();
+          $progressbar->advance($status['current']);
+        } else {
+          Output::writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
+        }
+    });
+    $response->wait();
+
+    Output::writeln("");
   }
 }
