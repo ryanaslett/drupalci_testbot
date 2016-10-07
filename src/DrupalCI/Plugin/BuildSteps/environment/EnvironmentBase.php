@@ -6,7 +6,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
-use Docker\Exception\ImageNotFoundException;
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\JobTypes\JobInterface;
 use DrupalCI\Plugin\PluginBase;
