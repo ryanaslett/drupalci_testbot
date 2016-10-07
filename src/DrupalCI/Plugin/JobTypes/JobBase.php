@@ -328,9 +328,9 @@ class JobBase extends ContainerBase implements JobInterface, Injectable {
     $images = $manager->findAll();
 
     foreach ($manager->findAll() as $running) {
-      $repo = $running->getImage();
+      $running_container_name = explode(':',$running->getImage());
       $id = substr($running->getID(), 0, 8);
-      $instances[$repo] = $id;
+      $instances[$running_container_name[0]] = $id;
     };
     foreach ($this->serviceContainers[$container_type] as $key => $image) {
       if (in_array($image['image'], array_keys($instances))) {
