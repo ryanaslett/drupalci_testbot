@@ -51,7 +51,7 @@ class CoreD8PostgresPassingTest extends DrupalCIFunctionalTestBase {
         ->getWorkingDir() . "/artifacts/" . $job->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.
-    //$this->assertFileEquals();
     $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/CoreD8PassingTest_testresults.xml', $output_file);
+    $this->assertEquals(0, $app_tester->getStatusCode());
   }
 }
