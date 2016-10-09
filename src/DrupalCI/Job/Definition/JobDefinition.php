@@ -11,7 +11,7 @@ use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -80,7 +80,7 @@ class JobDefinition Implements Injectable {
   /**
    * Compile the complete list of DCI_* variables
    */
-  public function compile(JobInterface $job) {
+  public function compile(BuildInterface $job) {
     // Compile our list of DCI_* variables
     $this->compileDciVariables($job);
   }
@@ -89,7 +89,7 @@ class JobDefinition Implements Injectable {
    * Populates the job definition template based on DCI_* variables and
    * job-specific arguments
    */
-  public function preprocess(JobInterface $job) {
+  public function preprocess(BuildInterface $job) {
     // Execute variable preprocessor plugin logic
     $this->executeVariablePreprocessors();
     // Execute definition preprocessor plugin logic
@@ -107,7 +107,7 @@ class JobDefinition Implements Injectable {
   /**
    * Validate that the job contains all required elements defined in the class
    */
-  public function validate(JobInterface $job) {
+  public function validate(BuildInterface $job) {
     // TODO: Move this to individual tasks. Not plausible to validate a whole Build.
     return TRUE;
   }
@@ -131,7 +131,7 @@ class JobDefinition Implements Injectable {
   /**
    * Compiles the list of available DCI_* variables to consider with this job
    */
-  protected function compileDciVariables(JobInterface $job) {
+  protected function compileDciVariables(BuildInterface $job) {
     // Get and parse external (i.e. anything not from the default definition
     // file) job argument parameters.  DrupalCI jobs are controlled via a
     // hierarchy of configuration settings, which define the behaviour of the

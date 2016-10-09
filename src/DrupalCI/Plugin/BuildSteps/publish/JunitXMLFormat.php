@@ -11,7 +11,7 @@
 namespace DrupalCI\Plugin\BuildSteps\publish;
 use Docker\Docker;
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginBase;
 use PDO;
 use DOMDocument;
@@ -34,7 +34,7 @@ class JunitXMLFormat extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $output_directory) {
+  public function run(BuildInterface $job, $output_directory) {
     // Set up initial variable to store tests
     $CoreBranch = $job->getBuildVars()["DCI_CoreBranch"];
     $DBUrlArray = parse_url($job->getBuildVars()["DCI_DBUrl"]);

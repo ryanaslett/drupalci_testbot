@@ -7,13 +7,13 @@
 
 namespace DrupalCI\Plugin\JobTypes\simpletest;
 
-use DrupalCI\Plugin\JobTypes\JobBase;
+use DrupalCI\Build\BuildBase;
 
 /**
  * @PluginID("simpletest")
  */
 
-class SimpletestJob extends JobBase {
+class SimpletestBuild extends BuildBase {
 
   /**
    * @var string

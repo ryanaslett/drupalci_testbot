@@ -4,12 +4,13 @@
  * Base Job class for DrupalCI.
  */
 
-namespace DrupalCI\Plugin\JobTypes;
+namespace DrupalCI\Build;
 
 use Docker\API\Model\ContainerConfig;
 use Docker\API\Model\HostConfig;
 use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
@@ -30,7 +31,7 @@ use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
 
-class JobBase extends ContainerBase implements JobInterface, Injectable {
+class BuildBase extends ContainerBase implements BuildInterface, Injectable {
 
   use InjectableTrait;
 

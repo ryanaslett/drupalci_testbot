@@ -33,7 +33,7 @@ class FetchTest extends DrupalCITestCase {
       ->will($this->returnValue($request));
 
     $job_codebase = $this->getMock('DrupalCI\Job\CodeBase\JobCodebase');
-    $job = $this->getMockBuilder('DrupalCI\Plugin\JobTypes\JobInterface')
+    $job = $this->getMockBuilder('DrupalCI\Build\JobInterface')
       ->setMethods(['getJobCodebase'])
       ->getMockForAbstractClass();
     $job->expects($this->once())

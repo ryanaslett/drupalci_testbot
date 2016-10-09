@@ -8,12 +8,12 @@
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Plugin\PluginBase;
+use DrupalCI\Build\BuildInterface;
+use DrupalCI\Plugin\PluginBagstse;
 
 abstract class SetupBase extends PluginBase {
 
-  protected function validateDirectory(JobInterface $job, $dir) {
+  protected function validateDirectory(BuildInterface $job, $dir) {
     // Validate target directory.  Must be within workingdir.
     $working_dir = $job->getJobCodebase()->getWorkingDir();
     $true_dir = realpath($dir);

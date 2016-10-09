@@ -3,14 +3,14 @@
  * @file
  * Contains
  */
-namespace DrupalCI\Plugin\JobTypes;
+namespace DrupalCI\Build;
 
 use DrupalCI\Job\CodeBase\JobCodebase;
 use DrupalCI\Job\Definition\JobDefinition;
 use DrupalCI\Job\Results\JobResults;
 use Symfony\Component\Console\Output\OutputInterface;
 
-interface JobInterface {
+interface BuildInterface {
 
   /**
    * @return string
@@ -75,7 +75,7 @@ interface JobInterface {
    *
    * @return array
    *
-   * @see SimpletestJob::$availableArguments
+   * @see SimpletestBuild::$availableArguments
    */
   public function getAvailableArguments();
 
@@ -86,7 +86,7 @@ interface JobInterface {
    *
    * @return array
    *
-   * @see SimpletestJob::$defaultArguments
+   * @see SimpletestBuild::$defaultArguments
    */
   public function getDefaultArguments();
 
@@ -97,7 +97,7 @@ interface JobInterface {
    *
    * @return array
    *
-   * @see SimpletestJob::$requiredArguments
+   * @see SimpletestBuild::$requiredArguments
    */
   public function getRequiredArguments();
 
@@ -106,7 +106,7 @@ interface JobInterface {
    *
    * @return array
    *
-   * @see SimpletestJob::$availableArguments
+   * @see SimpletestBuild::$availableArguments
    */
   public function getBuildVars();
 

@@ -7,7 +7,7 @@
 namespace DrupalCI\Plugin\BuildSteps\dbcreate;
 
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @PluginID("mariadb")
@@ -17,7 +17,7 @@ class MariaDB extends ContainerCommand {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     $parts = parse_url($job->getBuildVar('DCI_DBUrl'));
     $parts['scheme'] = 'mysql';
     $host = $parts['host'];

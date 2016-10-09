@@ -7,13 +7,13 @@
 
 namespace DrupalCI\Plugin\JobTypes\simpletestlegacy6;
 
-use DrupalCI\Plugin\JobTypes\JobBase;
+use DrupalCI\Build\BuildBase;
 
 /**
  * @PluginID("simpletestlegacy6")
  */
 
-class SimpletestLegacy6Job extends JobBase {
+class SimpletestLegacy6Build extends BuildBase {
 
   /**
    * Job Type (jobType)

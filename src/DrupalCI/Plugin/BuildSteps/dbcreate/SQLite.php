@@ -8,7 +8,7 @@
 namespace DrupalCI\Plugin\BuildSteps\dbcreate;
 
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @PluginID("sqlite")
@@ -18,7 +18,7 @@ class SQLite extends ContainerCommand {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Nothing to do here, the SQLite database file will be created by the test
     // runner.
   }

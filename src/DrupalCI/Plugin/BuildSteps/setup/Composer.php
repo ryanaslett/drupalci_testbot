@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 
 /**
@@ -25,7 +25,7 @@ class Composer extends SetupBase {
    *   Arguments for a composer command. May be a string if one composer command
    *   is required to run or an array if multiple commands should run.
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Normalize the arguments to an array format.
     $data_list = (array) $data;
 

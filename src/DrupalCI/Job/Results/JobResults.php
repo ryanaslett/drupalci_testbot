@@ -8,7 +8,7 @@
 namespace DrupalCI\Job\Results;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 class JobResults {
 
@@ -42,12 +42,12 @@ class JobResults {
   public function getPublisher($publisher) {  return $this->publishers[$publisher];  }
 
 
-  public function __construct(JobInterface $job) {
+  public function __construct(BuildInterface $job) {
     // Set up our initial $step_result values
     $this->initStepResults($job);
   }
 
-  protected function initStepResults(JobInterface $job) {
+  protected function initStepResults(BuildInterface $job) {
     // Retrieve the build step tree from the job definition
     $build_steps = $job->getJobDefinition()->getBuildSteps();
     // Set up our initial $step_result values

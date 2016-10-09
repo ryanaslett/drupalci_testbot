@@ -7,13 +7,13 @@
 
 namespace DrupalCI\Plugin\JobTypes\phpunit;
 
-use DrupalCI\Plugin\JobTypes\JobBase;
+use DrupalCI\Build\BuildBase;
 
 /**
  * @PluginID("phpunit")
  */
 
-class PHPUnitJob extends JobBase {
+class PHPUnitBuild extends BuildBase {
 
   /**
    * @var string

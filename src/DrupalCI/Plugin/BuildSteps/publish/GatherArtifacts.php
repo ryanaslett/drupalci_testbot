@@ -9,7 +9,7 @@
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 
@@ -21,7 +21,7 @@ class GatherArtifacts extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $target_directory) {
+  public function run(BuildInterface $job, $target_directory) {
 
     $docker = $job->getDocker();
     $manager = $docker->getContainerManager();

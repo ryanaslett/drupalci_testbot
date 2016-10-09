@@ -10,13 +10,13 @@
 
 namespace DrupalCI\Plugin\JobTypes\generic;
 
-use DrupalCI\Plugin\JobTypes\JobBase;
+use DrupalCI\Build\BuildBase;
 
 /**
  * @PluginID("generic")
  */
 
-class GenericJob extends JobBase {
+class GenericBuild extends BuildBase {
 
   /**
    * @var string
