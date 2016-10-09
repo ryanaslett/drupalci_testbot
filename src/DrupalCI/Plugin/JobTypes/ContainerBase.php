@@ -8,7 +8,7 @@
  * administration, and to maintain functional segregation.
  */
 
-namespace DrupalCI\Console\Jobs;
+namespace DrupalCI\Plugin\JobTypes;
 
 use DrupalCI\Console\Helpers\ContainerHelper;
 

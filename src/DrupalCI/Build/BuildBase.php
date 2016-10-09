@@ -23,7 +23,7 @@ use DrupalCIResultsApi\Api;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
-use DrupalCI\Console\Jobs\ContainerBase;
+use DrupalCI\Plugin\JobTypes\ContainerBase;
 use Docker\Docker;
 use Docker\DockerClient as Client;
 use Symfony\Component\Yaml\Yaml;
