@@ -9,9 +9,9 @@ namespace DrupalCI\Console\Command;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
-use DrupalCI\Job\CodeBase\JobCodeBase;
-use DrupalCI\Job\Definition\JobDefinition;
-use DrupalCI\Job\Results\JobResults;
+use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Definition\BuildDefinition;
+use DrupalCI\Build\Results\BuildResults;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Console\Input\InputInterface;
@@ -93,11 +93,11 @@ class RunCommand extends DrupalCICommandBase {
     $this->job->generateBuildId();
 
     // Create our job Codebase object and attach it to the job.
-    $job_codebase = new JobCodebase();
+    $job_codebase = new CodeBase();
     $this->job->setJobCodebase($job_codebase);
 
     // Create our job Definition object and attach it to the job.
-    $job_definition = new JobDefinition();
+    $job_definition = new BuildDefinition();
     $this->job->setJobDefinition($job_definition);
 
     // Compile our complete list of DCI_* variables
@@ -143,7 +143,7 @@ class RunCommand extends DrupalCICommandBase {
     }
 
     // Create our job Results object and attach it to the job.
-    $job_results = new JobResults($this->job);
+    $job_results = new BuildResults($this->job);
     $this->job->setJobResults($job_results);
 
     // The job should now have a fully merged job definition file, including

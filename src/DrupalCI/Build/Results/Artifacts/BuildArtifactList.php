@@ -5,7 +5,7 @@
  * Contains \DrupalCI\Job\Artifacts\BuildArtifactList.
  */
 
-namespace DrupalCI\Job\Results\Artifacts;
+namespace DrupalCI\Build\Results\Artifacts;
 
 /**
  * Class BuildArtifactList

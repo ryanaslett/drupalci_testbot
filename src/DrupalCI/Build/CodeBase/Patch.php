@@ -2,13 +2,13 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\CodeBase\Patch
+ * Contains \DrupalCI\Build\Codebase\Patch
  */
 
-namespace DrupalCI\Job\CodeBase;
+namespace DrupalCI\Build\Codebase;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Job\CodeBase\JobCodeBase;
+use DrupalCI\Build\Codebase\CodeBase;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 
@@ -166,7 +166,7 @@ class Patch
 
   /**
    * @param string[] $patch_details
-   * @param JobCodeBase $codebase
+   * @param CodeBase $codebase
    */
   public function __construct($patch_details, $codebase)
   {

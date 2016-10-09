@@ -5,14 +5,15 @@
  * Contains \DrupalCI\Job\CodeBase\JobCodebase
  */
 
-namespace DrupalCI\Job\CodeBase;
+namespace DrupalCI\Build\Codebase;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Job\Definition\JobDefinition;
+use DrupalCI\Build\Codebase\Patch;
+use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Job\CodeBase\Repository;
 
-class JobCodebase {
+class CodeBase {
 
   /**
    * The base working directory for this codebase build
@@ -53,7 +54,7 @@ class JobCodebase {
   /**
    * Any patches used to generate this codebase
    *
-   * @var \DrupalCI\Job\CodeBase\Patch[]
+   * @var \DrupalCI\Build\Codebase\Patch[]
    */
   protected $patches;
   public function getPatches() { return $this->patches;  }
@@ -80,9 +81,9 @@ class JobCodebase {
   }
 
   /**
-   * @param JobDefinition $job_definition
+   * @param \DrupalCI\Build\Definition\BuildDefinition $job_definition
    */
-  public function setupProject(JobDefinition $job_definition) {
+  public function setupProject(BuildDefinition $job_definition) {
     // Core Project
     // For future compatibility.  In the future, we could potentially add
     // project specific plugins, in which case users should pass the project
@@ -108,7 +109,7 @@ class JobCodebase {
     }
   }
 
-  protected function determineVersion(JobDefinition $job_definition) {
+  protected function determineVersion(BuildDefinition $job_definition) {
     // It may not always be possible to determine the core project version, but
     // we can make a reasonable guess.
     // Option 1: Use the user-supplied core version, if one exists.
@@ -143,7 +144,7 @@ class JobCodebase {
   /**
    * Initialize Codebase
    */
-  public function setupWorkingDirectory(JobDefinition $job_definition) {
+  public function setupWorkingDirectory(BuildDefinition $job_definition) {
     // Check if the target working directory has been specified.
     $working_dir = $job_definition->getDCIVariable('DCI_WorkingDir');
     $tmp_directory = sys_get_temp_dir();

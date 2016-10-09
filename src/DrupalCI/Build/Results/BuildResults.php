@@ -5,12 +5,12 @@
  * Contains \DrupalCI\Job\Results\JobResults.
  */
 
-namespace DrupalCI\Job\Results;
+namespace DrupalCI\Build\Results;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 
-class JobResults {
+class BuildResults {
 
   protected $current_stage;
   public function getCurrentStage() {  return $this->current_stage;  }

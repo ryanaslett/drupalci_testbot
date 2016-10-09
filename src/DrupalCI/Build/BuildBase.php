@@ -14,11 +14,11 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
-use DrupalCI\Job\Results\Artifacts\BuildArtifact;
-use DrupalCI\Job\Results\Artifacts\BuildArtifactList;
-use DrupalCI\Job\CodeBase\JobCodeBase;
-use DrupalCI\Job\Definition\JobDefinition;
-use DrupalCI\Job\Results\JobResults;
+use DrupalCI\Build\Results\Artifacts\BuildArtifact;
+use DrupalCI\Build\Results\Artifacts\BuildArtifactList;
+use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Definition\BuildDefinition;
+use DrupalCI\Build\Results\BuildResults;
 use DrupalCIResultsApi\Api;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
@@ -64,11 +64,11 @@ class BuildBase extends ContainerBase implements BuildInterface, Injectable {
   /**
    * Stores the job definition object for this job
    *
-   * @var \DrupalCI\Job\Definition\JobDefinition
+   * @var \DrupalCI\Build\Definition\BuildDefinition
    */
   protected $jobDefinition = NULL;
   public function getJobDefinition() {  return $this->jobDefinition;  }
-  public function setJobDefinition(JobDefinition $job_definition) {
+  public function setJobDefinition(BuildDefinition $job_definition) {
     $job_definition->setContainer($this->container);
     $this->jobDefinition = $job_definition;
   }
@@ -76,20 +76,20 @@ class BuildBase extends ContainerBase implements BuildInterface, Injectable {
   /**
    * Stores the codebase object for this job
    *
-   * @var \DrupalCI\Job\CodeBase\JobCodebase
+   * @var \DrupalCI\Build\Codebase\CodeBase
    */
   protected $jobCodebase;
   public function getJobCodebase() {  return $this->jobCodebase;  }
-  public function setJobCodebase(JobCodeBase $job_codebase)  {  $this->jobCodebase = $job_codebase;  }
+  public function setJobCodebase(CodeBase $job_codebase)  {  $this->jobCodebase = $job_codebase;  }
 
   /**
    * Stores the results object for this job
    *
-   * @var \DrupalCI\Job\Results\JobResults
+   * @var \DrupalCI\Build\Results\BuildResults
    */
   protected $jobResults;
   public function getJobResults() {  return $this->jobResults;  }
-  public function setJobResults(JobResults $job_results)  {  $this->jobResults = $job_results;  }
+  public function setJobResults(BuildResults $job_results)  {  $this->jobResults = $job_results;  }
 
   /**
    * Defines argument variable names which are valid for this job type

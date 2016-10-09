@@ -5,9 +5,9 @@
  */
 namespace DrupalCI\Build;
 
-use DrupalCI\Job\CodeBase\JobCodebase;
-use DrupalCI\Job\Definition\JobDefinition;
-use DrupalCI\Job\Results\JobResults;
+use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Definition\BuildDefinition;
+use DrupalCI\Build\Results\BuildResults;
 use Symfony\Component\Console\Output\OutputInterface;
 
 interface BuildInterface {
@@ -38,34 +38,34 @@ interface BuildInterface {
   public function setBuildId($id);
 
   /**
-   * @return \DrupalCI\Job\Definition\JobDefinition
+   * @return \DrupalCI\Build\Definition\BuildDefinition
    */
   public function getJobDefinition();
 
   /**
-   * @param \DrupalCI\Job\Definition\JobDefinition $job_definition
+   * @param \DrupalCI\Build\Definition\BuildDefinition $job_definition
    */
-  public function setJobDefinition(JobDefinition $job_definition);
+  public function setJobDefinition(BuildDefinition $job_definition);
 
   /**
-   * @return \DrupalCI\Job\CodeBase\JobCodebase
+   * @return \DrupalCI\Build\Codebase\CodeBase
    */
   public function getJobCodebase();
 
   /**
-   * @param \DrupalCI\Job\CodeBase\JobCodebase $job_codebase
+   * @param \DrupalCI\Build\Codebase\CodeBase $job_codebase
    */
-  public function setJobCodebase(JobCodebase $job_codebase);
+  public function setJobCodebase(CodeBase $job_codebase);
 
   /**
-   * @return \DrupalCI\Job\Results\JobResults
+   * @return \DrupalCI\Build\Results\BuildResults
    */
   public function getJobResults();
 
   /**
-   * @param \DrupalCI\Job\Results\JobResults $job_results
+   * @param \DrupalCI\Build\Results\BuildResults $job_results
    */
-  public function setJobResults(JobResults $job_results);
+  public function setJobResults(BuildResults $job_results);
 
 
   /**

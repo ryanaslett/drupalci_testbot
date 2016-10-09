@@ -5,7 +5,7 @@
  * Contains \DrupalCI\Job\Definition\JobDefinition.
  */
 
-namespace DrupalCI\Job\Definition;
+namespace DrupalCI\Build\Definition;
 
 use DrupalCI\Console\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-class JobDefinition Implements Injectable {
+class BuildDefinition Implements Injectable {
 
   use InjectableTrait;
 

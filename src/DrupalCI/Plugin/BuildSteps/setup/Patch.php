@@ -10,7 +10,7 @@ namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Job\CodeBase\Patch as PatchFile;
+use DrupalCI\Build\Codebase\Patch as PatchFile;
 
 /**
  * @PluginID("patch")
