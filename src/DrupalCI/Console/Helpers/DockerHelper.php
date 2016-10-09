@@ -77,7 +77,6 @@ class DockerHelper extends DrupalCIHelperBase {
     $output->writeln("<error>ERROR: Docker not found.</error>");
     $output->writeln("Unable to locate the docker binary.  Has Docker been installed on this host?");
     $output->writeln("If so, please ensure the docker binary location exists on your $PATH, and that the current user has sufficient permissions to run Docker.");
-    #$output->writeln("If Docker is not yet installed, you may attempt to have DrupalCI install docker using the <info>drupalci docker::update</info> command.");
   }
 
   /**
@@ -87,7 +86,6 @@ class DockerHelper extends DrupalCIHelperBase {
     $output->writeln("<error>ERROR: Obsolete Docker version.</error>");
     $output->writeln("The version of Docker located on this machine does not meet DrupalCI's minimum version requirement.");
     $output->writeln("DrupalCI requires Docker 1.0.0 or greater. Please upgrade Docker.");
-    #$output->writeln('You may attempt to have DrupalCI install docker using the <info>drupalci docker::update</info> command.');
   }
 
 }
