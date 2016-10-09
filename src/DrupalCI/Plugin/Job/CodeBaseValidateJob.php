@@ -3,6 +3,6 @@
 namespace Plugin\Job;
 
 
-class CodeBaseValidateJob {
+class CodeBaseValidateJob implements JobInterface {
 
 }

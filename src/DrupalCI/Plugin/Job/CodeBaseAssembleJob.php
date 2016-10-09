@@ -3,6 +3,6 @@
 namespace Plugin\Job;
 
 
-class CodeBaseAssembleJob {
+class CodeBaseAssembleJob implements JobInterface {
 
 }

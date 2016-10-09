@@ -3,6 +3,6 @@
 namespace Plugin\Job;
 
 
-class RunTestsJob {
+class RunTestsJob implements JobInterface {
 
 }
