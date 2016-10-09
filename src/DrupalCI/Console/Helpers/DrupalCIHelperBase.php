@@ -19,10 +19,4 @@ class DrupalCIHelperBase {
     return shell_exec("command -v " . escapeshellcmd($cmd));
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getErrors() {
-    return $this->errors;
-  }
 }
