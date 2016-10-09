@@ -32,8 +32,8 @@ class FetchTest extends DrupalCITestCase {
       ->with($url, ['save_to' => "$dir/$file"])
       ->will($this->returnValue($request));
 
-    $job_codebase = $this->getMock('DrupalCI\Job\CodeBase\JobCodebase');
-    $job = $this->getMockBuilder('DrupalCI\Build\JobInterface')
+    $job_codebase = $this->getMock('DrupalCI\Build\CodeBase\Codebase');
+    $job = $this->getMockBuilder('DrupalCI\Build\BuildInterface')
       ->setMethods(['getJobCodebase'])
       ->getMockForAbstractClass();
     $job->expects($this->once())

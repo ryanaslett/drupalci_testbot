@@ -24,7 +24,7 @@ class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
   public function setUp() {
     $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
     Output::setOutput($this->output);
-    $this->job = $this->getMock('DrupalCI\Build\JobInterface');
+    $this->job = $this->getMock('DrupalCI\Build\BuildInterface');
   }
 
 }
