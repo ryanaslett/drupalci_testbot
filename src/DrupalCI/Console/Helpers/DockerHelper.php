@@ -68,30 +68,7 @@ class DockerHelper extends DrupalCIHelperBase {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function installDocker(OutputInterface $output) {
-    if ($this->locateBinary()) {
-      $output->writeln("<error>ERROR: Docker already installed.</error>");
-      $this->printVersion($output);
-      # TODO: Docker already installed.  Throw an exception.
-    }
-    else {
-      $output->writeln("<info>Installing Docker ...</info>");
-      exec('curl -s get.docker.io | sh 2>&1 | egrep -i -v "Ctrl|docker installed"', $install_output, $result_code);
-      if ($result_code != 0) {
-        $output->writeln("<error>ERROR: Docker Installation returned a non-successful return code.");
-        $output->writeln("<info>Result:</info>");
-        $output->writeln($install_output);
-      }
-      else {
-        $output->writeln($install_output);
-        $output->writeln("<info>Docker Installation complete.</info>");
-        $this->printVersion($output);
-      }
-    }
-  }
+
 
   /**
    * {@inheritdoc}
@@ -111,20 +88,6 @@ class DockerHelper extends DrupalCIHelperBase {
     $output->writeln("The version of Docker located on this machine does not meet DrupalCI's minimum version requirement.");
     $output->writeln("DrupalCI requires Docker 1.0.0 or greater. Please upgrade Docker.");
     #$output->writeln('You may attempt to have DrupalCI install docker using the <info>drupalci docker::update</info> command.');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function checkForUpdate() {
-    echo "TODO";
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function updateDocker() {
-    echo "TODO";
   }
 
 }
