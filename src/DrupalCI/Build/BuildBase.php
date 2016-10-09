@@ -295,7 +295,7 @@ class BuildBase extends ContainerBase implements BuildInterface, Injectable {
   }
 
   public function getContainerConfiguration($image = NULL) {
-    $path = __DIR__ . '/../../Containers';
+    $path = __DIR__ . '/../Containers';
     // RecursiveDirectoryIterator recurses into directories and returns an
     // iterator for each directory. RecursiveIteratorIterator then iterates over
     // each of the directory iterators, which consecutively return the files in
@@ -512,7 +512,7 @@ class BuildBase extends ContainerBase implements BuildInterface, Injectable {
    *   The location of the default job definition template
    */
   public function getDefaultDefinitionTemplate($job_type) {
-    return __DIR__ . "/$job_type/drupalci.yml";
+    return __DIR__ . "/../Plugin/JobTypes/$job_type/drupalci.yml";
   }
 
   /**
