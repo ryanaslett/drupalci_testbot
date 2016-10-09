@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use DrupalCI\Console\Helpers\ContainerHelper;
+use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class InitBaseContainersCommand extends DrupalCICommandBase {

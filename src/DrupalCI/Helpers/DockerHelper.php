@@ -5,9 +5,9 @@
  * DrupalCI Docker helper class.
  */
 
-namespace DrupalCI\Console\Helpers;
+namespace DrupalCI\Helpers;
 
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
+use DrupalCI\Helpers\DrupalCIHelperBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Console\Command;
 
-use DrupalCI\Console\Helpers\ConfigHelper;
+use DrupalCI\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\CodeBase;
 use DrupalCI\Build\Definition\BuildDefinition;

@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Build\Definition;
 
-use DrupalCI\Console\Helpers\ConfigHelper;
+use DrupalCI\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;

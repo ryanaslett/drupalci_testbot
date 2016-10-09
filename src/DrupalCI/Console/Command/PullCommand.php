@@ -8,7 +8,7 @@
 namespace DrupalCI\Console\Command;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\ContainerHelper;
+use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;

@@ -5,9 +5,9 @@
  * DrupalCI Config helper class.
  */
 
-namespace DrupalCI\Console\Helpers;
+namespace DrupalCI\Helpers;
 
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
+use DrupalCI\Helpers\DrupalCIHelperBase;
 use DrupalCI\Console\Output;
 
 class ConfigHelper extends DrupalCIHelperBase {

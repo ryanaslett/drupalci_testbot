@@ -5,9 +5,9 @@
  * DrupalCI Container helper class.
  */
 
-namespace DrupalCI\Console\Helpers;
+namespace DrupalCI\Helpers;
 
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
+use DrupalCI\Helpers\DrupalCIHelperBase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 

@@ -5,7 +5,7 @@
  * Base Helper class for Drupal CI.
  */
 
-namespace DrupalCI\Console\Helpers;
+namespace DrupalCI\Helpers;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
