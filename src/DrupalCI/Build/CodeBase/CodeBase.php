@@ -13,7 +13,7 @@ use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Job\CodeBase\Repository;
 
-class CodeBase {
+class CodeBase implements CodeBaseInterface {
 
   /**
    * The base working directory for this codebase build

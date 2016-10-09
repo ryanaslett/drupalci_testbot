@@ -16,8 +16,7 @@ use GuzzleHttp\ClientInterface;
  * Class Patch
  * @package DrupalCI\Job\CodeBase
  */
-class Patch
-{
+class Patch implements PatchInterface {
 
   /**
    * Local or Remote Patch File
