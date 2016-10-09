@@ -9,7 +9,7 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Plugin\PluginBagstse;
+use DrupalCI\Plugin\PluginBase;
 
 abstract class SetupBase extends PluginBase {
 
