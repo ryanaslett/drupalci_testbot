@@ -200,7 +200,6 @@ class BuildBase implements BuildInterface, Injectable {
     $results->setResultByStep($stage, $step, 'Fail');
   }
 
-
   public function getExecContainers() {
     $configs = $this->executableContainers;
     foreach ($configs as $type => $containers) {
