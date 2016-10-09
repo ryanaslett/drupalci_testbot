@@ -31,7 +31,7 @@ use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
 
-class BuildBase extends ContainerBase implements BuildInterface, Injectable {
+class BuildBase implements BuildInterface, Injectable {
 
   use InjectableTrait;
 

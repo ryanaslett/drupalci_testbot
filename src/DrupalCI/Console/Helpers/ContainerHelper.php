@@ -30,7 +30,7 @@ class ContainerHelper extends DrupalCIHelperBase {
    * {@inheritdoc}
    */
   public function getAllContainers() {
-    $options = $this->getDBContainers() + $this->getWebContainers() + $this->getPhpContainers() + $this->getBaseContainers();
+    $options = $this->getDbContainers() + $this->getWebContainers() + $this->getPhpContainers() + $this->getBaseContainers();
     return $options;
   }
 
@@ -62,31 +62,4 @@ class ContainerHelper extends DrupalCIHelperBase {
     return $this->getContainers('base');
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function containerExists($container) {
-    $containers = $this->getAllContainers();
-    return in_array($container, array_keys($containers));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function startContainer($container) {
-    $containers = $this->getAllContainers();
-    $name = 'drupalci/' . explode('/', $container)[1];
-    $dir = $containers[$name];
-    $cmd = "cd " . $dir . " && sudo ./run-server.sh";
-    $process = new Process($cmd);
-
-    try {
-      $process->mustRun();
-      echo $process->getOutput();
-    }
-    catch (ProcessFailedException $e) {
-      echo $e->getMessage();
-    }
-    return;
-  }
 }
