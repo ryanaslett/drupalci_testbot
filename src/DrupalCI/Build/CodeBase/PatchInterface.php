@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ryan
- * Date: 10/9/16
- * Time: 10:41 AM
- */
+
 namespace DrupalCI\Build\Codebase;
 
 
