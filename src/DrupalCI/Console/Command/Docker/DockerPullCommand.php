@@ -5,7 +5,7 @@
  * Command class for pull.
  */
 
-namespace DrupalCI\Console\Command\Pull;
+namespace DrupalCI\Console\Command\Docker;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Helpers\ContainerHelper;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Docker\API\Model\CreateImageInfo;
 
 
-class PullCommand extends DrupalCICommandBase {
+class DockerPullCommand extends DrupalCICommandBase {
 
   /**
    * {@inheritdoc}

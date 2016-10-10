@@ -5,8 +5,9 @@
  * Command class for build.
  */
 
-namespace DrupalCI\Console\Command\Build;
+namespace DrupalCI\Console\Command\Docker;
 
+use DrupalCI\Console\Command\Build\DrupalCICommandBase;
 use DrupalCI\Helpers\ContainerHelper;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Docker\Context\Context;
 
-class BuildCommand extends DrupalCICommandBase {
+class DockerBuildCommand extends DrupalCICommandBase {
 
   /**
    * {@inheritdoc}
