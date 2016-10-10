@@ -5,7 +5,7 @@
  * Base command class for Drupal CI.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Drupal;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Providers\DockerServiceProvider;

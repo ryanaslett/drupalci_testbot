@@ -5,7 +5,7 @@
  * Command class for docker remove.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Docker;
 
 use DrupalCI\Console\Command\DrupalCICommandBase;
 use DrupalCI\Helpers\ContainerHelper;

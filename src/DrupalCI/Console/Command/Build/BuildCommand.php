@@ -5,7 +5,7 @@
  * Command class for build.
  */
 
-namespace DrupalCI\Console\Command;
+namespace DrupalCI\Console\Command\Build;
 
 use DrupalCI\Helpers\ContainerHelper;
 use DrupalCI\Console\Output;
