@@ -11,7 +11,7 @@ namespace Plugin;
 interface BuildTaskInterface {
 
   public function run();
-  public function getConfiguration();
+  public function getDefaultConfiguration();
   public function getResultCode();
   public function getResultString();
   public function getResult();
