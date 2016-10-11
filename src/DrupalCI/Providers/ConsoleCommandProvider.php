@@ -2,7 +2,7 @@
 
 namespace DrupalCI\Providers;
 
-use DrupalCI\Console\Command\BuildCommand;
+use DrupalCI\Console\Command\Docker\DockerBuildCommand;
 use DrupalCI\Console\Command\Config\ConfigClearCommand;
 use DrupalCI\Console\Command\Config\ConfigListCommand;
 use DrupalCI\Console\Command\Config\ConfigLoadCommand;
@@ -10,7 +10,7 @@ use DrupalCI\Console\Command\Config\ConfigResetCommand;
 use DrupalCI\Console\Command\Config\ConfigSaveCommand;
 use DrupalCI\Console\Command\Config\ConfigSetCommand;
 use DrupalCI\Console\Command\Config\ConfigShowCommand;
-use DrupalCI\Console\Command\DockerRemoveCommand;
+use DrupalCI\Console\Command\Docker\DockerRemoveCommand;
 use DrupalCI\Console\Command\Init\InitAllCommand;
 use DrupalCI\Console\Command\Init\InitBaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitConfigCommand;
@@ -19,8 +19,8 @@ use DrupalCI\Console\Command\Init\InitDependenciesCommand;
 use DrupalCI\Console\Command\Init\InitDockerCommand;
 use DrupalCI\Console\Command\Init\InitPhpContainersCommand;
 use DrupalCI\Console\Command\Init\InitWebContainersCommand;
-use DrupalCI\Console\Command\PullCommand;
-use DrupalCI\Console\Command\RunCommand;
+use DrupalCI\Console\Command\Docker\DockerPullCommand;
+use DrupalCI\Console\Command\Run\RunCommand;
 use DrupalCI\Console\Command\Status\StatusCommand;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -39,10 +39,10 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
       return new StatusCommand();
     };
     $container['command.build'] = function ($container) {
-      return new BuildCommand();
+      return new DockerBuildCommand();
     };
     $container['command.pull'] = function ($container) {
-      return new PullCommand();
+      return new DockerPullCommand();
     };
     $container['command.config.list'] = function ($container) {
       return new ConfigListCommand();

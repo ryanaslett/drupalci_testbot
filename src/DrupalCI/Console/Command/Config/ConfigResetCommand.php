@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Console\Command\Config;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Helpers\ConfigHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Console\Command\Status;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Helpers\DrupalCIHelperBase;
 use DrupalCI\Helpers\DockerHelper;
 use Symfony\Component\Console\Input\InputInterface;

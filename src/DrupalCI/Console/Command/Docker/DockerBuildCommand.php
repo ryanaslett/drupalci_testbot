@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Console\Command\Docker;
 
-use DrupalCI\Console\Command\Build\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Helpers\ContainerHelper;
 use DrupalCI\Console\Output;
 use Symfony\Component\Console\Input\InputInterface;

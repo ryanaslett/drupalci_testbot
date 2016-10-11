@@ -8,7 +8,7 @@
 namespace DrupalCI\Console\Command\Init;
 
 //use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
