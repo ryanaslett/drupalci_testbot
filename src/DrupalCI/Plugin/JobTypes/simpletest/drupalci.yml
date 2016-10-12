@@ -37,28 +37,34 @@ execute:
     - php %DCI_RunScript% --list --php /opt/phpenv/shims/php > /var/www/html/artifacts/testgroups.txt
   # Run non-JS tests.
   simpletest:
-    testgroups: %DCI_TestGroups%
     xmlformat: %DCI_RTXmlPath%
     runtests:
-      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --types "Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional" %DCI_TestGroups%
-      xml: %DCI_RTXmlPath%
-      color: %DCI_RTColor%
-      concurrency: %DCI_RTConcurrency%
-      die_on_fail: %DCI_RTDieOnFail%
-      sqlite: %DCI_RTSqlite%
-      verbose: %DCI_RTVerbose%
-  # Run JS tests.
-  simpletest:
-    testgroups: %DCI_TestGroups%
-    xmlformat: %DCI_RTXmlPath%
-    runtests:
-      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --keep-results-table --types PHPUnit-FunctionalJavascript %DCI_TestGroups%
-      xml: %DCI_RTXmlPath%
       color: %DCI_RTColor%
       concurrency: 1
       die_on_fail: %DCI_RTDieOnFail%
+      dburl: %DCI_DBurl%
+      keep_results_table: %DCI_RTKeepResultsTable%
       sqlite: %DCI_RTSqlite%
+      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --types "Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional" %DCI_TestGroups%
+      testgroups: %DCI_TestGroups%
+      url: %DCI_RTUrl%
       verbose: %DCI_RTVerbose%
+      xml: %DCI_RTXmlPath%
+  # Run JS tests.
+  simpletest:
+    xmlformat: %DCI_RTXmlPath%
+    runtests:
+      color: %DCI_RTColor%
+      concurrency: 1
+      die_on_fail: %DCI_RTDieOnFail%
+      dburl: %DCI_DBurl%
+      keep_results_table: TRUE
+      sqlite: %DCI_RTSqlite%
+      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% %DCI_RunOptions% --types PHPUnit-FunctionalJavascript
+      testgroups: %DCI_TestGroups%
+      url: %DCI_RTUrl%
+      verbose: %DCI_RTVerbose%
+      xml: %DCI_RTXmlPath%
 publish:
   gather_artifacts: /var/www/html/artifacts
   # archive: /var/www/html/results/artifacts.zip
