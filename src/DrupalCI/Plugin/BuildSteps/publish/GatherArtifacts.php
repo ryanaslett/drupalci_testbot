@@ -8,30 +8,40 @@
  */
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
-use DrupalCI\Console\Output;
+
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
+use Pimple\Container;
 
 /**
  * @PluginID("gather_artifacts")
  */
-class GatherArtifacts extends PluginBase {
+class GatherArtifacts extends PluginBase implements Injectable {
+
+  /**
+   * @var \DrupalCI\Plugin\PluginManagerInterface
+   */
+  protected $buildStepPluginManager;
+
+  public function setContainer(Container $container) {
+    $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
+  }
 
   /**
    * {@inheritdoc}
    */
   public function run(BuildInterface $job, $target_directory) {
 
-    $docker = $job->getDocker();
-    $manager = $docker->getContainerManager();
-
     Output::writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
 
     // Create the destination directory
     if (!empty($target_directory)) {
-      $command = new ContainerCommand();
-      $command->run($job, "mkdir -p $target_directory");
+      $cmd = "mkdir -p $target_directory";
+      $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
+      $command->run($job, $cmd);
     }
 
     // Store the directory in our job object
@@ -51,8 +61,8 @@ class GatherArtifacts extends PluginBase {
         if (!empty($destination_filename)) {
           $file = $target_directory . DIRECTORY_SEPARATOR . $destination_filename;
           // TODO: Verify file name - unique, empty, etc.
-          $command = new ContainerCommand();
           $cmd = "cat >$file <<EOL \n" . print_r($definition, TRUE) . "\nEOL";
+          $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
           $command->run($job, $cmd);
         }
         else {
@@ -65,8 +75,8 @@ class GatherArtifacts extends PluginBase {
         $file = $artifact->getValue();
         $dest = $target_directory . DIRECTORY_SEPARATOR . basename($file);
         if ($file !== $dest) {
-          $command = new ContainerCommand();
           $cmd = "cp -r $file $dest";
+          $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
           $command->run($job, $cmd);
         }
         else {
@@ -77,8 +87,8 @@ class GatherArtifacts extends PluginBase {
         // Write string to new file with filename based on the string's key
         $dest = $target_directory . DIRECTORY_SEPARATOR . $key;
         $content = $artifact->getValue;
-        $command = new ContainerCommand();
         $cmd = "cat >$dest <<EOL \n" . print_r($content, TRUE) . "\nEOL";
+        $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
         $command->run($job, $cmd);
       }
     }

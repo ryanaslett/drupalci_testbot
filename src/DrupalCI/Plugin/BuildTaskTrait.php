@@ -2,6 +2,7 @@
 
 namespace DrupalCI\Plugin;
 
+use DrupalCI\Build\ConfigResolver;
 use DrupalCI\Plugin\BuildTaskInterface;
 
 /**

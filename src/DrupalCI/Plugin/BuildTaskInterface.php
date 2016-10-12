@@ -11,7 +11,7 @@ use DrupalCI\Build\BuildInterface;
  */
 interface BuildTaskInterface {
 
-  public function run(BuildInterface $job, $data);
+  public function run(BuildInterface $job, &$data);
 
   /**
    * Gives a list of default values for variables for this task.

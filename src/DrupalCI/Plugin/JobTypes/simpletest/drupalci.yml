@@ -40,13 +40,14 @@ execute:
     xmlformat: %DCI_RTXmlPath%
     runtests:
       color: %DCI_RTColor%
-      concurrency: 1
-      die_on_fail: %DCI_RTDieOnFail%
+      concurrency: %DCI_RTConcurrency%
+      die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
-      keep_results_table: %DCI_RTKeepResultsTable%
-      sqlite: %DCI_RTSqlite%
-      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --types "Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional" %DCI_TestGroups%
+      keep-results-table: %DCI_RTKeepResultsTable%
+      sqlite: %DCI_Sqlite%
+      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%
+      types: Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional
       url: %DCI_RTUrl%
       verbose: %DCI_RTVerbose%
       xml: %DCI_RTXmlPath%
@@ -56,12 +57,13 @@ execute:
     runtests:
       color: %DCI_RTColor%
       concurrency: 1
-      die_on_fail: %DCI_RTDieOnFail%
+      die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
-      keep_results_table: TRUE
-      sqlite: %DCI_RTSqlite%
-      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% %DCI_RunOptions% --types PHPUnit-FunctionalJavascript
+      keep-results-table: TRUE
+      sqlite: %DCI_Sqlite%
+      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%
+      types: PHPUnit-FunctionalJavascript
       url: %DCI_RTUrl%
       verbose: %DCI_RTVerbose%
       xml: %DCI_RTXmlPath%

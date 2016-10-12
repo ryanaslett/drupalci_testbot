@@ -34,7 +34,7 @@ class JunitXMLFormat extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $output_directory) {
+  public function run(BuildInterface $job, &$output_directory) {
     // Set up initial variable to store tests
     $CoreBranch = $job->getBuildVars()["DCI_CoreBranch"];
     $DBUrlArray = parse_url($job->getBuildVars()["DCI_DBUrl"]);
@@ -93,6 +93,7 @@ class JunitXMLFormat extends PluginBase {
       }
       // Crack open the sqlite database.
       $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($job->getBuildVar('DCI_SQLite'));
+
       $db = new PDO('sqlite:' . $dbfile);
     }
 
@@ -106,11 +107,7 @@ class JunitXMLFormat extends PluginBase {
 
     $q_result = $db->query('SELECT * FROM simpletest ORDER BY test_id, test_class, message_id;');
 
-    $results = array();
-
-    $cases = 0;
-    $errors = 0;
-    $failures = 0;
+    $classes = [];
 
     //while ($result = $q_result->fetchAll()) {
     while ($result = $q_result->fetch(PDO::FETCH_ASSOC)) {
