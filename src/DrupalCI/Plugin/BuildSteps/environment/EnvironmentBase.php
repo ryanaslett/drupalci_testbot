@@ -7,7 +7,7 @@
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginBase;
 use Http\Client\Common\Exception\ClientErrorException;
 
@@ -16,7 +16,7 @@ use Http\Client\Common\Exception\ClientErrorException;
  */
 abstract class EnvironmentBase extends PluginBase {
 
-  public function validateImageNames($containers, JobInterface $job) {
+  public function validateImageNames($containers, BuildInterface $job) {
     // Verify that the appropriate container images exist
     Output::writeLn("<comment>Validating container images exist</comment>");
     $docker = $job->getDocker();

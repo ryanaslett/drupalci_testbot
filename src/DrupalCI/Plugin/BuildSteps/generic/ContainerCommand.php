@@ -12,7 +12,7 @@ use Docker\API\Model\ExecConfig;
 use Docker\API\Model\ExecStartConfig;
 use Docker\Manager\ExecManager;
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginBase;
 
 /**
@@ -23,7 +23,7 @@ class ContainerCommand extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Data format: 'command [arguments]' or array('command [arguments]', 'command [arguments]')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary

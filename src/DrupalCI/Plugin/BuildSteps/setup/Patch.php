@@ -9,8 +9,8 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
-use DrupalCI\Job\CodeBase\Patch as PatchFile;
+use DrupalCI\Build\BuildInterface;
+use DrupalCI\Build\Codebase\Patch as PatchFile;
 
 /**
  * @PluginID("patch")
@@ -20,7 +20,7 @@ class Patch extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Data format:
     // i) array('patch_file' => '...', 'patch_dir' => '...')
     // or

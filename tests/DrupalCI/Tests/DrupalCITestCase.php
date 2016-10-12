@@ -17,14 +17,14 @@ class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
   protected $output;
 
   /**
-   * @var \DrupalCI\Plugin\JobTypes\JobInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \DrupalCI\Build\BuildInterface|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $job;
 
   public function setUp() {
     $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
     Output::setOutput($this->output);
-    $this->job = $this->getMock('DrupalCI\Plugin\JobTypes\JobInterface');
+    $this->job = $this->getMock('DrupalCI\Build\BuildInterface');
   }
 
 }

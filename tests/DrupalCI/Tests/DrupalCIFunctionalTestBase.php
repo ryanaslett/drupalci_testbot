@@ -2,7 +2,7 @@
 
 namespace DrupalCI\Tests;
 
-use DrupalCI\Console\Helpers\ConfigHelper;
+use DrupalCI\Helpers\ConfigHelper;
 use DrupalCI\Providers\DrupalCIServiceProvider;
 use DrupalCI\Tests\DrupalCITestCase;
 use Pimple\Container;

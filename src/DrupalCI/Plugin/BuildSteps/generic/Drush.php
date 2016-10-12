@@ -6,7 +6,7 @@
 
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @PluginID("drush")
@@ -18,7 +18,7 @@ class Drush extends ContainerCommand {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Data format: 'drush arguments' or array('drush arguments', 'drush arguments')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary

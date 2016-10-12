@@ -9,7 +9,7 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 
 /**
@@ -20,7 +20,7 @@ class SyntaxCheck extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     if ($data != FALSE) {
       Output::writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
 

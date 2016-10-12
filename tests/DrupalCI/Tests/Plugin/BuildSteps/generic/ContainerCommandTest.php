@@ -9,7 +9,7 @@ use Docker\Docker;
 use Docker\Manager\ExecManager;
 use Docker\Stream\DockerRawStream;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Tests\DrupalCITestCase;
 
 /**
@@ -26,7 +26,7 @@ class ContainerCommandTest extends DrupalCITestCase {
 
     $docker = $this->getMock(Docker::class);
 
-    $job = $this->getMockBuilder(JobInterface::class)
+    $job = $this->getMockBuilder(BuildInterface::class)
       ->getMockForAbstractClass();
     $job->expects($this->once())
       ->method('getDocker')

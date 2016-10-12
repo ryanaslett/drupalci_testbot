@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Tests\Console\Helpers;
 
-use DrupalCI\Console\Helpers\ConfigHelper;
+use DrupalCI\Helpers\ConfigHelper;
 use DrupalCI\Tests\DrupalCITestCase;
 
 class ConfigHelperTest extends DrupalCITestCase {

@@ -11,7 +11,7 @@
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @PluginID("db")
@@ -21,7 +21,7 @@ class DbEnvironment extends EnvironmentBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // We don't need to initialize any service container for SQLite.
     if (strpos($job->getBuildVar('DCI_DBVersion'), 'sqlite') === 0) {
       return;
@@ -41,7 +41,7 @@ class DbEnvironment extends EnvironmentBase {
     }
   }
 
-  public function buildImageNames($data, JobInterface $job) {
+  public function buildImageNames($data, BuildInterface $job) {
     $images = [];
     foreach ($data as $key => $db_version) {
       $images["$db_version"]['image'] = "drupalci/$db_version";

@@ -9,7 +9,7 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use GuzzleHttp\Client;
 
 /**
@@ -25,7 +25,7 @@ class Fetch extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Data format:
     // i) array('url' => '...', 'fetch_dir' => '...')
     // or

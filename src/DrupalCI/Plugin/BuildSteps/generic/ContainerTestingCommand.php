@@ -9,7 +9,7 @@
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginBase;
 /**
  * @PluginID("testcommand")

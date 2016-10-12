@@ -9,7 +9,7 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @PluginID("checkout")
@@ -19,7 +19,7 @@ class Checkout extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Data format:
     // i) array('protocol' => 'local', 'srcdir' => '/tmp/drupal', 'checkout_dir' => '/tmp/checkout')
     // checkout_dir is optional.
@@ -51,7 +51,7 @@ class Checkout extends SetupBase {
     return;
   }
 
-  protected function setupCheckoutLocal(JobInterface $job, $details) {
+  protected function setupCheckoutLocal(BuildInterface $job, $details) {
     $source_dir = isset($details['source_dir']) ? $details['source_dir'] : './';
     $checkout_dir = isset($details['checkout_dir']) ? $details['checkout_dir'] : $job->getJobCodebase()->getWorkingDir();
     // TODO: Ensure we don't end up with double slashes
@@ -81,7 +81,7 @@ class Checkout extends SetupBase {
     Output::writeLn("<comment>DONE</comment>");
   }
 
-  protected function setupCheckoutGit(JobInterface $job, $details) {
+  protected function setupCheckoutGit(BuildInterface $job, $details) {
     Output::writeLn("<info>Entering setup_checkout_git().</info>");
     $repo = isset($details['repo']) ? $details['repo'] : 'git://drupalcode.org/project/drupal.git';
 

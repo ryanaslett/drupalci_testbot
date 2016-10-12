@@ -11,7 +11,7 @@
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Plugin\JobTypes\JobInterface;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @PluginID("web")
@@ -21,7 +21,7 @@ class WebEnvironment extends EnvironmentBase {
   /**
    * {@inheritdoc}
    */
-  public function run(JobInterface $job, $data) {
+  public function run(BuildInterface $job, $data) {
     // Data format: '5.5' or array('5.4', '5.5')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
@@ -37,7 +37,7 @@ class WebEnvironment extends EnvironmentBase {
     }
   }
 
-  protected function buildImageNames($data, JobInterface $job) {
+  protected function buildImageNames($data, BuildInterface $job) {
     $images = [];
     foreach ($data as $key => $php_version) {
       $images["web-$php_version"]['image'] = "drupalci/web-$php_version";
