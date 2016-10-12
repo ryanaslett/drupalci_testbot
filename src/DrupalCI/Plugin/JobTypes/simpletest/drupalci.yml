@@ -35,9 +35,30 @@ execute:
     - supervisorctl start phantomjs
     - php -v
     - php %DCI_RunScript% --list --php /opt/phpenv/shims/php > /var/www/html/artifacts/testgroups.txt
-  testcommand:
-    - cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --types "Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional" %DCI_TestGroups%
-    - cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --concurrency 1 --keep-results-table --types PHPUnit-FunctionalJavascript %DCI_TestGroups%
+  # Run non-JS tests.
+  simpletest:
+    testgroups: %DCI_TestGroups%
+    xmlformat: %DCI_RTXmlPath%
+    runtests:
+      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --types "Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional" %DCI_TestGroups%
+      xml: %DCI_RTXmlPath%
+      color: %DCI_RTColor%
+      concurrency: %DCI_RTConcurrency%
+      die_on_fail: %DCI_RTDieOnFail%
+      sqlite: %DCI_RTSqlite%
+      verbose: %DCI_RTVerbose%
+  # Run JS tests.
+  simpletest:
+    testgroups: %DCI_TestGroups%
+    xmlformat: %DCI_RTXmlPath%
+    runtests:
+      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript% --url http://localhost/checkout --dburl %DCI_DBurl% %DCI_RunOptions% --keep-results-table --types PHPUnit-FunctionalJavascript %DCI_TestGroups%
+      xml: %DCI_RTXmlPath%
+      color: %DCI_RTColor%
+      concurrency: 1
+      die_on_fail: %DCI_RTDieOnFail%
+      sqlite: %DCI_RTSqlite%
+      verbose: %DCI_RTVerbose%
 publish:
   gather_artifacts: /var/www/html/artifacts
   # archive: /var/www/html/results/artifacts.zip
