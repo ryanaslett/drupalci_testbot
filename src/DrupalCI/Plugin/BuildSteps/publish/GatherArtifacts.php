@@ -12,14 +12,21 @@ namespace DrupalCI\Plugin\BuildSteps\publish;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
+use DrupalCI\Plugin\BuildTaskInterface;
+use DrupalCI\Plugin\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
-use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 use Pimple\Container;
 
 /**
  * @PluginID("gather_artifacts")
  */
-class GatherArtifacts extends PluginBase implements Injectable {
+class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectable {
+
+  use BuildTaskTrait;
+
+  public function getDefaultConfiguration() {
+    return [];
+  }
 
   /**
    * @var \DrupalCI\Plugin\PluginManagerInterface
@@ -33,7 +40,8 @@ class GatherArtifacts extends PluginBase implements Injectable {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $target_directory) {
+  public function run(BuildInterface $job, &$config) {
+    $target_directory = $config['artifact_directory'];
 
     Output::writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
 

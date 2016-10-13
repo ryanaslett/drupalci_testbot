@@ -12,6 +12,8 @@ namespace DrupalCI\Plugin\BuildSteps\publish;
 use Docker\Docker;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Plugin\BuildTaskInterface;
+use DrupalCI\Plugin\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use PDO;
 use DOMDocument;
@@ -19,7 +21,20 @@ use DOMDocument;
 /**
  * @PluginID("junit_xmlformat")
  */
-class JunitXMLFormat extends PluginBase {
+class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
+
+  use BuildTaskTrait;
+
+  public function getDefaultConfiguration() {
+    return [
+      'DCI_CoreBranch' => '',
+      'DCI_DBUrl' => '',
+      'DCI_DBVersion' => '',
+      'DCI_SQLite' => '',
+      'DCI_JunitXml' => 'xml',
+      'DCI_XMLOutput' => '/var/www/html/results/xml',
+    ];
+  }
 
   protected $testlist = [];
   public function setTestlist($testlist)  {  $this->testlist = $testlist; }
@@ -34,17 +49,10 @@ class JunitXMLFormat extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, &$output_directory) {
-    // Set up initial variable to store tests
-    $CoreBranch = $job->getBuildVars()["DCI_CoreBranch"];
-    $DBUrlArray = parse_url($job->getBuildVars()["DCI_DBUrl"]);
-    $DBVersion = $job->getBuildVars()["DCI_DBVersion"];
-    $DBScheme = $DBUrlArray["scheme"];
-    $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
-    $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
-    $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
-    $DBIp = $job->getServiceContainers()["db"][$DBVersion]["ip"];
-    $tests = [];
+  public function run(BuildInterface $job, &$data) {
+    $config = $this->resolveDciVariables($data);
+
+    $core_branch = $config['core_branch'];
 
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
@@ -55,14 +63,21 @@ class JunitXMLFormat extends PluginBase {
     $this->loadTestList($source_dir . DIRECTORY_SEPARATOR . 'artifacts/testgroups.txt');
 
     // Set up output directory (inside working directory)
-    $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $output_directory;
+    $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $config['xml_output'];
     mkdir($output_directory, 0777, TRUE);
 
     // Set an initial default group, in case leading tests are found with no group.
     $group = 'nogroup';
     // Iterate through and process the test list
     $test_list = $this->getTestlist();
-    if(strcmp($CoreBranch,'7.x') === 0 || strcmp($CoreBranch,'6.x') === 0){
+    if(strcmp($core_branch,'7.x') === 0 || strcmp($core_branch,'6.x') === 0){
+      $DBUrlArray = parse_url($config['db_url']);
+      $DBVersion = $config['db_version'];
+      $DBScheme = $DBUrlArray["scheme"];
+      $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
+      $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
+      $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
+      $DBIp = $job->getServiceContainers()["db"][$DBVersion]["ip"];
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
@@ -92,8 +107,7 @@ class JunitXMLFormat extends PluginBase {
         }
       }
       // Crack open the sqlite database.
-      $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($job->getBuildVar('DCI_SQLite'));
-
+      $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($config['sqlite']);
       $db = new PDO('sqlite:' . $dbfile);
     }
 

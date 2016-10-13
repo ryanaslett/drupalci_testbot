@@ -44,7 +44,7 @@ execute:
       die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
       keep-results-table: %DCI_RTKeepResultsTable%
-      sqlite: %DCI_Sqlite%
+      sqlite: %DCI_SQLite%
       testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%
       types: Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional
@@ -60,7 +60,7 @@ execute:
       die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
       keep-results-table: TRUE
-      sqlite: %DCI_Sqlite%
+      sqlite: %DCI_SQLite%
       testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%
       types: PHPUnit-FunctionalJavascript
@@ -68,7 +68,15 @@ execute:
       verbose: %DCI_RTVerbose%
       xml: %DCI_RTXmlPath%
 publish:
-  gather_artifacts: /var/www/html/artifacts
+  gather_artifacts:
+    artifact_directory: /var/www/html/artifacts
+  junit_xmlformat:
+    xml_output: %DCI_XMLOutput%
+    core_branch: %DCI_CoreBranch%
+    db_url: %DCI_DBUrl&
+    db_version: %DCI_DBVersion%
+    sqlite: %DCI_SQLite%
+
   # archive: /var/www/html/results/artifacts.zip
   # junit_xmlformat:
 

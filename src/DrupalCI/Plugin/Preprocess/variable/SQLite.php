@@ -9,7 +9,7 @@ namespace DrupalCI\Plugin\Preprocess\variable;
 use DrupalCI\Plugin\PluginBase;
 
 /**
- * @PluginID("sqlite")
+ * @PluginID("sq_lite")
  */
 class SQLite extends PluginBase {
 

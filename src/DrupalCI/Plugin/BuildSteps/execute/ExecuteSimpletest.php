@@ -58,7 +58,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
    */
   public function run(BuildInterface $job, &$data) {
     $data = $this->resolveDciVariables($data);
-    $data['runtests']['sqlite'] = $job->getBuildVar('DCI_Sqlite');
+    $data['runtests']['sqlite'] = $job->getBuildVar('DCI_SQLite');
 
     $command = [$data['runtests']['testcommand']];
     $command[] = $this->getRunTestsFlagValues($data['runtests']);

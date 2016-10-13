@@ -68,15 +68,6 @@ class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
       ['TestItem', 'abc', 'file:myfile', '--file myfile'],
       ['TestItem', 'abc', 'directory:mydir', '--directory mydir'],
       ['TestItem', 'abc', 'invalid:entry', 'abc'],
-      // DCI_Verbose
-      ['Verbose', 'abc', 'true', 'abc --verbose'],
-      ['Verbose', 'abc', 'false', 'abc'],
-      ['Verbose', 'abc', 'abc', 'abc'],
-      ['Verbose', 'abc', '', 'abc'],
-      // DCI_XMLOutput
-      ['XMLOutput', 'abc', 'myfile', 'abc --xml myfile'],
-      ['XMLOutput', 'abc', '\myfile', 'abc --xml \myfile'],
-      ['XMLOutput', 'abc', '', 'abc --xml '],     // TODO: Fix logic for empty input
     ];
   }
 

@@ -41,7 +41,8 @@ execute:
     - cd /var/www/html && sudo -u www-data php %DCI_RunScript% --list --php %DCI_PHPInterpreter% > /var/www/html/artifacts/testgroups.txt
     - cd /var/www/html && sudo -u www-data php %DCI_RunScript% --php %DCI_PHPInterpreter% --url http://localhost/checkout %DCI_RunOptions% %DCI_TestGroups%
 publish:
-  gather_artifacts: /var/www/html/artifacts
+  gather_artifacts:
+    artifact_directory: /var/www/html/artifacts
   # archive: /var/www/html/results/artifacts.zip
   # junit_xmlformat:
 #  drupalci_results:

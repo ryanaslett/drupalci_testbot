@@ -22,7 +22,7 @@ trait BuildTaskTrait {
    * @return array
    *   Config with substitutions provided for %DCI_Variables%.
    */
-  protected function resolveDciVariables($config) {
+  protected function resolveDciVariables(&$config) {
     if ($this instanceof BuildTaskInterface) {
       // Use $this->dciReplace() as a callback for walking the array.
       array_walk_recursive($config, [$this, 'dciReplace'], $this->getDefaultConfiguration());
@@ -45,7 +45,7 @@ trait BuildTaskTrait {
   private function dciReplace(&$value, $key, $dci_defaults) {
     if (preg_match_all("/%(.*?)%/", $value, $match)) {
       foreach ($match[1] as $i => $dci_variable) {
-        $dci_default = isset($dci_defaults[$dci_variable]) ? $dci_defaults[$dci_variable] : NULL;
+        $dci_default = isset($dci_defaults[$dci_variable]) ? $dci_defaults[$dci_variable] : '';
         $value = ConfigResolver::getConfig($dci_variable, $dci_default);
       }
     }
