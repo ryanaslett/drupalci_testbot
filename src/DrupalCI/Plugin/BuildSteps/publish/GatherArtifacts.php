@@ -4,7 +4,7 @@
  * Contains \DrupalCI\Plugin\BuildSteps\publish\GatherArtifacts
  *
  * Processes "publish: gather_artifacts:" instructions from within a build definition.
- * Generates build build artifact files in a common directory.
+ * Generates build artifact files in a common directory.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
@@ -26,7 +26,7 @@ class GatherArtifacts extends PluginBase {
     $docker = $build->getDocker();
     $manager = $docker->getContainerManager();
 
-    Output::writeLn("<comment>Gathering build build artifacts in a common directory ...</comment>");
+    Output::writeLn("<comment>Gathering build artifacts in a common directory ...</comment>");
 
     // Create the destination directory
     if (!empty($target_directory)) {
