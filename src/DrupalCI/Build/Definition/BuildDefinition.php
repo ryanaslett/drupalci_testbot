@@ -299,10 +299,4 @@ class BuildDefinition Implements Injectable {
     return $this->pluginManager;
   }
 
-
-
-  // Other potential methods for this class:
-  // insert build step before/after
-  // get/set DCI_parameters
-
 }
