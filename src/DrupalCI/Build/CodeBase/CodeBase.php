@@ -11,7 +11,6 @@ use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\Patch;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Job\CodeBase\Repository;
 
 class CodeBase implements CodeBaseInterface {
 
