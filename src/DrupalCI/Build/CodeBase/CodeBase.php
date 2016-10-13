@@ -167,7 +167,9 @@ class CodeBase implements CodeBaseInterface {
     }
     // Create directory if it doesn't already exist
     if (!is_dir($working_dir)) {
+      $oldmask = umask(0);
       $result = mkdir($working_dir, 0777, TRUE);
+      umask($oldmask);
       if (!$result) {
         // Error creating checkout directory
         Output::error('Directory Creation Error', 'Error encountered while attempting to create local working directory');

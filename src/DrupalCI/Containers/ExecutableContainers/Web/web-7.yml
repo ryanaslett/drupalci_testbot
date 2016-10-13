@@ -8,8 +8,8 @@ Cmd:              ["/usr/local/bin/start.sh"]
 Mountpoint:       "/var/www/html"
 HostConfig:
   "Binds":
-    - "/var/lib/drupalci/artifacts:/var/www/html/sites/simpletest"
-    - "/var/lib/drupalci/docker-tmp:/tmp"
+    - "/private/var/lib/drupalci/artifacts:/var/www/html/sites/simpletest:rw"
+    - "/tmp:/tmp:rw"
 
 # -----------------------------------------------------------------------------
 # Exposing container ports to the host
@@ -17,7 +17,7 @@ HostConfig:
 # e.g. Map Container port 80 to Host port 80
 #ExposedPorts:
 #  80/tcp: []
-#HostConfig:
+#HostConfig: sit
 #  "PortBindings":
 #    "80/tcp":
 #      - "HostPort": "80"

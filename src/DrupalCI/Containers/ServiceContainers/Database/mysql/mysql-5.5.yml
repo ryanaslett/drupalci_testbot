@@ -5,7 +5,7 @@ Image:            "drupalci/mysql-5.5"
 name:             drupaltestbot-db-mysql-5-5
 HostConfig:
   "Binds":
-    - "/var/lib/drupalci/database/mysql-5-5:/var/lib/mysql"
+    - "/private/var/lib/drupalci/database/mysql-5-5:/var/lib/mysql:rw"
 
 
 # -----------------------------------------------------------------------------

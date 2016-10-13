@@ -8,6 +8,7 @@ namespace DrupalCI\Build;
 
 use Docker\API\Model\ContainerConfig;
 use Docker\API\Model\HostConfig;
+use Docker\API\Model\PortBinding;
 use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Build\BuildInterface;
@@ -290,7 +291,7 @@ class BuildBase implements BuildInterface, Injectable {
     // Map working directory
     $working = $this->getJobCodebase()->getWorkingDir();
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
-    $config['HostConfig']['Binds'][] = "$working:$mount_point";
+    $config['HostConfig']['Binds'][] = "$working:$mount_point:rw";
   }
 
   public function getContainerConfiguration($image = NULL) {
@@ -362,6 +363,20 @@ class BuildBase implements BuildInterface, Injectable {
       $container_config->setImage($config['Image']);
       $host_config = new HostConfig();
       $host_config->setBinds($config['HostConfig']['Binds']);
+      // $host_config->setPublishAllPorts(TRUE);
+      $portMap = new \ArrayObject();
+
+      $portBinding = new PortBinding();
+      $portBinding->setHostIp('172.17.0.2');
+      $portBinding->setHostPort('3306');
+      $portMap['3306/tcp'] = [$portBinding];
+      $host_config->setPortBindings($portMap);
+
+      $exposedPorts = new \ArrayObject();
+      $exposedPorts['3306/tcp'] = new \ArrayObject();
+      $container_config->setExposedPorts($exposedPorts);
+
+
       $container_config->setHostConfig($host_config);
       $parameters = [];
       if (!empty($config['name'])) {

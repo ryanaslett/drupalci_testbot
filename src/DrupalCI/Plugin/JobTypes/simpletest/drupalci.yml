@@ -19,12 +19,12 @@ setup:
   mkdir:
     - /var/www/html/results
     - /var/www/html/artifacts
-    - /var/www/html/sites/simpletest/xml
+    # - /var/www/html/sites/simpletest/xml
   command:
     - ln -s /var/www/html /var/www/html/checkout
-    - chown -fR www-data:www-data /var/www/html/sites /var/www/html/results
-    - chmod 0777 /var/www/html/artifacts
-    - chmod 0777 /tmp
+    # - chown -fR www-data:www-data /var/www/html/sites /var/www/html/results
+    # - chmod 0777 /var/www/html/artifacts
+    # - chmod 0777 /tmp
     - sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c 'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini' || echo -n"
   syntaxcheck: true
 # The 'install' key is currently required for the dbcreate plugin
