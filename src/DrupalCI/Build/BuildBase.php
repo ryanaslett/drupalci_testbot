@@ -511,7 +511,7 @@ class BuildBase implements BuildInterface, Injectable {
    *   The location of the default job definition template
    */
   public function getDefaultDefinitionTemplate($job_type) {
-    return __DIR__ . "/../Plugin/JobTypes/$job_type/drupalci.yml";
+    return __DIR__ . "/../../../build_templates/$job_type/drupalci.yml";
   }
 
   /**
