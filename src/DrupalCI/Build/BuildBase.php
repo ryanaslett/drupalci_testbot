@@ -62,7 +62,26 @@ class BuildBase implements BuildInterface, Injectable {
   public function setBuildId($buildId) {  $this->buildId = $buildId;  }
 
   /**
-   * Stores the job definition object for this job
+   * Stores the pift-ci-job id for this build.
+   *
+   * @var string
+   */
+  protected $drupalOrgBuildId;
+  public function getDrupalOrgBuildId() {  return $this->drupalOrgBuildId;  }
+  public function setDrupalOrgBuildId($drupalOrgBuildId) {  $this->drupalOrgBuildId = $drupalOrgBuildId;  }
+
+  /**
+   * Stores the jenkins build id for this build.
+   *
+   * @var string
+   */
+  protected $jenkinsBuildId;
+  public function getJenkinsBuildId() {  return $this->jenkinsBuildId;  }
+  public function setJenksinBuildId($jenkinsBuildId) {  $this->jenkinsBuildId = $jenkinsBuildId;  }
+
+
+  /**
+   * Stores the build definition object for this build
    *
    * @var \DrupalCI\Build\Definition\BuildDefinition
    */
