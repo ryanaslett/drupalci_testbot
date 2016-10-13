@@ -3,8 +3,8 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\publish\GatherArtifacts
  *
- * Processes "publish: gather_artifacts:" instructions from within a job definition.
- * Generates job build artifact files in a common directory.
+ * Processes "publish: gather_artifacts:" instructions from within a build definition.
+ * Generates build build artifact files in a common directory.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\publish;
@@ -21,43 +21,43 @@ class GatherArtifacts extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $target_directory) {
+  public function run(BuildInterface $build, $target_directory) {
 
-    $docker = $job->getDocker();
+    $docker = $build->getDocker();
     $manager = $docker->getContainerManager();
 
-    Output::writeLn("<comment>Gathering job build artifacts in a common directory ...</comment>");
+    Output::writeLn("<comment>Gathering build build artifacts in a common directory ...</comment>");
 
     // Create the destination directory
     if (!empty($target_directory)) {
       $command = new ContainerCommand();
-      $command->run($job, "mkdir -p $target_directory");
+      $command->run($build, "mkdir -p $target_directory");
     }
 
-    // Store the directory in our job object
-    $job->setArtifactDirectory($target_directory);
+    // Store the directory in our build object
+    $build->setArtifactDirectory($target_directory);
 
-    // Retrieve the list of build artifacts from the job
-    $artifacts = $job->getArtifacts();
+    // Retrieve the list of build artifacts from the build
+    $artifacts = $build->getArtifacts();
 
     // Iterate over the build artifacts
     foreach ($artifacts->getArtifacts() as $key => $artifact) {
-      if ($key == 'jobDefinition') {
+      if ($key == 'buildDefinition') {
         $destination_filename = $artifact->getValue();
 
-        // Retrieve the job definition from the job
-        $definition = $job->getJobDefinition()->getDefinition();
-        // write the job definition out to a file in the artifact directory on the container.
+        // Retrieve the build definition from the build
+        $definition = $build->getBuildDefinition()->getDefinition();
+        // write the build definition out to a file in the artifact directory on the container.
         if (!empty($destination_filename)) {
           $file = $target_directory . DIRECTORY_SEPARATOR . $destination_filename;
           // TODO: Verify file name - unique, empty, etc.
           $command = new ContainerCommand();
           $cmd = "cat >$file <<EOL \n" . print_r($definition, TRUE) . "\nEOL";
-          $command->run($job, $cmd);
+          $command->run($build, $cmd);
         }
         else {
           // TODO: Exception handling
-          Output::writeLn('<info>Error generating job definition build artifact.');
+          Output::writeLn('<info>Error generating build definition build artifact.');
         }
       }
       elseif (strtolower($artifact->getType()) == 'file' || $artifact->getType() == 'directory') {
@@ -67,7 +67,7 @@ class GatherArtifacts extends PluginBase {
         if ($file !== $dest) {
           $command = new ContainerCommand();
           $cmd = "cp -r $file $dest";
-          $command->run($job, $cmd);
+          $command->run($build, $cmd);
         }
         else {
           Output::writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
@@ -79,7 +79,7 @@ class GatherArtifacts extends PluginBase {
         $content = $artifact->getValue;
         $command = new ContainerCommand();
         $cmd = "cat >$dest <<EOL \n" . print_r($content, TRUE) . "\nEOL";
-        $command->run($job, $cmd);
+        $command->run($build, $cmd);
       }
     }
   }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Base Job class for DrupalCI.
+ * Base Build class for DrupalCI.
  */
 
 namespace DrupalCI\Build;
@@ -36,12 +36,12 @@ class BuildBase implements BuildInterface, Injectable {
   use InjectableTrait;
 
   /**
-   * Stores the job type
+   * Stores the build type
    *
    * @var string
    */
-  protected $jobType = 'base';
-  public function getJobType() {  return $this->jobType;  }
+  protected $buildType = 'base';
+  public function getBuildType() {  return $this->buildType;  }
 
   /**
    * Stores the calling command's output buffer
@@ -53,7 +53,7 @@ class BuildBase implements BuildInterface, Injectable {
   public function getOutput() {  return $this->output;  }
 
   /**
-   * Stores a build ID for this job
+   * Stores a build ID for this build
    *
    * @var string
    */
@@ -85,33 +85,33 @@ class BuildBase implements BuildInterface, Injectable {
    *
    * @var \DrupalCI\Build\Definition\BuildDefinition
    */
-  protected $jobDefinition = NULL;
-  public function getJobDefinition() {  return $this->jobDefinition;  }
-  public function setJobDefinition(BuildDefinition $job_definition) {
-    $job_definition->setContainer($this->container);
-    $this->jobDefinition = $job_definition;
+  protected $buildDefinition = NULL;
+  public function getBuildDefinition() {  return $this->buildDefinition;  }
+  public function setBuildDefinition(BuildDefinition $build_definition) {
+    $build_definition->setContainer($this->container);
+    $this->buildDefinition = $build_definition;
   }
 
   /**
-   * Stores the codebase object for this job
+   * Stores the codebase object for this build
    *
    * @var \DrupalCI\Build\Codebase\CodeBase
    */
-  protected $jobCodebase;
-  public function getJobCodebase() {  return $this->jobCodebase;  }
-  public function setJobCodebase(CodeBase $job_codebase)  {  $this->jobCodebase = $job_codebase;  }
+  protected $codeBase;
+  public function getCodebase() {  return $this->codeBase;  }
+  public function setCodebase(CodeBase $codeBase)  {  $this->codeBase = $codeBase;  }
 
   /**
-   * Stores the results object for this job
+   * Stores the results object for this build
    *
    * @var \DrupalCI\Build\Results\BuildResults
    */
-  protected $jobResults;
-  public function getJobResults() {  return $this->jobResults;  }
-  public function setJobResults(BuildResults $job_results)  {  $this->jobResults = $job_results;  }
+  protected $buildResults;
+  public function getBuildResults() {  return $this->buildResults;  }
+  public function setBuildResults(BuildResults $build_results)  {  $this->buildResults = $build_results;  }
 
   /**
-   * Defines argument variable names which are valid for this job type
+   * Defines argument variable names which are valid for this build type
    *
    * @var array
    */
@@ -119,7 +119,7 @@ class BuildBase implements BuildInterface, Injectable {
   public function getAvailableArguments() {  return $this->availableArguments;  }
 
   /**
-   * Defines the default arguments which are valid for this job type
+   * Defines the default arguments which are valid for this build type
    *
    * @var array
    */
@@ -127,11 +127,11 @@ class BuildBase implements BuildInterface, Injectable {
   public function getDefaultArguments() {  return $this->defaultArguments;  }
 
   /**
-   * Defines the required arguments which are necessary for this job type
+   * Defines the required arguments which are necessary for this build type
    *
    * Format:  array('ENV_VARIABLE_NAME' => 'CONFIG_FILE_LOCATION'), where
    * CONFIG_FILE_LOCATION is a colon-separated nested location for the
-   * equivalent variable in a job definition file.
+   * equivalent variable in a build definition file.
    *
    * @var array
    */
@@ -139,13 +139,12 @@ class BuildBase implements BuildInterface, Injectable {
   public function getRequiredArguments() {  return $this->requiredArguments;  }
 
   /**
-   * Defines initial platform defaults for all jobs (if not overridden).
+   * Defines initial platform defaults for all builds (if not overridden).
    *
    * @var array
    */
   protected $platformDefaults = array(
     "DCI_CoreProject" => "Drupal",
-    // DCI_WorkingDir defaults to a 'jobtype-buildID' directory in the system temp directory.
   );
   public function getPlatformDefaults() {  return $this->platformDefaults;  }
 
@@ -204,7 +203,7 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   public function error() {
-    $results = $this->getJobResults();
+    $results = $this->getBuildResults();
     $stage = $results->getCurrentStage();
     $step = $results->getCurrentStep();
     $results->setResultByStage($stage, 'Error');
@@ -212,7 +211,7 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   public function fail() {
-    $results = $this->getJobResults();
+    $results = $this->getBuildResults();
     $stage = $results->getCurrentStage();
     $step = $results->getCurrentStep();
     $results->setResultByStage($stage, 'Fail');
@@ -307,7 +306,7 @@ class BuildBase implements BuildInterface, Injectable {
   protected function createContainerVolumes(&$config) {
     $volumes = array();
     // Map working directory
-    $working = $this->getJobCodebase()->getWorkingDir();
+    $working = $this->getCodebase()->getWorkingDir();
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
     $config['HostConfig']['Binds'][] = "$working:$mount_point";
   }
@@ -355,7 +354,7 @@ class BuildBase implements BuildInterface, Injectable {
     };
     foreach ($this->serviceContainers[$container_type] as $key => $image) {
       if (in_array($image['image'], array_keys($instances))) {
-        // TODO: Determine service container ports, id, etc, and save it to the job.
+        // TODO: Determine service container ports, id, etc, and save it to the build.
         Output::writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
         // TODO: Load up container parameters
         $container = $manager->find($instances[$image['image']]);
@@ -448,12 +447,12 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   public function getErrorState() {
-    $results = $this->getJobResults();
+    $results = $this->getBuildResults();
     return ($results->getResultByStep($results->getCurrentStage(), $results->getCurrentStep()) === "Error");
   }
 
   /**
-   * @var /DrupalCI/Job/Artifacts/BuildArtifactList
+   * @var /DrupalCI/Build/Results/Artifacts/BuildArtifactList
    */
   protected $artifacts;
   public function setArtifacts($artifacts) { $this->artifacts = $artifacts; }
@@ -472,7 +471,7 @@ class BuildBase implements BuildInterface, Injectable {
       $artifact = New BuildArtifact('file', $value);
       $this->artifacts->addArtifact($key, $artifact);
     }
-    // Load the jobType specific build artifacts into the list
+    // Load the buildType specific build artifacts into the list
     // Format: array(key, target, [type = file])
     foreach ($this->buildArtifacts as $value) {
       $key = $value[0];
@@ -487,13 +486,13 @@ class BuildBase implements BuildInterface, Injectable {
   protected $defaultBuildArtifacts = array(
     //'stdout' => 'stdout.txt',
     //'stderr' => 'stderr.txt',
-    'jobDefinition' => 'jobDefinition.txt',
+    'buildDefinition' => 'buildDefinition.txt',
   );
 
   /**
-   * Provide the details for job-specific build artifacts.
+   * Provide the details for build-specific build artifacts.
    *
-   * This should be overridden by job-specific classes, to define the build
+   * This should be overridden by build-specific classes, to define the build
    * artifacts which should be collected for that class.
    *
    * The default build artifacts listed above can be overridden here as well.
@@ -518,33 +517,33 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   /**
-   * Returns the default job definition template for this job type
+   * Returns the default build definition template for this build type
    *
-   * This method may be overridden by a specific job class to add template
+   * This method may be overridden by a specific build class to add template
    * selection logic, if desired.
    *
-   * @param $job_type
-   *   The name of the job type, used to select the appropriate subdirectory
+   * @param $build_type
+   *   The name of the build type, used to select the appropriate subdirectory
    *
    * @return string
-   *   The location of the default job definition template
+   *   The location of the default build definition template
    */
-  public function getDefaultDefinitionTemplate($job_type) {
-    return __DIR__ . "/../../../build_templates/$job_type/drupalci.yml";
+  public function getDefaultDefinitionTemplate($build_type) {
+    return __DIR__ . "/../../../build_templates/$build_type/drupalci.yml";
   }
 
   /**
-   * Generate a Build ID for this job
+   * Generate a Build ID for this build
    */
   public function generateBuildId() {
     // Use the BUILD_TAG environment variable if present, otherwise generate a
     // unique build tag based on timestamp.
     $build_id = getenv('BUILD_TAG');
     if (empty($build_id)) {
-      $build_id = $this->getJobType() . '_' . time();
+      $build_id = $this->getBuildType() . '_' . time();
     }
     $this->setBuildId($build_id);
-    Output::writeLn("<info>Executing job with build ID: <options=bold>$build_id</options=bold></info>");
+    Output::writeLn("<info>Executing build with build ID: <options=bold>$build_id</options=bold></info>");
   }
 
 }

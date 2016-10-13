@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\Definition\JobDefinition.
+ * Contains \DrupalCI\Build\Definition\JobDefinition.
  */
 
 namespace DrupalCI\Build\Definition;
@@ -21,7 +21,7 @@ class BuildDefinition Implements Injectable {
 
   use InjectableTrait;
 
-  // Location of our job definition template
+  // Location of our build definition template
   protected $template_file;
   protected function setTemplateFile($template_file) {  $this->template_file = $template_file; }
 
@@ -34,10 +34,10 @@ class BuildDefinition Implements Injectable {
     return (!empty($this->dci_variables[$dci_variable])) ? $this->dci_variables[$dci_variable] : NULL;
   }
 
-  // Contains the parsed job definition
+  // Contains the parsed build definition
   protected $definition = array();
   public function getDefinition() {  return $this->definition;  }
-  protected function setDefinition(array $job_definition) {  $this->definition = $job_definition;  }
+  protected function setDefinition(array $build_definition) {  $this->definition = $build_definition;  }
 
   // Contains the array of build steps
   protected $build_steps = array();
@@ -50,29 +50,28 @@ class BuildDefinition Implements Injectable {
   protected $pluginManager;
 
   public function loadTemplateFile($template_file) {
-    // TODO: Pass in Job instead of template file, and calculate what template file we need as a result
 
     // Store the template location
     $this->setTemplateFile($template_file);
 
     // Get and parse the default definition template (containing %DCI_*%
-    // placeholders) into the job definition.
+    // placeholders) into the build definition.
 
-    // For 'generic' jobs, this is either the file passed in on the
+    // For 'generic' builds, this is either the file passed in on the
     // 'drupalci run <filename>' command; and should be fully populated (though
     // template placeholders *can* be supported) ... or a drupalci.yml file at
     // the working directory root.
 
-    // For other 'jobtype' jobs, this is the file location returned by
-    // the $job->getDefaultDefinitionTemplate() method, which defaults to
-    // DrupalCI/Plugin/JobTypes/<jobtype>/drupalci.yml for most job types.
+    // For other 'buildtype' builds, this is the file location returned by
+    // the $build->getDefaultDefinitionTemplate() method, which defaults to
+    // build_templates/<buildtype>/drupalci.yml for most build types.
 
     if (!file_exists($template_file)) {
-      //Output::writeln("Unable to locate job definition template at <options=bold>$template_file</options=bold>");
-      throw new FileNotFoundException("Unable to locate job definition template at $template_file.");
+      //Output::writeln("Unable to locate build definition template at <options=bold>$template_file</options=bold>");
+      throw new FileNotFoundException("Unable to locate build definition template at $template_file.");
     }
 
-    // Attempt to parse the job definition template and save it to our definition variable.
+    // Attempt to parse the build definition template and save it to our definition variable.
     // The YAML class will throw an exception if this fails.
     $this->setDefinition($this->loadYaml($template_file));
   }
@@ -80,34 +79,34 @@ class BuildDefinition Implements Injectable {
   /**
    * Compile the complete list of DCI_* variables
    */
-  public function compile(BuildInterface $job) {
+  public function compile(BuildInterface $build) {
     // Compile our list of DCI_* variables
-    $this->compileDciVariables($job);
+    $this->compileDciVariables($build);
   }
 
   /**
-   * Populates the job definition template based on DCI_* variables and
-   * job-specific arguments
+   * Populates the build definition template based on DCI_* variables and
+   * build-specific arguments
    */
-  public function preprocess(BuildInterface $job) {
+  public function preprocess(BuildInterface $build) {
     // Execute variable preprocessor plugin logic
     $this->executeVariablePreprocessors();
     // Execute definition preprocessor plugin logic
     $this->executeDefinitionPreprocessors();
-    // Process DCI_* variable substitution into the job definition template
+    // Process DCI_* variable substitution into the build definition template
     $this->substituteTemplateVariables();
-    // Add the build variables and job definition to our job object, for
+    // Add the build variables and build definition to our build object, for
     // compatibility.
-    $job->setBuildVars($this->getDCIVariables() + $job->getBuildVars());
+    $build->setBuildVars($this->getDCIVariables() + $build->getBuildVars());
     // Split out the final array of build steps into it's own element and store
     // it for future use.
     $this->setBuildSteps($this->parseBuildSteps());
   }
 
   /**
-   * Validate that the job contains all required elements defined in the class
+   * Validate that the build contains all required elements defined in the class
    */
-  public function validate(BuildInterface $job) {
+  public function validate(BuildInterface $build) {
     // TODO: Move this to individual tasks. Not plausible to validate a whole Build.
     return TRUE;
   }
@@ -125,31 +124,31 @@ class BuildDefinition Implements Injectable {
     if ($content = file_get_contents($source)) {
       return Yaml::parse($content);
     }
-    throw new ParseException("Unable to parse empty job definition template file at $source.");
+    throw new ParseException("Unable to parse empty build definition template file at $source.");
   }
 
   /**
-   * Compiles the list of available DCI_* variables to consider with this job
+   * Compiles the list of available DCI_* variables to consider with this build
    */
-  protected function compileDciVariables(BuildInterface $job) {
+  protected function compileDciVariables(BuildInterface $build) {
     // Get and parse external (i.e. anything not from the default definition
-    // file) job argument parameters.  DrupalCI jobs are controlled via a
+    // file) build argument parameters.  DrupalCI builds are controlled via a
     // hierarchy of configuration settings, which define the behaviour of the
-    // platform while running DrupalCI jobs.  This hierarchy is defined as
+    // platform while running DrupalCI builds.  This hierarchy is defined as
     // follows, which each level overriding the previous:
 
-    // 1. Out-of-the-box DrupalCI platform defaults, as defined in DrupalCI/Plugin/JobTypes/JobBase->platformDefaults
-    $platform_defaults = $job->getPlatformDefaults();
+    // 1. Out-of-the-box DrupalCI platform defaults, as defined in DrupalCI/Build/BuildBase->platformDefaults
+    $platform_defaults = $build->getPlatformDefaults();
     if (!empty($platform_defaults)) {
       Output::writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($platform_defaults)));
     }
 
-    // 2. Out-of-the-box DrupalCI JobType defaults, as defined in DrupalCI/Plugin/JobTypes/<jobtype>->defaultArguments
-    $jobtype_defaults = $job->getDefaultArguments();
-    if (!empty($jobtype_defaults)) {
-      Output::writeLn("<comment>Loading job type default arguments:</comment>");
-      Output::writeLn(implode(",", array_keys($jobtype_defaults)));
+    // 2. Out-of-the-box DrupalCI BuildType defaults, as defined in DrupalCI/Plugin/BuildTypes/<jobtype>->defaultArguments
+    $buildtype_defaults = $build->getDefaultArguments();
+    if (!empty($buildtype_defaults)) {
+      Output::writeLn("<comment>Loading build type default arguments:</comment>");
+      Output::writeLn(implode(",", array_keys($buildtype_defaults)));
     }
 
     // 3. Local overrides defined in ~/.drupalci/config
@@ -169,17 +168,17 @@ class BuildDefinition Implements Injectable {
 
     // 5. Additional variables passed in via the command line
     // TODO: Not yet implemented
-    $cli_variables = ['DCI_JobBuildId' => $job->getBuildId()];
+    $cli_variables = ['DCI_BuildId' => $build->getBuildId()];
 
     // Combine the above to generate the final array of DCI_* key=>value pairs
-    $dci_variables = $cli_variables + $environment_variables + $local_overrides + $jobtype_defaults + $platform_defaults;
+    $dci_variables = $cli_variables + $environment_variables + $local_overrides + $buildtype_defaults + $platform_defaults;
 
     // Reorder array, placing priority variables at the front
-    if (!empty($job->priorityArguments)) {
+    if (!empty($build->priorityArguments)) {
       $original_array = $dci_variables;
       $original_keys = array_keys($original_array);
       $ordered_variables = [];
-      foreach ($job->priorityArguments as $element) {
+      foreach ($build->priorityArguments as $element) {
         if (in_array($element, $original_keys)) {
           $ordered_variables[$element] = $original_array[$element];
           unset($original_array[$element]);
@@ -247,7 +246,7 @@ class BuildDefinition Implements Injectable {
   }
 
   /**
-   * Substitute DCI_* variables into the job definition template
+   * Substitute DCI_* variables into the build definition template
    */
   protected function substituteTemplateVariables() {
     // Generate our replacements array
@@ -271,7 +270,7 @@ class BuildDefinition Implements Injectable {
       $value = str_ireplace($search, $replace, $value);
     });
 
-    // Save our post-replacements job definition back to the object
+    // Save our post-replacements build definition back to the object
     $this->setDefinition($definition);
   }
 

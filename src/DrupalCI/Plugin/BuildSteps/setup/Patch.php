@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\setup\Patch
  *
- * Processes "setup: patch:" instructions from within a job definition.
+ * Processes "setup: patch:" instructions from within a build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
@@ -20,7 +20,7 @@ class Patch extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     // Data format:
     // i) array('patch_file' => '...', 'patch_dir' => '...')
     // or
@@ -28,37 +28,37 @@ class Patch extends SetupBase {
     // Normalize data to the third format, if necessary
     $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
     Output::writeLn("<info>Entering setup_patch().</info>");
-    $codebase = $job->getJobCodebase();
+    $codebase = $build->getCodebase();
     foreach ($data as $key => $details) {
       if (empty($details['patch_file'])) {
         Output::error("Patch error", "No valid patch file provided for the patch command.");
-        $job->error();
+        $build->error();
         return;
       }
       // Create a new patch object
       $patch = new PatchFile($details, $codebase);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
-        $job->error();
+        $build->error();
         return;
       }
 
       // Apply the patch
       if (!$patch->apply()) {
-        $job->error();
+        $build->error();
 
         // Hack to create a xml file for processing by Jenkins.
-        // TODO: Remove once proper job failure processing is in place
+        // TODO: Remove once proper build failure processing is in place
 
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-        $source_dir = $job->getJobCodebase()->getWorkingDir();
+        $source_dir = $build->getCodebase()->getWorkingDir();
         // TODO: Temporary hack.  Strip /checkout off the directory
         $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
 
         // Set up output directory (inside working directory)
-        $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $job->getBuildVar('DCI_JunitXml');
+        $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $build->getBuildVar('DCI_JunitXml');
 
         if (!is_dir($output_directory)) {
           mkdir($output_directory, 0777, TRUE);

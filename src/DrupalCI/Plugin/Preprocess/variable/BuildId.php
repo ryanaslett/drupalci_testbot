@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * Contains \DrupalCI\Plugin\Preprocess\variable\JobBuildId.
+ * Contains \DrupalCI\Plugin\Preprocess\variable\BuildId.
  */
 
 namespace DrupalCI\Plugin\Preprocess\variable;
 
 /**
- * @PluginID("jobbuildid")
+ * @PluginID("buildid")
  */
-class JobBuildId extends DBUrlBase {
+class BuildId extends DBUrlBase {
 
   /**
    * {@inheritdoc}

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\Results\JobResults.
+ * Contains \DrupalCI\Build\Results\BuildResults.
  */
 
 namespace DrupalCI\Build\Results;
@@ -42,14 +42,14 @@ class BuildResults {
   public function getPublisher($publisher) {  return $this->publishers[$publisher];  }
 
 
-  public function __construct(BuildInterface $job) {
+  public function __construct(BuildInterface $build) {
     // Set up our initial $step_result values
-    $this->initStepResults($job);
+    $this->initStepResults($build);
   }
 
-  protected function initStepResults(BuildInterface $job) {
-    // Retrieve the build step tree from the job definition
-    $build_steps = $job->getJobDefinition()->getBuildSteps();
+  protected function initStepResults(BuildInterface $build) {
+    // Retrieve the build step tree from the build definition
+    $build_steps = $build->getBuildDefinition()->getBuildSteps();
     // Set up our initial $step_result values
     $step_results = [];
     foreach ($build_steps as $stage => $steps) {

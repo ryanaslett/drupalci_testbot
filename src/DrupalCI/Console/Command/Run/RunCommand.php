@@ -22,33 +22,33 @@ use Symfony\Component\Console\Input\InputArgument;
 class RunCommand extends DrupalCICommandBase  {
 
   /**
-   * The Job this command is executing.
+   * The Build this command is executing.
    *
    * @todo This needs to be replaced with a service
    * in the container.
    *
-   * @var $job \DrupalCI\Build\BuildInterface
+   * @var $build \DrupalCI\Build\BuildInterface
    */
-  protected $job;
+  protected $build;
 
   /**
-   * Gets the job from the RunCommand.
+   * Gets the build from the RunCommand.
    *
    * @return \DrupalCI\Build\BuildInterface
-   *   The job being ran.
+   *   The build being ran.
    */
-  public function getJob() {
-    return $this->job;
+  public function getBuild() {
+    return $this->build;
   }
 
   /**
-   * Sets the job on the RunCommand.
+   * Sets the build on the RunCommand.
    *
-   * @param \DrupalCI\Build\BuildInterface $job
-   *   The job and all its definition.
+   * @param \DrupalCI\Build\BuildInterface $build
+   *   The build and all its definition.
    */
-  public function setJob(BuildInterface $job) {
-    $this->job = $job;
+  public function setBuild(BuildInterface $build) {
+    $this->build = $build;
   }
 
   /**
@@ -57,9 +57,9 @@ class RunCommand extends DrupalCICommandBase  {
   protected function configure() {
     $this
       ->setName('run')
-      ->setDescription('Execute a given job run.')
-      // Argument may be the job type or a specific job definition file
-      ->addArgument('definition', InputArgument::OPTIONAL, 'Job definition.');
+      ->setDescription('Execute a given build run.')
+      // Argument may be the build type or a specific build definition file
+      ->addArgument('definition', InputArgument::OPTIONAL, 'Build definition.');
   }
 
   /**
@@ -71,71 +71,71 @@ class RunCommand extends DrupalCICommandBase  {
     $config_helper = new ConfigHelper();
     $local_overrides = $config_helper->getCurrentConfigSetParsed();
 
-    // Determine the Job Type based on the first argument to the run command
+    // Determine the Build Type based on the first argument to the run command
     if ($arg) {
-      $job_type = (strtolower(substr(trim($arg), -4)) == ".yml") ? "generic" : trim($arg);
+      $build_type = (strtolower(substr(trim($arg), -4)) == ".yml") ? "generic" : trim($arg);
     }
     else {
       // If no argument defined, then check for a default in the local overrides
-      $job_type = (!empty($local_overrides['DCI_JobType'])) ? $local_overrides['DCI_JobType'] : 'generic';
+      $build_type = (!empty($local_overrides['DCI_JobType'])) ? $local_overrides['DCI_JobType'] : 'generic';
     }
 
-    // Load the associated class for this job type
-    /** @var PluginManager $job_plugin_manager */
-    $job_plugin_manager = $this->container['plugin.manager.factory']->create('JobTypes');
+    // Load the associated class for this build type
+    /** @var PluginManager $build_plugin_manager */
+    $build_plugin_manager = $this->container['plugin.manager.factory']->create('BuildTypes');
 
-    /** @var $job \DrupalCI\Build\BuildInterface */
-    $this->job = $job_plugin_manager->getPlugin($job_type, $job_type);
+    /** @var $build \DrupalCI\Build\BuildInterface */
+    $this->build = $build_plugin_manager->getPlugin($build_type, $build_type);
 
-    // Link our $output variable to the job, so that jobs can display their work.
+    // Link our $output variable to the build.
     Output::setOutput($output);
 
-    // Generate a unique job build_id, and store it within the job object
-    $this->job->generateBuildId();
+    // Generate a unique build_id, and store it within the build object
+    $this->build->generateBuildId();
 
-    // Create our job Codebase object and attach it to the job.
-    $job_codebase = new CodeBase();
-    $this->job->setJobCodebase($job_codebase);
+    // Create our build Codebase object and attach it to the build.
+    $codeBase = new CodeBase();
+    $this->build->setCodebase($codeBase);
 
-    // Create our job Definition object and attach it to the job.
-    $job_definition = new BuildDefinition();
-    $this->job->setJobDefinition($job_definition);
+    // Create our build Definition object and attach it to the build.
+    $build_definition = new BuildDefinition();
+    $this->build->setBuildDefinition($build_definition);
 
     // Compile our complete list of DCI_* variables
-    $job_definition->compile($this->job);
+    $build_definition->compile($this->build);
 
     // Setup our project and version metadata
-    $job_codebase->setupProject($job_definition);
+    $codeBase->setupProject($build_definition);
 
-    // Determine the job definition template to be used
+    // Determine the build definition template to be used
     if ($arg && strtolower(substr(trim($arg), -4)) == ".yml") {
       $template_file = $arg;
     }
     else {
-      $template_file = $this->job->getDefaultDefinitionTemplate($job_type);
+      $template_file = $this->build->getDefaultDefinitionTemplate($build_type);
     }
 
-    Output::writeLn("<info>Using job definition template: <options=bold>$template_file</options=bold></info>");
+    Output::writeLn("<info>Using build definition template: <options=bold>$template_file</options=bold></info>");
 
-    // Load our job template file into the job definition.  If $template_file
+    // Load our build template file into the build definition.  If $template_file
     // doesn't exist, this will trigger a FileNotFound or ParseError exception.
-    $job_definition->loadTemplateFile($template_file);
+    $build_definition->loadTemplateFile($template_file);
 
-    // Process the complete job definition, taking into account DCI_* variable
-    // and definition preprocessors, along with job-specific arguments
-    $job_definition->preprocess($this->job);
+    // Process the complete build definition, taking into account DCI_* variable
+    // and definition preprocessors, along with build-specific arguments
+    $build_definition->preprocess($this->build);
 
-    // Validate the resulting job definition, to ensure all required parameters
+    // Validate the resulting build definition, to ensure all required parameters
     // are present.
-    $result = $job_definition->validate($this->job);
+    $result = $build_definition->validate($this->build);
     if (!$result) {
-      // Job definition failed validation.  Error output has already been
+      // Build definition failed validation.  Error output has already been
       // generated and displayed during execution of the validation method.
       return;
     }
 
     // Set up the local working directory
-    $result = $job_codebase->setupWorkingDirectory($job_definition);
+    $result = $codeBase->setupWorkingDirectory($build_definition);
     if ($result === FALSE) {
       // Error encountered while setting up the working directory. Error output
       // has already been generated and displayed during execution of the
@@ -143,37 +143,37 @@ class RunCommand extends DrupalCICommandBase  {
       return;
     }
 
-    // Create our job Results object and attach it to the job.
-    $job_results = new BuildResults($this->job);
-    $this->job->setJobResults($job_results);
+    // Create our build Results object and attach it to the build.
+    $build_results = new BuildResults($this->build);
+    $this->build->setBuildResults($build_results);
 
-    // The job should now have a fully merged job definition file, including
-    // any local or DrupalCI defaults not otherwise defined in the passed job
+    // The build should now have a fully merged build definition file, including
+    // any local or DrupalCI defaults not otherwise defined in the passed build
     // definition
-    $definition = $job_definition->getDefinition();
+    $definition = $build_definition->getDefinition();
 
     // Iterate over the build stages
     foreach ($definition as $build_stage => $steps) {
       if (empty($steps)) {
-        $job_results->updateStageStatus($build_stage, 'Skipped');
+        $build_results->updateStageStatus($build_stage, 'Skipped');
         continue;
       }
-      $job_results->updateStageStatus($build_stage, 'Executing');
+      $build_results->updateStageStatus($build_stage, 'Executing');
 
       // Iterate over the build steps
       foreach ($steps as $build_step => $data) {
-        $job_results->updateStepStatus($build_stage, $build_step, 'Executing');
+        $build_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
         /** @var PluginManager $build_steps_plugin_manager */
         $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
-        $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->job, $data);
+        $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->build, $data);
 
 
         // Check for errors / failures after build step execution
-        $status = $job_results->getResultByStep($build_stage, $build_step);
+        $status = $build_results->getResultByStep($build_stage, $build_step);
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
-          Output::error("Execution Error", "Error encountered while executing job build step <options=bold>$build_stage:$build_step</options=bold>");
+          Output::error("Execution Error", "Error encountered while executing build build step <options=bold>$build_stage:$build_step</options=bold>");
           break 2;
         }
         if ($status == 'Fail') {
@@ -181,9 +181,9 @@ class RunCommand extends DrupalCICommandBase  {
           Output::error("Execution Failure", "Build step <options=bold>$build_stage:$build_step</options=bold> FAILED");
           break 2;
         }
-        $job_results->updateStepStatus($build_stage, $build_step, 'Completed');
+        $build_results->updateStepStatus($build_stage, $build_step, 'Completed');
       }
-      $job_results->updateStageStatus($build_stage, 'Completed');
+      $build_results->updateStageStatus($build_stage, 'Completed');
     }
     // TODO: Gather results.
     // This should be moved out of the 'build steps' logic, as an error in any

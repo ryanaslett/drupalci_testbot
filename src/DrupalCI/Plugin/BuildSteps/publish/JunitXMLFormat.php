@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\publish\JunitXmlFormat
  *
- * Processes "publish: junit_xmlformat:" instructions from within a job
+ * Processes "publish: junit_xmlformat:" instructions from within a build
  * definition.  Connects to the database, queries for the tests, and reformats
  * them in a sane manner.  (If there is a sqlite results database!)
  */
@@ -34,22 +34,22 @@ class JunitXMLFormat extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $output_directory) {
+  public function run(BuildInterface $build, $output_directory) {
     // Set up initial variable to store tests
-    $CoreBranch = $job->getBuildVars()["DCI_CoreBranch"];
-    $DBUrlArray = parse_url($job->getBuildVars()["DCI_DBUrl"]);
-    $DBVersion = $job->getBuildVars()["DCI_DBVersion"];
+    $CoreBranch = $build->getBuildVars()["DCI_CoreBranch"];
+    $DBUrlArray = parse_url($build->getBuildVars()["DCI_DBUrl"]);
+    $DBVersion = $build->getBuildVars()["DCI_DBVersion"];
     $DBScheme = $DBUrlArray["scheme"];
     $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
     $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
     $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
-    $DBIp = $job->getServiceContainers()["db"][$DBVersion]["ip"];
+    $DBIp = $build->getServiceContainers()["db"][$DBVersion]["ip"];
     $tests = [];
 
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
-    $source_dir = $job->getJobCodebase()->getWorkingDir();
+    $source_dir = $build->getCodebase()->getWorkingDir();
     // TODO: Temporary hack.  Strip /checkout off the directory
     $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
     $this->loadTestList($source_dir . DIRECTORY_SEPARATOR . 'artifacts/testgroups.txt');
@@ -92,7 +92,7 @@ class JunitXMLFormat extends PluginBase {
         }
       }
       // Crack open the sqlite database.
-      $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($job->getBuildVar('DCI_SQLite'));
+      $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($build->getBuildVar('DCI_SQLite'));
       $db = new PDO('sqlite:' . $dbfile);
     }
 
@@ -158,7 +158,7 @@ class JunitXMLFormat extends PluginBase {
     $doc = new DomDocument('1.0');
     $test_suites = $doc->createElement('testsuites');
 
-    // TODO: get test name data from the job.
+    // TODO: get test name data from the build.
     $test_suites->setAttribute('name', "TODO SET");
     $test_suites->setAttribute('time', "TODO SET");
     $total_failures = 0;
@@ -179,7 +179,7 @@ class JunitXMLFormat extends PluginBase {
       $test_suite->setAttribute('hostname', "TODO: Set Hostname");
       $test_suite->setAttribute('package', $groupname);
       // TODO: time test runs. $test_group->setAttribute('time', $test_group_id);
-      // TODO: add in the properties of the job into the test run.
+      // TODO: add in the properties of the build into the test run.
 
       // Loop through the classes in each group
       foreach ($group_classes as $class_name => $class_methods) {

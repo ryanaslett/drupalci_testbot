@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\setup\Fetch
  *
- * Processes "setup: fetch:" instructions from within a job definition.
+ * Processes "setup: fetch:" instructions from within a build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
@@ -25,7 +25,7 @@ class Fetch extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     // Data format:
     // i) array('url' => '...', 'fetch_dir' => '...')
     // or
@@ -38,16 +38,16 @@ class Fetch extends SetupBase {
       // TODO: Ensure $details contains all required parameters
       if (empty($details['url'])) {
         Output::error("Fetch error", "No valid target file provided for fetch command.");
-        $job->error();
+        $build->error();
         return;
       }
       $url = $details['url'];
-      $workingdir = $job->getJobCodebase()->getWorkingDir();
+      $workingdir = $build->getCodebase()->getWorkingDir();
       $fetchdir = (!empty($details['fetch_directory'])) ? $details['fetch_directory'] : $workingdir;
-      if (!($directory = $this->validateDirectory($job, $fetchdir))) {
+      if (!($directory = $this->validateDirectory($build, $fetchdir))) {
         // Invalid checkout directory
         Output:error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
-        $job->error();
+        $build->error();
         return;
       }
       $info = pathinfo($url);
@@ -58,7 +58,7 @@ class Fetch extends SetupBase {
       }
       catch (\Exception $e) {
         Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$directory</info>");
-        $job->error();
+        $build->error();
         return;
       }
       Output::writeLn("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");

@@ -17,9 +17,9 @@ class PostgreSQL extends ContainerCommand {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
 
-    $parts = parse_url($job->getBuildVar('DCI_DBUrl'));
+    $parts = parse_url($build->getBuildVar('DCI_DBUrl'));
     $host = $parts['host'];
     $user = $parts['user'];
     $pass = $parts['pass'];
@@ -28,6 +28,6 @@ class PostgreSQL extends ContainerCommand {
     // Create role, database, and schema for PostgreSQL commands.
     $createdb = "PGPASSWORD=$pass PGUSER=$user createdb -E 'UTF-8' -O $user -h $host $db_name";
 
-    parent::run($job, $createdb);
+    parent::run($build, $createdb);
   }
 }

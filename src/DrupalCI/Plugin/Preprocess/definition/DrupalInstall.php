@@ -9,7 +9,7 @@ namespace DrupalCI\Plugin\Preprocess\definition;
 /**
  * @PluginID("drupalinstall")
  *
- * PreProcesses DCI_DrupalInstall variables, updating the job definition with a install:[installmethod] section.
+ * PreProcesses DCI_DrupalInstall variables, updating the build definition with a install:[installmethod] section.
  */
 class DrupalInstall {
 
@@ -21,7 +21,7 @@ class DrupalInstall {
     // is Drupal Core.
     // TODO: Explicitly validate this.
     // How can we validate this?  Perhaps we make it a requirement to specify
-    // environment:coreproject:drupal in the job definition?
+    // environment:coreproject:drupal in the build definition?
 
     // Determine drupal core version.
     // TODO: Improve drupal core version detection.

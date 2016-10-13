@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\generic\Command
  *
- * Processes "[build_step]: command:" instructions from within a job definition.
+ * Processes "[build_step]: command:" instructions from within a build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\generic;
@@ -23,17 +23,17 @@ class ContainerCommand extends PluginBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     // Data format: 'command [arguments]' or array('command [arguments]', 'command [arguments]')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
     $data = is_array($data) ? $data : [$data];
-    $docker = $job->getDocker();
+    $docker = $build->getDocker();
     $manager = $docker->getContainerManager();
 
     if (!empty($data)) {
       // Check that we have a container to execute on
-      $configs = $job->getExecContainers();
+      $configs = $build->getExecContainers();
       foreach ($configs as $type => $containers) {
         foreach ($containers as $container) {
           $id = $container['id'];
@@ -77,7 +77,7 @@ class ContainerCommand extends PluginBase {
             $exec_command_exit_code = $exec_manager->find($exec_id)->getExitCode();
 
             if ($this->checkCommandStatus($exec_command_exit_code) !==0) {
-              $job->error();
+              $build->error();
               break 3;
             }
           }

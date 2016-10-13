@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\Preprocess\definition\Fetch
  *
- * PreProcesses DCI_Fetch variables, updating the job definition with a setup:fetch: section.
+ * PreProcesses DCI_Fetch variables, updating the build definition with a setup:fetch: section.
  */
 
 namespace DrupalCI\Plugin\Preprocess\definition;
@@ -19,7 +19,7 @@ class Fetch {
    * DCI_Fetch_Preprocessor
    *
    * Takes a string defining files to be fetched, and converts this to a
-   * 'setup:fetch:' array as expected to appear in a job definition
+   * 'setup:fetch:' array as expected to appear in a build definition
    *
    * Input format: (string) $value = "http://example.com/file1.patch,destination_directory1;[http://example.com/file2.patch,destination_directory2];..."
    * Desired Result: [

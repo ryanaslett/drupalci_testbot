@@ -16,10 +16,10 @@ use Http\Client\Common\Exception\ClientErrorException;
  */
 abstract class EnvironmentBase extends PluginBase {
 
-  public function validateImageNames($containers, BuildInterface $job) {
+  public function validateImageNames($containers, BuildInterface $build) {
     // Verify that the appropriate container images exist
     Output::writeLn("<comment>Validating container images exist</comment>");
-    $docker = $job->getDocker();
+    $docker = $build->getDocker();
     $manager = $docker->getImageManager();
     foreach ($containers as $key => $image_name) {
       $container_string = explode(':', $image_name['image']);
@@ -30,7 +30,7 @@ abstract class EnvironmentBase extends PluginBase {
       }
       catch (ClientErrorException $e) {
         Output::error("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
-        $job->error();
+        $build->error();
         return FALSE;
       }
       $id = substr($image->getID(), 0, 8);
