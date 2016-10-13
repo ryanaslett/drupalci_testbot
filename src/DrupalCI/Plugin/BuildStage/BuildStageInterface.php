@@ -7,5 +7,5 @@ interface BuildStageInterface {
 
   public function getJobs();
 
-  public function
+  public function getDefaultConfig();
 }
