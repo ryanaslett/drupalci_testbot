@@ -17,7 +17,7 @@ trait TestSetupBaseTrait {
 
   protected $execResult;
 
-  function validateDirectory(BuildInterface $job, $dir) {
+  function validateDirectory(BuildInterface $build, $dir) {
     return $this->validate;
   }
 

@@ -6,7 +6,7 @@ namespace DrupalCI\Build\Codebase;
 /**
  * Class Patch
  *
- * @package DrupalCI\Job\CodeBase
+ * @package DrupalCI\Build\CodeBase
  */
 interface PatchInterface {
   /**

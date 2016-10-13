@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\publish\JunitXmlFormat
  *
- * Processes "publish: junit_xmlformat:" instructions from within a job
+ * Processes "publish: junit_xmlformat:" instructions from within a build
  * definition.  Connects to the database, queries for the tests, and reformats
  * them in a sane manner.  (If there is a sqlite results database!)
  */
@@ -49,7 +49,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, &$data) {
+  public function run(BuildInterface $build, &$data) {
     $config = $this->resolveDciVariables($data);
 
     $core_branch = $config['core_branch'];
@@ -57,7 +57,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
-    $source_dir = $job->getJobCodebase()->getWorkingDir();
+    $source_dir = $build->getCodebase()->getWorkingDir();
     // TODO: Temporary hack.  Strip /checkout off the directory
     $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
     $this->loadTestList($source_dir . DIRECTORY_SEPARATOR . 'artifacts/testgroups.txt');
@@ -77,7 +77,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
       $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
       $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
       $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
-      $DBIp = $job->getServiceContainers()["db"][$DBVersion]["ip"];
+      $DBIp = $build->getServiceContainers()["db"][$DBVersion]["ip"];
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
@@ -169,7 +169,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
     $doc = new DomDocument('1.0');
     $test_suites = $doc->createElement('testsuites');
 
-    // TODO: get test name data from the job.
+    // TODO: get test name data from the build.
     $test_suites->setAttribute('name', "TODO SET");
     $test_suites->setAttribute('time', "TODO SET");
     $total_failures = 0;
@@ -190,7 +190,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
       $test_suite->setAttribute('hostname', "TODO: Set Hostname");
       $test_suite->setAttribute('package', $groupname);
       // TODO: time test runs. $test_group->setAttribute('time', $test_group_id);
-      // TODO: add in the properties of the job into the test run.
+      // TODO: add in the properties of the build into the test run.
 
       // Loop through the classes in each group
       foreach ($group_classes as $class_name => $class_methods) {

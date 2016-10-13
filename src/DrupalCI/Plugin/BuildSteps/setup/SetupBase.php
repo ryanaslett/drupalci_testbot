@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\setup\Checkout
  *
- * Processes "setup: checkout:" instructions from within a job definition.
+ * Processes "setup: checkout:" instructions from within a build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
@@ -13,9 +13,9 @@ use DrupalCI\Plugin\PluginBase;
 
 abstract class SetupBase extends PluginBase {
 
-  protected function validateDirectory(BuildInterface $job, $dir) {
+  protected function validateDirectory(BuildInterface $build, $dir) {
     // Validate target directory.  Must be within workingdir.
-    $working_dir = $job->getJobCodebase()->getWorkingDir();
+    $working_dir = $build->getCodebase()->getWorkingDir();
     $true_dir = realpath($dir);
     if (!empty($true_dir)) {
       if ($true_dir == realpath($working_dir)) {
@@ -44,7 +44,7 @@ abstract class SetupBase extends PluginBase {
     if (!strpos(realpath($directory), realpath($working_dir)) === 0) {
       // Invalid checkout directory
       Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
-      $job->error();
+      $build->error();
       return FALSE;
     }
 

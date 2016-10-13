@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\CodeBase\JobCodebase
+ * Contains \DrupalCI\Build\CodeBase\Codebase
  */
 
 namespace DrupalCI\Build\Codebase;
@@ -11,7 +11,6 @@ use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\Patch;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Job\CodeBase\Repository;
 
 class CodeBase implements CodeBaseInterface {
 
@@ -25,7 +24,7 @@ class CodeBase implements CodeBaseInterface {
   public function getWorkingDir() {  return $this->working_dir;  }
 
   /**
-   * The core project for this job (e.g. Drupal)
+   * The core project for this build (e.g. Drupal)
    *
    * @var string
    */
@@ -81,22 +80,22 @@ class CodeBase implements CodeBaseInterface {
   }
 
   /**
-   * @param \DrupalCI\Build\Definition\BuildDefinition $job_definition
+   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
    */
-  public function setupProject(BuildDefinition $job_definition) {
+  public function setupProject(BuildDefinition $build_definition) {
     // Core Project
     // For future compatibility.  In the future, we could potentially add
     // project specific plugins, in which case users should pass the project
     // name in using DCI_CoreProject. This will allow plugins to reference
-    // the core project using $job->getCodebase()->getCoreProject().
-    $core_project = $job_definition->getDCIVariable('DCI_CoreProject') ?: 'generic';
+    // the core project using $build->getCodebase()->getCoreProject().
+    $core_project = $build_definition->getDCIVariable('DCI_CoreProject') ?: 'generic';
     $this->setCoreProject($core_project);
 
     // Core Version and Major Version
-    // The default job templates, run commands, and other script requirements
+    // The default build templates, run commands, and other script requirements
     // may vary depending on core project version.  For example, the simpletest
     // test execution script resides a different paths in Drupal 8 than Drupal7
-    $version = $this->determineVersion($job_definition);
+    $version = $this->determineVersion($build_definition);
     if (!empty($version)) {
       $this->setCoreVersion($version);
       $this->setCoreMajorVersion($this->determineMajorVersion($version));
@@ -109,15 +108,15 @@ class CodeBase implements CodeBaseInterface {
     }
   }
 
-  protected function determineVersion(BuildDefinition $job_definition) {
+  protected function determineVersion(BuildDefinition $build_definition) {
     // It may not always be possible to determine the core project version, but
     // we can make a reasonable guess.
     // Option 1: Use the user-supplied core version, if one exists.
-    if ($version = $job_definition->getDCIVariable('DCI_CoreVersion')) {
+    if ($version = $build_definition->getDCIVariable('DCI_CoreVersion')) {
       return $version;
     }
     // Option 2: Try to deduce it based on the supplied core branch
-    elseif ($version = $job_definition->getDCIVariable('DCI_CoreBranch')) {
+    elseif ($version = $build_definition->getDCIVariable('DCI_CoreBranch')) {
       // Define our preg_match patterns
       $drupal_pattern = "/^((\d+)\.(\d+|x)(?:\.(\d+|x))?(?:(?:\-)?(?:alpha|beta|rc|dev)(?:\.)?(\d+)?)?)$/";
       $semantic_pattern = "/^((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/";
@@ -144,15 +143,15 @@ class CodeBase implements CodeBaseInterface {
   /**
    * Initialize Codebase
    */
-  public function setupWorkingDirectory(BuildDefinition $job_definition) {
+  public function setupWorkingDirectory(BuildDefinition $build_definition) {
     // Check if the target working directory has been specified.
-    $working_dir = $job_definition->getDCIVariable('DCI_WorkingDir');
+    $working_dir = $build_definition->getDCIVariable('DCI_WorkingDir');
     $tmp_directory = sys_get_temp_dir();
 
     // Generate a default directory name if none specified
     if (empty($working_dir)) {
       // Case:  No explicit working directory defined.
-      $working_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $job_definition->getDCIVariable('DCI_JobBuildId');
+      $working_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $build_definition->getDCIVariable('DCI_BuildId');
     }
     else {
       // We force the working directory to always be under the system temp dir.
@@ -202,6 +201,6 @@ class CodeBase implements CodeBaseInterface {
 
     // If we arrive here, we have a valid empty working directory.
     $this->setWorkingDir($working_dir);
-    $job_definition->setDCIVariable('DCI_WorkingDir', $working_dir);
+    $build_definition->setDCIVariable('DCI_WorkingDir', $working_dir);
   }
 }

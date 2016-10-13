@@ -1,4 +1,4 @@
-# Job Definition Template for the DrupalCI 'SimpletestLegacy' Job Type
+# Build Definition Template for the DrupalCI 'SimpletestLegacy' Build Type
 environment:
   db:
     - %DCI_DBVersion%

@@ -13,7 +13,7 @@ use DrupalCI\Console\Output;
 /**
  * @PluginID("composer")
  *
- * Processes "setup: composer:" instructions from within a job
+ * Processes "setup: composer:" instructions from within a build
  * definition.
  */
 class Composer extends SetupBase {
@@ -25,11 +25,11 @@ class Composer extends SetupBase {
    *   Arguments for a composer command. May be a string if one composer command
    *   is required to run or an array if multiple commands should run.
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     // Normalize the arguments to an array format.
     $data_list = (array) $data;
 
-    $workingdir = $job->getJobCodebase()->getWorkingDir();
+    $workingdir = $build->getCodebase()->getWorkingDir();
 
     foreach ($data_list as $data) {
       $cmd = $this->buildComposerCommand($data, $workingdir);

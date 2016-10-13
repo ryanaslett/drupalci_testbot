@@ -26,12 +26,12 @@ class ContainerCommandTest extends DrupalCITestCase {
 
     $docker = $this->getMock(Docker::class);
 
-    $job = $this->getMockBuilder(BuildInterface::class)
+    $build = $this->getMockBuilder(BuildInterface::class)
       ->getMockForAbstractClass();
-    $job->expects($this->once())
+    $build->expects($this->once())
       ->method('getDocker')
       ->will($this->returnValue($docker));
-    $job->expects($this->once())
+    $build->expects($this->once())
       ->method('getExecContainers')
       ->will($this->returnValue(['php' => [['id' => 'drupalci/php-5.4']]]));
 
@@ -74,7 +74,7 @@ class ContainerCommandTest extends DrupalCITestCase {
       ->will($this->returnValue($exec_command));
 
     $command = new ContainerCommand();
-    $command->run($job, $cmd);
+    $command->run($build, $cmd);
   }
 
 }

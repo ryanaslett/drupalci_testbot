@@ -10,7 +10,7 @@ use DrupalCI\Console\Output;
 /**
  * @PluginID("composerinstall")
  *
- * PreProcesses DCI_ComposerInstall variables, updating the job definition with
+ * PreProcesses DCI_ComposerInstall variables, updating the build definition with
  * a setup:composer:install section.  To use set DCI_ComposerInstall=true.
  */
 

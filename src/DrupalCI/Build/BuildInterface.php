@@ -15,7 +15,7 @@ interface BuildInterface {
   /**
    * @return string
    */
-  public function getJobType();
+  public function getBuildType();
 
   /**
    * @return \Symfony\Component\Console\Output\OutputInterface
@@ -40,32 +40,32 @@ interface BuildInterface {
   /**
    * @return \DrupalCI\Build\Definition\BuildDefinition
    */
-  public function getJobDefinition();
+  public function getBuildDefinition();
 
   /**
-   * @param \DrupalCI\Build\Definition\BuildDefinition $job_definition
+   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
    */
-  public function setJobDefinition(BuildDefinition $job_definition);
+  public function setBuildDefinition(BuildDefinition $build_definition);
 
   /**
    * @return \DrupalCI\Build\Codebase\CodeBase
    */
-  public function getJobCodebase();
+  public function getCodebase();
 
   /**
-   * @param \DrupalCI\Build\Codebase\CodeBase $job_codebase
+   * @param \DrupalCI\Build\Codebase\CodeBase $codeBase
    */
-  public function setJobCodebase(CodeBase $job_codebase);
+  public function setCodebase(CodeBase $codeBase);
 
   /**
    * @return \DrupalCI\Build\Results\BuildResults
    */
-  public function getJobResults();
+  public function getBuildResults();
 
   /**
-   * @param \DrupalCI\Build\Results\BuildResults $job_results
+   * @param \DrupalCI\Build\Results\BuildResults $build_results
    */
-  public function setJobResults(BuildResults $job_results);
+  public function setBuildResults(BuildResults $build_results);
 
 
   /**
@@ -113,7 +113,7 @@ interface BuildInterface {
   /**
    * @param array $build_vars
    *
-   * @see JobInterface::getBuildvars
+   * @see BuildInterface::getBuildvars
    */
   public function setBuildVars(array $build_vars);
 
@@ -122,7 +122,7 @@ interface BuildInterface {
    *
    * @return mixed
    *
-   * @see JobInterface::getBuildvars
+   * @see BuildInterface::getBuildvars
    */
   public function getBuildVar($build_var);
 
@@ -168,7 +168,7 @@ interface BuildInterface {
 
   public function setArtifactDirectory($directory);
 
-  public function getDefaultDefinitionTemplate($job_type);
+  public function getDefaultDefinitionTemplate($build_type);
 
   public function generateBuildId();
 

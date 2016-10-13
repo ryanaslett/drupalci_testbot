@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\generic\Command
  *
- * Processes "[build_step]: command:" instructions from within a job definition.
+ * Processes "[build_step]: command:" instructions from within a Build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\generic;

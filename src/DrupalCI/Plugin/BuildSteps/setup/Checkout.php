@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\setup\Checkout
  *
- * Processes "setup: checkout:" instructions from within a job definition.
+ * Processes "setup: checkout:" instructions from within a build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
@@ -19,7 +19,7 @@ class Checkout extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     // Data format:
     // i) array('protocol' => 'local', 'srcdir' => '/tmp/drupal', 'checkout_dir' => '/tmp/checkout')
     // checkout_dir is optional.
@@ -37,35 +37,35 @@ class Checkout extends SetupBase {
       $details += ['protocol' => 'git'];
       switch ($details['protocol']) {
         case 'local':
-          $this->setupCheckoutLocal($job, $details);
+          $this->setupCheckoutLocal($build, $details);
           break;
         case 'git':
-          $this->setupCheckoutGit($job, $details);
+          $this->setupCheckoutGit($build, $details);
           break;
       }
       // Break out of loop if we've encountered any errors
-      if ($job->getErrorState() !== FALSE) {
+      if ($build->getErrorState() !== FALSE) {
         break;
       }
     }
     return;
   }
 
-  protected function setupCheckoutLocal(BuildInterface $job, $details) {
+  protected function setupCheckoutLocal(BuildInterface $build, $details) {
     $source_dir = isset($details['source_dir']) ? $details['source_dir'] : './';
-    $checkout_dir = isset($details['checkout_dir']) ? $details['checkout_dir'] : $job->getJobCodebase()->getWorkingDir();
+    $checkout_dir = isset($details['checkout_dir']) ? $details['checkout_dir'] : $build->getCodebase()->getWorkingDir();
     // TODO: Ensure we don't end up with double slashes
     // Validate source directory
     if (!is_dir($source_dir)) {
       Output::error("Directory error", "The source directory <info>$source_dir</info> does not exist.");
-      $job->error();
+      $build->error();
       return;
     }
     // Validate target directory.  Must be within workingdir.
-    if (!($directory = $this->validateDirectory($job, $checkout_dir))) {
+    if (!($directory = $this->validateDirectory($build, $checkout_dir))) {
       // Invalidate checkout directory
       Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
-      $job->error();
+      $build->error();
       return;
     }
     Output::writeln("<comment>Copying files from <options=bold>$source_dir</options=bold> to the local checkout directory <options=bold>$directory</options=bold> ... </comment>");
@@ -75,24 +75,24 @@ class Checkout extends SetupBase {
     $this->exec("rsync -a $exclude_var  $source_dir/. $directory", $cmdoutput, $result);
     if ($result !== 0) {
       Output::error("Copy error", "Error encountered while attempting to copy code to the local checkout directory.");
-      $job->error();
+      $build->error();
       return;
     }
     Output::writeLn("<comment>DONE</comment>");
   }
 
-  protected function setupCheckoutGit(BuildInterface $job, $details) {
+  protected function setupCheckoutGit(BuildInterface $build, $details) {
     Output::writeLn("<info>Entering setup_checkout_git().</info>");
     $repo = isset($details['repo']) ? $details['repo'] : 'git://drupalcode.org/project/drupal.git';
 
     $git_branch = isset($details['branch']) ? $details['branch'] : 'master';
-    $checkout_directory = isset($details['checkout_dir']) ? $details['checkout_dir'] : $job->getJobCodebase()->getWorkingDir();
+    $checkout_directory = isset($details['checkout_dir']) ? $details['checkout_dir'] : $build->getCodebase()->getWorkingDir();
     // TODO: Ensure we don't end up with double slashes
     // Validate target directory.  Must be within workingdir.
-    if (!($directory = $this->validateDirectory($job, $checkout_directory))) {
+    if (!($directory = $this->validateDirectory($build, $checkout_directory))) {
       // Invalid checkout directory
       Output::error("Directory Error", "The checkout directory <info>$directory</info> is invalid.");
-      $job->error();
+      $build->error();
       return;
     }
     if (substr($details['repo'],0,4) == 'file') {
@@ -107,7 +107,7 @@ class Checkout extends SetupBase {
       if ($result !== 0) {
         // Git threw an error.
         Output::error("Checkout Error", "The rsync returned an error.  Error Code: $result");
-        $job->error();
+        $build->error();
         return;
       }
     } else {
@@ -124,7 +124,7 @@ class Checkout extends SetupBase {
       if ($result !== 0) {
         // Git threw an error.
         Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result");
-        $job->error();
+        $build->error();
         return;
       }
     }
@@ -136,7 +136,7 @@ class Checkout extends SetupBase {
     }
     if ($result !==0) {
       // Git threw an error.
-      $job->errorOutput("Checkout failed", "The git checkout returned an error.");
+      $build->errorOutput("Checkout failed", "The git checkout returned an error.");
       // TODO: Pass on the actual return value for the git checkout
       return;
     }

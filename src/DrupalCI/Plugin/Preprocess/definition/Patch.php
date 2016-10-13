@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\Preprocess\definition\Patch
  *
- * PreProcesses DCI_Patch variables, updating the job definition with a
+ * PreProcesses DCI_Patch variables, updating the build definition with a
  * setup:patch: section.
  */
 
@@ -20,7 +20,7 @@ class Patch {
    * DCI_Patch_Preprocessor
    *
    * Takes a string defining patches to be applied, and converts this to a
-   * 'setup:patch:' array as expected to appear in a job definition
+   * 'setup:patch:' array as expected to appear in a build definition
    *
    * Input format: (string) $value = "file1.patch,patch_directory1;[file2.patch,patch_directory2];..."
    * Desired Result: [
