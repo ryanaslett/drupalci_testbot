@@ -1,6 +1,6 @@
 <?php
 
-namespace Build\Environment;
+namespace DrupalCI\Build\Environment;
 
 
 class HostEnvironment implements EnvironmentInterface {
