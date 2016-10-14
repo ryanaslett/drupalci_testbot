@@ -32,18 +32,18 @@ class FetchTest extends DrupalCITestCase {
       ->with($url, ['save_to' => "$dir/$file"])
       ->will($this->returnValue($request));
 
-    $job_codebase = $this->getMock('DrupalCI\Build\CodeBase\Codebase');
-    $job = $this->getMockBuilder('DrupalCI\Build\BuildInterface')
-      ->setMethods(['getJobCodebase'])
+    $codebase = $this->getMock('DrupalCI\Build\CodeBase\Codebase');
+    $build = $this->getMockBuilder('DrupalCI\Build\BuildInterface')
+      ->setMethods(['getCodebase'])
       ->getMockForAbstractClass();
-    $job->expects($this->once())
-      ->method('getJobCodebase')
-      ->will($this->returnValue($job_codebase));
+    $build->expects($this->once())
+      ->method('getCodebase')
+      ->will($this->returnValue($codebase));
 
     $fetch = new TestFetch();
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
-    $fetch->run($job, [['url' => $url]]);
+    $fetch->run($build, [['url' => $url]]);
   }
 }
 

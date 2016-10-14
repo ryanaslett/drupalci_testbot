@@ -34,12 +34,14 @@ interface CodeBaseInterface {
   public function addModifiedFiles($files);
 
   /**
-   * @param \DrupalCI\Build\Definition\BuildDefinition $job_definition
+   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
    */
-  public function setupProject(BuildDefinition $job_definition);
+  public function setupProject(BuildDefinition $build_definition);
 
   /**
    * Initialize Codebase
+   *
+   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
    */
-  public function setupWorkingDirectory(BuildDefinition $job_definition);
+  public function setupWorkingDirectory(BuildDefinition $build_definition);
 }

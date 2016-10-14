@@ -2,21 +2,21 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\Artifacts\BuildArtifactList.
+ * Contains \DrupalCI\Build\Results\Artifacts\BuildArtifactList.
  */
 
 namespace DrupalCI\Build\Results\Artifacts;
 
 /**
  * Class BuildArtifactList
- * @package DrupalCI\Job\Artifacts
+ * @package DrupalCI\Build\Results\Artifacts
  *
- * Contains a list of Build Artifacts relevant for a given job.
+ * Contains a list of Build Artifacts relevant for a given build.
  */
 class BuildArtifactList {
 
   /**
-   * array of \DrupalCI\Job\Artifacts\BuildArtifact objects
+   * array of \DrupalCI\Build\Results\Artifacts\BuildArtifact objects
    */
   protected $artifacts = array();
 

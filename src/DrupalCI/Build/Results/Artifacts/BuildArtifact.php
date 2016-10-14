@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\Artifacts\BuildArtifact.
+ * Contains \DrupalCI\Build\Results\Artifacts\BuildArtifact.
  */
 
 namespace DrupalCI\Build\Results\Artifacts;
 
 /**
  * Class BuildArtifact
- * @package DrupalCI\Job\Artifacts
+ * @package DrupalCI\Build\Results\Artifacts
  *
- * Defines a build artifact for a given job.
+ * Defines a build artifact for a given build.
  */
 class BuildArtifact {
 

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \DrupalCI\Job\Results\JobResults.
+ * Contains \DrupalCI\Build\Results\BuildResults.
  */
 
 namespace DrupalCI\Build\Results;
@@ -42,14 +42,14 @@ class BuildResults {
   public function getPublisher($publisher) {  return $this->publishers[$publisher];  }
 
 
-  public function __construct(BuildInterface $job) {
+  public function __construct(BuildInterface $build) {
     // Set up our initial $step_result values
-    $this->initStepResults($job);
+    $this->initStepResults($build);
   }
 
-  protected function initStepResults(BuildInterface $job) {
-    // Retrieve the build step tree from the job definition
-    $build_steps = $job->getJobDefinition()->getBuildSteps();
+  protected function initStepResults(BuildInterface $build) {
+    // Retrieve the build step tree from the build definition
+    $build_steps = $build->getBuildDefinition()->getBuildSteps();
     // Set up our initial $step_result values
     $step_results = [];
     foreach ($build_steps as $stage => $steps) {
@@ -84,49 +84,5 @@ class BuildResults {
     }
     Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
   }
-
-
-  // TODO: Consider adding a 'job publisher' class for interim feedback and/or real-time display
-  /*
-    // Pasting this code here for future reference, once we revisit interacting with a results API.
-
-  public function prepServerForPublishing(JobDefinition $jobDefinition) {
-    // If we are publishing this job to a results server (or multiple), prep the server
-      $definition = $jobDefinition->getDefinition();
-      if (!empty($definition['publish']['drupalci_results'])) {
-      $results_data = $job_definition['publish']['drupalci_results'];
-      // $data format:
-      // i) array('config' => '<configuration filename>'),
-      // ii) array('host' => '...', 'username' => '...', 'password' => '...')
-      // or a mixed array of the above
-      // iii) array(array(...), array(...))
-      // Normalize data to the third format, if necessary
-      $results_data = (count($results_data) == count($results_data, COUNT_RECURSIVE)) ? [$results_data] : $results_data;
-    }
-    else {
-      $results_data = array();
-    }
-
-  public function publishProgressToServer() {
-    // If we are publishing this job to a results server (or multiple), update the progress on the server(s)
-    // TODO: Check current state, and don't progress if already there.
-    foreach ($results_data as $key => $instance) {
-      $job->configureResultsAPI($instance);
-      $api = $job->getResultsAPI();
-      $url = $api->getUrl();
-      // Retrieve the results node ID for the results server
-      $host = parse_url($url, PHP_URL_HOST);
-      $states = $api->states();
-      $results_id = $job->getResultsServerID();
-
-      foreach ($states as $subkey => $state) {
-        if ($build_step == $subkey) {
-          $api->progress($results_id[$host], $state['id']);
-          break;
-        }
-      }
-    }
-  }
-  */
 
 }

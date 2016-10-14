@@ -4,7 +4,7 @@
  * Contains \DrupalCI\Plugin\Preprocess\definition\AdditionalRepositories
  *
  * PreProcesses DCI_AdditionalRepositories variable, and creates additional
- * 'checkout' entries in the job definition for the repositories defined by
+ * 'checkout' entries in the build definition for the repositories defined by
  * that variable.
  */
 namespace DrupalCI\Plugin\Preprocess\definition;
@@ -21,7 +21,7 @@ class AdditionalRepositories {
    * DCI_AdditionalRepositories_Preprocessor
    *
    * Takes a specially formatted string of repository information, and adds
-   * checkout entries for those repositories to the 'setup' stage of the job
+   * checkout entries for those repositories to the 'setup' stage of the build
    * definition.
    */
   public function process(array &$definition, $repositories, $dci_variables) {
@@ -71,7 +71,7 @@ class AdditionalRepositories {
       return;
     }
 
-    // There should always be a pre-existing 'checkout' section in the job
+    // There should always be a pre-existing 'checkout' section in the build
     // definition, but in order to future-proof the code, we explicitly check.
     if (empty($definition['setup']['checkout'])) {
       $definition['setup']['checkout'] = [];
@@ -93,7 +93,7 @@ class AdditionalRepositories {
         // TODO: Bail out of processing.  For now, we'll just keep going with the next entry.
         continue;
       }
-      // Create the job definition entry
+      // Create the build definition entry
       $output = array(
         'protocol' => $components[0],
         'repo' => $components[1],

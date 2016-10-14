@@ -14,7 +14,7 @@ use GuzzleHttp\ClientInterface;
 
 /**
  * Class Patch
- * @package DrupalCI\Job\CodeBase
+ * @package DrupalCI\Build\CodeBase
  */
 class Patch implements PatchInterface {
 
@@ -137,7 +137,7 @@ class Patch implements PatchInterface {
   protected $modified_files;
 
   /**
-   * Job Working directory
+   * Base Working directory
    *
    * @var string
    */

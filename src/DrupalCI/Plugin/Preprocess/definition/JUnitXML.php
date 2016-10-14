@@ -19,8 +19,8 @@ class JunitXml {
    *
    * DCI_JunitXml_Preprocessor
    *
-   * Takes a directory value, and adds a junit_xmlformat step to the job
-   * definition with that value within the job definition.  That step will
+   * Takes a directory value, and adds a junit_xmlformat step to the build
+   * definition with that value within the build definition.  That step will
    * then create the directory on the host and use it as the output destination
    * for re-formatted xml processed by the JunitXML Formatter plugin.
    */

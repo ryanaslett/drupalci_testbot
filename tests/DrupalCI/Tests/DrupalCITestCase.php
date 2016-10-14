@@ -19,12 +19,12 @@ class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
   /**
    * @var \DrupalCI\Build\BuildInterface|\PHPUnit_Framework_MockObject_MockObject
    */
-  protected $job;
+  protected $build;
 
   public function setUp() {
     $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
     Output::setOutput($this->output);
-    $this->job = $this->getMock('DrupalCI\Build\BuildInterface');
+    $this->build = $this->getMock('DrupalCI\Build\BuildInterface');
   }
 
 }

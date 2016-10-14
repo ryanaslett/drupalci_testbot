@@ -18,7 +18,7 @@ class SQLite extends ContainerCommand {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     // Nothing to do here, the SQLite database file will be created by the test
     // runner.
   }

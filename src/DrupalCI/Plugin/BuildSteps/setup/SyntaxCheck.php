@@ -3,7 +3,7 @@
  * @file
  * Contains \DrupalCI\Plugin\BuildSteps\setup\SyntaxCheck
  *
- * Processes "setup: syntaxcheck:" instructions from within a job definition.
+ * Processes "setup: syntaxcheck:" instructions from within a build definition.
  */
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
@@ -20,11 +20,11 @@ class SyntaxCheck extends SetupBase {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $job, $data) {
+  public function run(BuildInterface $build, $data) {
     if ($data != FALSE) {
       Output::writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
 
-      $codebase = $job->getJobCodebase();
+      $codebase = $build->getCodebase();
       $modified_files = $codebase->getModifiedFiles();
 
       if (empty($modified_files)) {
@@ -32,7 +32,7 @@ class SyntaxCheck extends SetupBase {
       }
 
       $workingdir = $codebase->getWorkingDir();
-      $jobconcurrency = $job->getJobDefinition()->getDCIVariable('DCI_Concurrency');
+      $concurrency = $build->getBuildDefinition()->getDCIVariable('DCI_Concurrency');
       $bash_array = "";
       foreach ($modified_files as $file) {
         $file_path = $workingdir . "/" . $file;
@@ -47,11 +47,11 @@ class SyntaxCheck extends SetupBase {
       // Make sure
       if (0 < filesize($workingdir . "/" . $lintable_files)) {
         // TODO: Remove hardcoded /var/www/html.
-        // This should be come JobCodeBase->getLocalDir() or similar
+        // This should be come CodeBase->getLocalDir() or similar
         // Use xargs to concurrently run linting on file.
-        $cmd = "cd /var/www/html && xargs -P $jobconcurrency -a $lintable_files -I {} php -l '{}'";
+        $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
         $command = new ContainerCommand();
-        $command->run($job, $cmd);
+        $command->run($build, $cmd);
       }
     }
   }
