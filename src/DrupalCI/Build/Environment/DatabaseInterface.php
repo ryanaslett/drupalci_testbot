@@ -47,14 +47,16 @@ interface DatabaseInterface {
    *
    * @return string
    */
-  public function getType();
+  public function getDbType();
 
   /**
    * Sets a string representing the type, e.g. mysql, pgsql, sqlite, mariadb
    *
+   * @param $dbtype
+   *
    * @return string
    */
-  public function setType();
+  public function setDbType($dbtype);
 
   /**
    * Returns the full url used to connect to the db.
@@ -62,6 +64,16 @@ interface DatabaseInterface {
    * @return string
    */
   public function getUrl();
+
+
+  /**
+   * Returns the full url used to connect to the db.
+   *
+   * @param $url
+   *
+   * @return string
+   */
+  public function setUrl($url);
 
   /**
    * Returns the username needed to connect to this database
