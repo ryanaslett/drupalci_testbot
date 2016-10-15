@@ -32,7 +32,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
       'DCI_DBVersion' => '',
       'DCI_SQLite' => '',
       'DCI_JunitXml' => 'xml',
-      'DCI_XMLOutput' => '/var/www/html/results/xml',
+//      'DCI_XMLOutput' => '/var/www/html/results/xml',
     ];
   }
 
@@ -63,7 +63,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
     $this->loadTestList($source_dir . DIRECTORY_SEPARATOR . 'artifacts/testgroups.txt');
 
     // Set up output directory (inside working directory)
-    $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $config['xml_output'];
+    $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $config['xml_directory'];
     mkdir($output_directory, 0777, TRUE);
 
     // Set an initial default group, in case leading tests are found with no group.

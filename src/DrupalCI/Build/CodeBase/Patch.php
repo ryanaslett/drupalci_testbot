@@ -174,11 +174,11 @@ class Patch implements PatchInterface {
     $this->setWorkingDir($working_dir);
 
     // Set source and apply_dir properties
-    $this->setSource($patch_details['patch_file']);
-    $this->setApplyDir($patch_details['patch_dir']);
+    $this->setSource($patch_details['from']);
+    $this->setApplyDir($patch_details['to']);
 
     // Determine whether passed a URL or local file
-    $type = filter_var($patch_details['patch_file'], FILTER_VALIDATE_URL) ? "remote" : "local";
+    $type = filter_var($patch_details['from'], FILTER_VALIDATE_URL) ? "remote" : "local";
     $this->setType($type);
 
     // If a remote file, download a local copy
@@ -189,7 +189,7 @@ class Patch implements PatchInterface {
       $local_source = $this->download();
     } else {
       // If a local file, we already know the local source location
-      $local_source = $this->working_dir . DIRECTORY_SEPARATOR . $patch_details['patch_dir'] . DIRECTORY_SEPARATOR . $patch_details['patch_file'];
+      $local_source = $this->working_dir . DIRECTORY_SEPARATOR . $patch_details['to'] . DIRECTORY_SEPARATOR . $patch_details['from'];
     }
     $this->setLocalSource($local_source);
 

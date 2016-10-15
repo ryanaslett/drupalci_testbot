@@ -26,6 +26,10 @@ setup:
     - chmod 0777 /var/www/html/artifacts
     - chmod 0777 /tmp
     - sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c 'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini' || echo -n"
+  fetch:
+    files: %DCI_Fetch%
+  patch:
+    files: %DCI_Patch%
   syntaxcheck: true
   composer:
     - install --prefer-dist --working-dir
@@ -73,7 +77,8 @@ publish:
   gather_artifacts:
     artifact_directory: /var/www/html/artifacts
   junit_xmlformat:
-    xml_output: %DCI_XMLOutput%
+    xml_directory: %DCI_JunitXml%
+    # xml_output: %DCI_XMLOutput%
     core_branch: %DCI_CoreBranch%
     db_url: %DCI_DBUrl&
     db_version: %DCI_DBVersion%

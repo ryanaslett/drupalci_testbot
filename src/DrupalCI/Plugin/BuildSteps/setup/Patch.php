@@ -11,26 +11,30 @@ namespace DrupalCI\Plugin\BuildSteps\setup;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Codebase\Patch as PatchFile;
+use DrupalCI\Plugin\BuildTaskInterface;
 
 /**
  * @PluginID("patch")
  */
-class Patch extends SetupBase {
+class Patch extends FileHandlerBase implements BuildTaskInterface {
+
+  public function getDefaultConfiguration() {
+    return [
+      'DCI_Patch' => '',
+    ];
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, $data) {
-    // Data format:
-    // i) array('patch_file' => '...', 'patch_dir' => '...')
-    // or
-    // iii) array(array(...), array(...))
-    // Normalize data to the third format, if necessary
-    $data = (count($data) == count($data, COUNT_RECURSIVE)) ? [$data] : $data;
+  public function run(BuildInterface $build, &$data) {
+
+    $data = $this->process($data['files']);
+
     Output::writeLn("<info>Entering setup_patch().</info>");
     $codebase = $build->getCodebase();
     foreach ($data as $key => $details) {
-      if (empty($details['patch_file'])) {
+      if (empty($details['from'])) {
         Output::error("Patch error", "No valid patch file provided for the patch command.");
         $build->error();
         return;
