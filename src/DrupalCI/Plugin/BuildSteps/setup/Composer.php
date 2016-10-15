@@ -8,7 +8,6 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
 
 /**
  * @PluginID("composer")
@@ -31,8 +30,8 @@ class Composer extends SetupBase {
 
     $workingdir = $build->getCodebase()->getWorkingDir();
 
-    foreach ($data_list as $data) {
-      $cmd = $this->buildComposerCommand($data, $workingdir);
+    foreach ($data_list as $item) {
+      $cmd = $this->buildComposerCommand($item, $workingdir);
       $this->exec($cmd, $cmdoutput, $result);
     }
   }

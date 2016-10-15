@@ -27,6 +27,8 @@ setup:
     - chmod 0777 /tmp
     - sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c 'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini' || echo -n"
   syntaxcheck: true
+  composer:
+    - install --prefer-dist --working-dir
 # The 'install' key is currently required for the dbcreate plugin
 # TODO: make dbcreate consistent with other commands and place in pre-install
 install:

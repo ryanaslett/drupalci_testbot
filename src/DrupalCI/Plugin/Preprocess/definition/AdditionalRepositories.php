@@ -3,15 +3,20 @@
  * @file
  * Contains \DrupalCI\Plugin\Preprocess\definition\AdditionalRepositories
  *
- * PreProcesses DCI_AdditionalRepositories variable, and creates additional
- * 'checkout' entries in the build definition for the repositories defined by
- * that variable.
  */
 namespace DrupalCI\Plugin\Preprocess\definition;
 use DrupalCI\Console\Output;
 
 /**
+ * PreProcesses DCI_AdditionalRepositories variable, and creates additional
+ * 'checkout' entries in the build definition for the repositories defined by
+ * that variable.
+ *
  * @PluginID("additionalrepositories")
+ *
+ * @todo This plugin is only necessary if the build definition can't specify
+ *   more repos. Remove this plugin once https://www.drupal.org/node/2694577 is
+ *   in.
  */
 class AdditionalRepositories {
 
