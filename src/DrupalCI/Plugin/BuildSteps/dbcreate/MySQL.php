@@ -10,7 +10,7 @@ use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 use DrupalCI\Build\BuildInterface;
 
 /**
- * @PluginID("mysql")
+ * @PluginID("my_sql")
  */
 class MySQL extends ContainerCommand {
 

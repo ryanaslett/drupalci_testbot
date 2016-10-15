@@ -30,7 +30,8 @@ class CoreD8MySqlPassingTest extends DrupalCIFunctionalTestBase {
     'DCI_JunitXml=xml',
     'DCI_TestGroups=Url',
     'DCI_PHPVersion=7',
-    'DCI_DBVersion=mysql-5.5',
+    'DCI_DBType=mysql',
+    'DCI_DBVersion=5.5',
   ];
 
 

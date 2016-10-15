@@ -12,28 +12,41 @@ namespace DrupalCI\Plugin\BuildSteps\environment;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Plugin\BuildTaskInterface;
+use DrupalCI\Plugin\BuildTaskTrait;
 
 /**
+ * Starts a service container daemon for the specified database type.
+ *
  * @PluginID("db")
  */
-class DbEnvironment extends EnvironmentBase {
+class DbEnvironment extends EnvironmentBase implements BuildTaskInterface {
+
+  use BuildTaskTrait;
+
+  public function getDefaultConfiguration() {
+    return [
+      'DCI_DBType' => 'mysql',
+      'DCI_DBVersion' => '5.5',
+    ];
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, $data) {
+  public function run(BuildInterface $build, &$config) {
+
+    $config = $this->resolveDciVariables($config);
+
     // We don't need to initialize any service container for SQLite.
-    if (strpos($build->getBuildVar('DCI_DBVersion'), 'sqlite') === 0) {
+    if (strpos($config['type'], 'sqlite') === 0) {
       return;
     }
 
-    // Data format: 'mysql-5.5' or array('mysql-5.5', 'pgsql-9.1')
-    // $data May be a string if one version required, or array if multiple
-    // Normalize data to the array format, if necessary
-    $data = is_array($data) ? $data : [$data];
     Output::writeLn("<info>Parsing required database container image names ...</info>");
-    $containers = $this->buildImageNames($data, $build);
+    $containers = $this->buildImageNames($config, $build);
     if ($valid = $this->validateImageNames($containers, $build)) {
+      // @todo Move the housekeeping to the build instead of doing it here.
       $service_containers = $build->getServiceContainers();
       $service_containers['db'] = $containers;
       $build->setServiceContainers($service_containers);
@@ -41,12 +54,10 @@ class DbEnvironment extends EnvironmentBase {
     }
   }
 
-  public function buildImageNames($data, BuildInterface $build) {
-    $images = [];
-    foreach ($data as $key => $db_version) {
-      $images["$db_version"]['image'] = "drupalci/$db_version";
-      Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
-    }
+  public function buildImageNames($config, BuildInterface $build) {
+    $db_version = $config['type'] . '-' . $config['version'];
+    $images["$db_version"]['image'] = "drupalci/$db_version";
+    Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     return $images;
   }
 

@@ -10,7 +10,7 @@ use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 use DrupalCI\Build\BuildInterface;
 
 /**
- * @PluginID("mariadb")
+ * @PluginID("mar_iadb")
  */
 class MariaDB extends ContainerCommand {
 

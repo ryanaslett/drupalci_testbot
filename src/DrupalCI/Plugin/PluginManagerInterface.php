@@ -6,13 +6,15 @@
 
 namespace DrupalCI\Plugin;
 
+use DrupalCI\Plugin\BuildTaskInterface;
+
 interface PluginManagerInterface {
 
   /**
    * @param $type
    * @param $plugin_id
    * @param array $configuration
-   * @return PluginBase
+   * @return \DrupalCI\Plugin\BuildTaskInterface
    */
   public function getPlugin($type, $plugin_id, $configuration = []);
 
