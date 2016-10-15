@@ -7,7 +7,7 @@
 namespace DrupalCI\Plugin\Preprocess\variable;
 
 /**
- * @PluginID("dbpa_ssword")
+ * @PluginID("dbpassword")
  */
 class DBPassword extends DBUrlBase {
 

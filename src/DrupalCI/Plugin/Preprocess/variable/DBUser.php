@@ -8,7 +8,7 @@ namespace DrupalCI\Plugin\Preprocess\variable;
 use DrupalCI\Plugin\Preprocess\VariableInterface;
 
 /**
- * @PluginID("dbu_ser")
+ * @PluginID("dbuser")
  */
 class DBUser extends DBUrlBase implements VariableInterface {
 

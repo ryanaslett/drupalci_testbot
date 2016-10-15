@@ -7,7 +7,7 @@
 namespace DrupalCI\Plugin\Preprocess\variable;
 
 /**
- * @PluginID("dbv_ersion")
+ * @PluginID("dbversion")
  */
 class DBVersion extends DBUrlBase {
 
