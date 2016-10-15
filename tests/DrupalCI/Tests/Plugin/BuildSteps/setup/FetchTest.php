@@ -10,6 +10,9 @@ namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 use DrupalCI\Plugin\BuildSteps\setup\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Message\RequestInterface;
+use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\BuildInterface;
 
 /**
  * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup\Fetch
@@ -24,16 +27,16 @@ class FetchTest extends DrupalCITestCase {
     $url = 'http://example.com/site/dir/' . $file;
     $dir = 'test/dir';
 
-    $request = $this->getMock('GuzzleHttp\Message\RequestInterface');
+    $request = $this->getMock(RequestInterface::class);
 
-    $http_client = $this->getMock('GuzzleHttp\ClientInterface');
+    $http_client = $this->getMock(ClientInterface::class);
     $http_client->expects($this->once())
       ->method('get')
       ->with($url, ['save_to' => "$dir/$file"])
       ->will($this->returnValue($request));
 
-    $codebase = $this->getMock('DrupalCI\Build\CodeBase\Codebase');
-    $build = $this->getMockBuilder('DrupalCI\Build\BuildInterface')
+    $codebase = $this->getMock(CodeBase::class);
+    $build = $this->getMockBuilder(BuildInterface::class)
       ->setMethods(['getCodebase'])
       ->getMockForAbstractClass();
     $build->expects($this->once())
@@ -43,7 +46,10 @@ class FetchTest extends DrupalCITestCase {
     $fetch = new TestFetch();
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
-    $fetch->run($build, [['url' => $url]]);
+    $data = [
+      'files' => "$url,."
+    ];
+    $fetch->run($build, $data);
   }
 }
 

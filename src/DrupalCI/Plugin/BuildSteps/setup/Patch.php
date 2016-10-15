@@ -12,11 +12,14 @@ use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Codebase\Patch as PatchFile;
 use DrupalCI\Plugin\BuildTaskInterface;
+use DrupalCI\Plugin\BuildTaskTrait;
 
 /**
  * @PluginID("patch")
  */
 class Patch extends FileHandlerBase implements BuildTaskInterface {
+
+  use BuildTaskTrait;
 
   public function getDefaultConfiguration() {
     return [
@@ -27,13 +30,16 @@ class Patch extends FileHandlerBase implements BuildTaskInterface {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, &$data) {
+  public function run(BuildInterface $build, &$config) {
+    $config = $this->resolveDciVariables($config);
 
-    $data = $this->process($data['files']);
+    $files = $this->process($config['files']);
 
-    Output::writeLn("<info>Entering setup_patch().</info>");
     $codebase = $build->getCodebase();
-    foreach ($data as $key => $details) {
+    if (empty($files)) {
+      Output::writeLn('No patches to apply.');
+    }
+    foreach ($files as $key => $details) {
       if (empty($details['from'])) {
         Output::error("Patch error", "No valid patch file provided for the patch command.");
         $build->error();

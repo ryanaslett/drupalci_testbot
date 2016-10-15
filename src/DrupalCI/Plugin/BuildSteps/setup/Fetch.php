@@ -34,12 +34,14 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface {
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, &$data) {
+  public function run(BuildInterface $build, &$config) {
+    $config = $this->resolveDciVariables($config);
+    $files = $this->process($config['files']);
 
-    $data = $this->process($data['files']);
-
-    Output::writeLn("<info>Entering setup_fetch().</info>");
-    foreach ($data as $details) {
+    if (empty($files)) {
+      Output::writeLn('No files to fetch.');
+    }
+    foreach ($files as $details) {
       // URL and target directory
       // TODO: Ensure $details contains all required parameters
       if (empty($details['from'])) {
