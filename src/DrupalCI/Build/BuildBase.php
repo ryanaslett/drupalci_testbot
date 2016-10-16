@@ -145,7 +145,7 @@ class BuildBase implements BuildInterface, Injectable {
    *
    * @var array
    */
-  protected $requiredArguments = array();   // eg:   'DCI_DBVersion' => 'environment:db'
+  protected $requiredArguments = array();
   public function getRequiredArguments() {  return $this->requiredArguments;  }
 
   /**
