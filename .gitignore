@@ -1,5 +1,5 @@
 /.vagrant
-docker_images.vdi
+drupalci.vdi
 ubuntu-xenial-16.04-cloudimg-console.log
 www/
 .idea
