@@ -26,6 +26,18 @@ interface DatabaseInterface {
   public function setDbrole($dbrole);
 
   /**
+   * Returns the name of the database
+   *
+   * @return string
+   */
+  public function getDbname();
+
+  /**
+   * @param string $dbname
+   */
+  public function setDbname($dbname);
+
+  /**
    * Returns a PDO connection to this database
    *
    * @return \PDO

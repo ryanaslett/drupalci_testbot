@@ -30,6 +30,8 @@ class Database implements DatabaseInterface {
    */
   protected $dbrole;
 
+  protected $dbname;
+
   /**
    * Database constructor.
    *
@@ -40,14 +42,28 @@ class Database implements DatabaseInterface {
   }
 
   /**
-   * @return mixed
+   * @inheritDoc
+   */
+  public function getDbname() {
+    return $this->dbname;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setDbname($dbname) {
+    $this->dbname = $dbname;
+  }
+
+  /**
+   * @inheritDoc
    */
   public function getDbrole() {
     return $this->dbrole;
   }
 
   /**
-   * @param mixed $dbrole
+   * @inheritDoc
    */
   public function setDbrole($dbrole) {
     $this->dbrole = $dbrole;
