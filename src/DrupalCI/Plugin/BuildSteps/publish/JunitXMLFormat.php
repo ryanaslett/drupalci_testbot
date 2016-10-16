@@ -88,7 +88,8 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
           // This is a class
-          $class = str_replace(array('(',')'),'',end(explode(' ', $output_line)));
+          $lineparts = explode(' ', $output_line);
+          $class = str_replace(array('(',')'),'', end($lineparts));
           $test_groups[$class] = $group;
         }
         else {

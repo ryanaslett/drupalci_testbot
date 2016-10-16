@@ -10,7 +10,7 @@ namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 use DrupalCI\Plugin\BuildSteps\setup\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Message\RequestInterface;
+use Psr\Http\Message\RequestInterface;
 use DrupalCI\Build\Codebase\CodeBase;
 use DrupalCI\Build\BuildInterface;
 
@@ -29,7 +29,7 @@ class FetchTest extends DrupalCITestCase {
 
     $request = $this->getMock(RequestInterface::class);
 
-    $http_client = $this->getMock(ClientInterface::class);
+    $http_client = $this->getMock(ClientInterface::class, array('get','send','sendAsync','request','requestAsync','getConfig'));
     $http_client->expects($this->once())
       ->method('get')
       ->with($url, ['save_to' => "$dir/$file"])
