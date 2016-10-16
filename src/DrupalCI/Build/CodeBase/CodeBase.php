@@ -11,8 +11,21 @@ use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\Patch;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
+use Pimple\Container;
 
-class CodeBase implements CodeBaseInterface {
+class CodeBase implements CodeBaseInterface, Injectable {
+
+  /**
+   * The build variables service.
+   *
+   * @var \DrupalCI\Build\BuildVariablesInterface
+   */
+  protected $buildVars;
+
+  public function setContainer(Container $container) {
+    $this->buildVars = $container['build.vars'];
+  }
 
   /**
    * The base working directory for this codebase build
@@ -88,14 +101,13 @@ class CodeBase implements CodeBaseInterface {
     // project specific plugins, in which case users should pass the project
     // name in using DCI_CoreProject. This will allow plugins to reference
     // the core project using $build->getCodebase()->getCoreProject().
-    $core_project = $build_definition->getDCIVariable('DCI_CoreProject') ?: 'generic';
-    $this->setCoreProject($core_project);
+    $this->setCoreProject($this->buildVars->get('DCI_CoreProject', 'generic'));
 
     // Core Version and Major Version
     // The default build templates, run commands, and other script requirements
     // may vary depending on core project version.  For example, the simpletest
     // test execution script resides a different paths in Drupal 8 than Drupal7
-    $version = $this->determineVersion($build_definition);
+    $version = $this->determineVersion();
     if (!empty($version)) {
       $this->setCoreVersion($version);
       $this->setCoreMajorVersion($this->determineMajorVersion($version));
@@ -108,15 +120,15 @@ class CodeBase implements CodeBaseInterface {
     }
   }
 
-  protected function determineVersion(BuildDefinition $build_definition) {
+  protected function determineVersion() {
     // It may not always be possible to determine the core project version, but
     // we can make a reasonable guess.
     // Option 1: Use the user-supplied core version, if one exists.
-    if ($version = $build_definition->getDCIVariable('DCI_CoreVersion')) {
+    if ($version = $this->buildVars->get('DCI_CoreVersion', FALSE)) {
       return $version;
     }
     // Option 2: Try to deduce it based on the supplied core branch
-    elseif ($version = $build_definition->getDCIVariable('DCI_CoreBranch')) {
+    elseif ($version = $this->buildVars->get ('DCI_CoreBranch')) {
       // Define our preg_match patterns
       $drupal_pattern = "/^((\d+)\.(\d+|x)(?:\.(\d+|x))?(?:(?:\-)?(?:alpha|beta|rc|dev)(?:\.)?(\d+)?)?)$/";
       $semantic_pattern = "/^((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/";

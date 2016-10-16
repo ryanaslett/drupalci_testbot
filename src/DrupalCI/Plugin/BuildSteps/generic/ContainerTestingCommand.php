@@ -1,24 +1,15 @@
 <?php
-/**
- * @file
- * Contains \DrupalCI\Plugin\BuildSteps\generic\Command
- *
- * Processes "[build_step]: command:" instructions from within a Build definition.
- */
 
 namespace DrupalCI\Plugin\BuildSteps\generic;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Build\BuildInterface;
-use DrupalCI\Plugin\PluginBase;
+
 /**
+ * Processes "[build_step]: testcommand:" instructions from within a Build definition.
+ *
  * @PluginID("testcommand")
  */
 class ContainerTestingCommand extends ContainerCommand {
-
-  /**
-   * {@inheritdoc}
-   */
 
   /*
    * Overrides ContainerCommands check with a specific signal check.

@@ -12,18 +12,24 @@ namespace DrupalCI\Plugin\BuildSteps\publish;
 use Docker\Docker;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use PDO;
 use DOMDocument;
+use Pimple\Container;
 
 /**
  * @PluginID("junit_xmlformat")
  */
-class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
+class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
+
+  public function setContainer(Container $container) {
+    $this->buildVars = $container['build.vars'];
+  }
 
   public function getDefaultConfiguration() {
     return [
@@ -32,7 +38,6 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
       'DCI_DBVersion' => '',
       'DCI_SQLite' => '',
       'DCI_JunitXml' => 'xml',
-//      'DCI_XMLOutput' => '/var/www/html/results/xml',
     ];
   }
 
@@ -91,7 +96,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
         }
       }
       $PDO_con = "$DBScheme:host=$DBIp;dbname=$DBDatabase";
-      $db = new PDO( $PDO_con, $DBUser, $DBPass);
+      $db = new \PDO( $PDO_con, $DBUser, $DBPass);
 
     } else {
 
@@ -108,7 +113,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface {
       }
       // Crack open the sqlite database.
       $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($config['sqlite']);
-      $db = new PDO('sqlite:' . $dbfile);
+      $db = new \PDO('sqlite:' . $dbfile);
     }
 
     // query for simpletest results

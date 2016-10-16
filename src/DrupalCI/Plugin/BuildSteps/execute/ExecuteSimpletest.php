@@ -15,7 +15,6 @@ use DrupalCI\Plugin\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use Pimple\Container;
 
-
 /**
  * @PluginID("simpletest")
  */
@@ -51,12 +50,15 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
 
   public function setContainer(Container $container) {
     $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
+    $this->buildVars = $container['build.vars'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function run(BuildInterface $job, &$data) {
+    // @todo Figure out if we really need the xmlformat: section of the build
+    // definition.
     $data = $this->resolveDciVariables($data);
     $data['runtests']['sqlite'] = $job->getBuildVar('DCI_SQLite');
 
@@ -66,14 +68,22 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
     $command[] = $data['runtests']['testgroups'];
 
     $command_line = implode(' ', $command);
-//    throw new \Exception('simpletest data: ' . print_r($data, true) . ' command line: ' . $command_line);
 
     $runner = $this->buildStepPluginManager->getPlugin('generic', 'testcommand', [$command_line]);
     $runner->run($job, $command_line);
 
   }
 
-  protected function getRunTestsFlagValues($data) {
+  /**
+   * Turn run-test.sh flag values into their command-line equivalents.
+   *
+   * @param type $config
+   *   This plugin's config, from run().
+   *
+   * @return string
+   *   The assembled command line fragment.
+   */
+  protected function getRunTestsFlagValues($config) {
     $command = [];
     $flags = [
       'color',
@@ -81,7 +91,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
       'keep-results-table',
       'verbose',
     ];
-    foreach($data as $key => $value) {
+    foreach($config as $key => $value) {
       if (in_array($key, $flags)) {
         if ($value) {
           $command[] = "--$key";
@@ -91,7 +101,16 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
     return implode(' ', $command);
   }
 
-  protected function getRunTestsValues($data) {
+  /**
+   * Turn run-test.sh values into their command-line equivalents.
+   *
+   * @param type $config
+   *   This plugin's config, from run().
+   *
+   * @return string
+   *   The assembled command line fragment.
+   */
+  protected function getRunTestsValues($config) {
     $command = [];
     $args = [
       'concurrency',
@@ -101,7 +120,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
       'url',
       'xml',
     ];
-    foreach ($data as $key => $value) {
+    foreach ($config as $key => $value) {
       if (in_array($key, $args)) {
         if ($value) {
           $command[] = "--$key $value";

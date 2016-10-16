@@ -162,11 +162,47 @@ interface BuildInterface {
 
   public function setServiceContainers(array $service_containers);
 
+  /**
+   * @deprecated
+   */
   public function getArtifacts();
 
+  /**
+   * @deprecated
+   */
   public function setArtifacts($artifacts);
 
+  /**
+   * @deprecated
+   */
   public function setArtifactDirectory($directory);
+
+  /**
+   * Provide the details for build-specific build artifacts.
+   *
+   * This should be overridden by build-specific classes, to define the build
+   * artifacts which should be collected for that class.
+   *
+   * For Simpletest builds, this includes:
+   *   - the xml output from run-tests.sh (if present)
+   *   - sqlite database (if present)
+   *   - php error log
+   *   - apache access log
+   *   - apache error log
+   *   - any verbose output from run-tests.sh (if present)
+   *
+   * Syntax:
+   *   phpunit results file at ./results.txt:  array('phpunit_results', './results.txt'),
+   *   multiple xml files within results/xml directory: array('xml_results', 'results/xml', 'directory'),
+   *   a string representing red/blue outcome: array('color', 'red', 'string')
+   *   etc.
+   */
+  public function getBuildArtifacts();
+
+  /**
+   * Causes the build to assemble an artifact list.
+   */
+  public function createArtifactList();
 
   public function getDefaultDefinitionTemplate($build_type);
 

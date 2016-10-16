@@ -9,15 +9,19 @@ namespace DrupalCI\Plugin\Preprocess\variable;
 use DrupalCI\Plugin\PluginBase;
 
 /**
-* @PluginID("testitem")
-*/
+ * Needed for D7 core.
+ *
+ * @PluginID("testitem")
+ */
 class TestItem extends PluginBase {
 
   /**
   * {@inheritdoc}
   */
   public function target() {
-    return 'DCI_TestGroups';
+    return [
+      'DCI_TestGroups',
+    ];
   }
 
   /**

@@ -3,6 +3,7 @@
 namespace DrupalCI\Plugin\BuildSteps\install;
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
@@ -17,6 +18,8 @@ use Pimple\Container;
  */
 class DbCreate extends PluginBase implements BuildTaskInterface, Injectable {
 
+  use BuildTaskTrait;
+
   /**
    * The BuildSteps plugin manager.
    *
@@ -25,14 +28,13 @@ class DbCreate extends PluginBase implements BuildTaskInterface, Injectable {
    * @var \DrupalCI\Plugin\PluginManagerInterface
    */
   protected $buildStepPluginManager;
-  
-  use BuildTaskTrait;
 
   /**
    * {@inheritdoc}
    */
   public function setContainer(Container $container) {
     $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
+    $this->buildVars = $container['build.vars'];
   }
 
   /**
@@ -52,16 +54,17 @@ class DbCreate extends PluginBase implements BuildTaskInterface, Injectable {
     $config = $this->resolveDciVariables($config);
 
     switch ($config['type']) {
-      case 'maria':
+      case 'mariadb':
         $this->createDbMaria($job, $config['url']);
         break;
       case 'mysql':
         $this->createDbMysql($job, $config['url']);
         break;
-      case 'postgre':
+      case 'pgsql':
         $this->createDbPostgre($job, $config['url']);
         break;
       case 'sqlite':
+        Output::writeLn('SQLite is the destination database. No creation performed.');
         // No db creation is needed for SQLite.
         break;
 
@@ -89,19 +92,19 @@ class DbCreate extends PluginBase implements BuildTaskInterface, Injectable {
     $host = $parts['host'];
     $user = $parts['user'];
     $pass = $parts['pass'];
-    $db_name = $data ?: ltrim($parts['path'], '/');
+    $db_name = ltrim($parts['path'], '/');
 
     $cmd = "mysql -h $host -u $user -p$pass -e 'CREATE DATABASE $db_name'";
     $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
     $command->run($job, $cmd);
   }
 
-  protected function createPostgre(BuildInterface $job, $db_url) {
+  protected function createDbPostgre(BuildInterface $job, $db_url) {
     $parts = parse_url($db_url);
     $host = $parts['host'];
     $user = $parts['user'];
     $pass = $parts['pass'];
-    $db_name = $data ?: ltrim($parts['path'], '/');
+    $db_name = ltrim($parts['path'], '/');
 
     // Create role, database, and schema for PostgreSQL commands.
     $cmd = "PGPASSWORD=$pass PGUSER=$user createdb -E 'UTF-8' -O $user -h $host $db_name";

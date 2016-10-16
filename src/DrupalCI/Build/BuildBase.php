@@ -25,13 +25,25 @@ use Symfony\Component\Process\Process;
 use Docker\Docker;
 use Docker\DockerClient as Client;
 use Symfony\Component\Yaml\Yaml;
+use Pimple\Container;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
 
 class BuildBase implements BuildInterface, Injectable {
 
-  use InjectableTrait;
+  /**
+   * @var \Pimple\Container
+   */
+  protected $container;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setContainer(Container $container) {
+    $this->container = $container;
+    $this->buildVars = $container['build.vars'];
+  }
 
   /**
    * Stores the build type
@@ -147,15 +159,27 @@ class BuildBase implements BuildInterface, Injectable {
   public function getPlatformDefaults() {  return $this->platformDefaults;  }
 
   /**
-   * Stores build variables which need to be persisted between build steps
+   * The build variables service.
    *
-   * @var array
+   * @var \DrupalCI\Build\BuildVariablesInterface
    */
-  protected $buildVars = array();
-  public function getBuildVars() {  return $this->buildVars;  }
-  public function setBuildVars(array $build_vars) {  $this->buildVars = $build_vars;  }
-  public function getBuildVar($build_var) {  return isset($this->buildVars[$build_var]) ? $this->buildVars[$build_var] : NULL;  }
-  public function setBuildVar($build_var, $value) {  $this->buildVars[$build_var] = $value;  }
+  protected $buildVars;
+
+  public function getBuildVars() {
+    return $this->buildVars->getAll();
+  }
+
+  public function setBuildVars(array $build_vars) {
+    return $this->buildVars->setAll($build_vars);
+  }
+
+  public function getBuildVar($build_var) {
+    return $this->buildVars->get($build_var, NULL);
+  }
+
+  public function setBuildVar($build_var, $value) {
+    return $this->buildVars->set($build_var, $value);
+  }
 
   /**
    * Stores our Docker Container manager
@@ -405,7 +429,7 @@ class BuildBase implements BuildInterface, Injectable {
       Output::writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
     }
 
-    $dburl_parts = parse_url($this->buildVars['DCI_DBUrl']);
+    $dburl_parts = parse_url($this->getBuildVar('DCI_DBUrl'));
     $dburl_parts['host'] = $container_ip;
     if(!strpos('sqlite', $dburl_parts['scheme'])){
       $counter = 0;
@@ -456,11 +480,14 @@ class BuildBase implements BuildInterface, Injectable {
   public function setArtifacts($artifacts) { $this->artifacts = $artifacts; }
   public function getArtifacts() { return $this->artifacts; }
 
-  public function __construct() {
-    $this->createArtifactList();
+  public function getBuildArtifacts() {
+    throw new \Exception('Your build class must override ' . __METHOD__);
   }
 
-  protected function createArtifactList() {
+  /**
+   * {@inheritdoc}
+   */
+  public function createArtifactList() {
     if (!isset($this->artifacts)) {
       $this->artifacts = New BuildArtifactList();
     }
@@ -471,7 +498,7 @@ class BuildBase implements BuildInterface, Injectable {
     }
     // Load the buildType specific build artifacts into the list
     // Format: array(key, target, [type = file])
-    foreach ($this->buildArtifacts as $value) {
+    foreach ($this->getBuildArtifacts() as $value) {
       $key = $value[0];
       $target = $value[1];
       $type = isset($value[2]) ? $value[2] : 'file';
@@ -485,23 +512,6 @@ class BuildBase implements BuildInterface, Injectable {
     //'stdout' => 'stdout.txt',
     //'stderr' => 'stderr.txt',
     'buildDefinition' => 'buildDefinition.txt',
-  );
-
-  /**
-   * Provide the details for build-specific build artifacts.
-   *
-   * This should be overridden by build-specific classes, to define the build
-   * artifacts which should be collected for that class.
-   *
-   * The default build artifacts listed above can be overridden here as well.
-   */
-  protected $buildArtifacts = array(
-    // e.g. phpunit results file at ./results.txt:
-    // array('phpunit_results', './results.txt'),
-    // e.g. multiple xml files within results/xml directory:
-    // array('xml_results', 'results/xml', 'directory')
-    // e.g. a string representing red/blue outcome:
-    // array('color', 'red', 'string')
   );
 
   protected $artifactDirectory;

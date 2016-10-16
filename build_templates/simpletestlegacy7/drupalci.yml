@@ -1,7 +1,8 @@
 # Build Definition Template for the DrupalCI 'SimpletestLegacy' Build Type
 environment:
   db:
-    - %DCI_DBVersion%
+    type: %DCI_DBType%
+    version: %DCI_DBVersion%
   web:
     - %DCI_PHPVersion%
 setup:
@@ -25,9 +26,10 @@ setup:
     - chown -fR www-data:www-data /var/www/html
     - chmod 0777 /var/www/html/artifacts
     - chmod 0777 /tmp
-# The 'install' key is currently required for the dbcreate plugin
-# TODO: make dbcreate consistent with other commands and place in pre-install
 install:
+  dbcreate:
+    type: %DCI_DBType%
+    url: %DCI_DBUrl%
 execute:
   command:
     - sudo -u www-data %DCI_PHPInterpreter% -v

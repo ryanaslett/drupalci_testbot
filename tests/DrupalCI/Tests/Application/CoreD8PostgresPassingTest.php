@@ -30,7 +30,8 @@ class CoreD8PostgresPassingTest extends DrupalCIFunctionalTestBase {
     'DCI_JunitXml=xml',
     'DCI_TestGroups=Url',
     'DCI_PHPVersion=7',
-    'DCI_DBVersion=pgsql-9.1',
+    'DCI_DBType=pgsql',
+    'DCI_DBVersion=9.1',
   ];
 
 

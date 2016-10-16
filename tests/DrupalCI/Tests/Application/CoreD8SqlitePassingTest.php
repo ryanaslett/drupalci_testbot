@@ -30,7 +30,7 @@ class CoreD8SqlitePassingTest extends DrupalCIFunctionalTestBase {
     'DCI_JunitXml=xml',
     'DCI_TestGroups=Url',
     'DCI_PHPVersion=5.6',
-    'DCI_DBVersion=sqlite',
+    'DCI_DBType=sqlite',
   ];
 
 

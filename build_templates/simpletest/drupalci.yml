@@ -34,7 +34,6 @@ setup:
   syntaxcheck: true
   composer:
     - install --prefer-dist --working-dir
-# foo
 install:
   dbcreate:
     type: %DCI_DBType%

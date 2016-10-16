@@ -31,7 +31,8 @@ class SimpletestBuild extends BuildBase {
    * passed into an instance of that build type.
    */
   public $defaultArguments = array(
-    'DCI_DBVersion' => 'mysql-5.5',
+    'DCI_DBType' => 'mysql',
+    'DCI_DBVersion' => '5.5',
     'DCI_PHPVersion' => '5.5',
     'DCI_CoreRepository' => 'git://drupalcode.org/project/drupal.git',
     'DCI_CoreBranch' => '8.0.x',
@@ -91,7 +92,7 @@ class SimpletestBuild extends BuildBase {
    * These are specified in an array, with the variable names used as the keys
    * for the array and the description used as the array values.
    */
-  public $availableArguments = array(
+  public $_availableArguments = array(
     // ***** Variables Available for any build type *****
     'DCI_UseLocalCodebase' => 'Used to define a local codebase to be cloned (instead of performing a Git checkout)',
     'DCI_WorkingDir' => 'Defines the location to be used in creating the local copy of the codebase, to be mapped into the container as a container volume.  Default: /tmp/simpletest-[random string]',
@@ -147,33 +148,14 @@ class SimpletestBuild extends BuildBase {
   );
 
   /**
-   * Provide the details for build-specific build artifacts.
-   *
-   * This should be overridden by build-specific classes, to define the build
-   * artifacts which should be collected for that class.
-   *
-   * For Simpletest builds, this includes:
-   *   - the xml output from run-tests.sh (if present)
-   *   - sqlite database (if present)
-   *   - php error log
-   *   - apache access log
-   *   - apache error log
-   *   - any verbose output from run-tests.sh (if present)
-   *
-   * Syntax:
-   *   phpunit results file at ./results.txt:  array('phpunit_results', './results.txt'),
-   *   multiple xml files within results/xml directory: array('xml_results', 'results/xml', 'directory'),
-   *   a string representing red/blue outcome: array('color', 'red', 'string')
-   *   etc.
+   * {@inheritdoc}
    */
-  protected $buildArtifacts = array(
-    array('testgroups', '/var/www/html/artifacts/testgroups.txt'),
-    // array('run_tests_xml', '/var/www/html/results/xml', 'directory'),
-    array('sqlite_test_db', '/var/www/html/results/simpletest.sqlite'),
-    // array('php_error_log', 'TODO: Locate'),
-    // array('apache_access_log', 'TODO: Locate'),
-    // array('apache_error_log', 'TODO: Locate'),
-    // array('run_tests_verbose', 'TODO: Locate', 'directory'),
-  );
+  public function getBuildArtifacts() {
+    return [
+      ['testgroups', '/var/www/html/artifacts/testgroups.txt'],
+      ['sqlite_test_db', $this->buildVars->get('DCI_SQLite', '/var/www/html/results/simpletest.sqlite')],
+    ];
+    
+  }
 
 }

@@ -148,33 +148,10 @@ class SimpletestLegacy7Build extends BuildBase {
     'DCI_CoreBranch',
   );
 
-  /**
-   * Provide the details for build-specific build artifacts.
-   *
-   * This should be overridden by build-specific classes, to define the build
-   * artifacts which should be collected for that class.
-   *
-   * For Simpletest builds, this includes:
-   *   - the xml output from run-tests.sh (if present)
-   *   - sqlite database (if present)
-   *   - php error log
-   *   - apache access log
-   *   - apache error log
-   *   - any verbose output from run-tests.sh (if present)
-   *
-   * Syntax:
-   *   phpunit results file at ./results.txt:  array('phpunit_results', './results.txt'),
-   *   multiple xml files within results/xml directory: array('xml_results', 'results/xml', 'directory'),
-   *   a string representing red/blue outcome: array('color', 'red', 'string')
-   *   etc.
-   */
-  protected $buildArtifacts = array(
-    array('testgroups', '/var/www/html/artifacts/testgroups.txt'),
-    // array('run_tests_xml', '/var/www/html/results/xml', 'directory'),
-    // array('php_error_log', 'TODO: Locate'),
-    // array('apache_access_log', 'TODO: Locate'),
-    // array('apache_error_log', 'TODO: Locate'),
-    // array('run_tests_verbose', 'TODO: Locate', 'directory'),
-  );
+  public function getBuildArtifacts() {
+    return [
+      ['testgroups', '/var/www/html/artifacts/testgroups.txt'],
+    ];
+  }
 
 }

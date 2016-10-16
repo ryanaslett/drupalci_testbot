@@ -11,15 +11,21 @@ namespace DrupalCI\Plugin\BuildSteps\setup;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Codebase\Patch as PatchFile;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
+use Pimple\Container;
 
 /**
  * @PluginID("patch")
  */
-class Patch extends FileHandlerBase implements BuildTaskInterface {
+class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
+
+  public function setContainer(Container $container) {
+    $this->buildVars = $container['build.vars'];
+  }
 
   public function getDefaultConfiguration() {
     return [

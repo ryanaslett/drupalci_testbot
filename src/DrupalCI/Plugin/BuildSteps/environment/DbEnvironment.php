@@ -14,15 +14,21 @@ use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
+use DrupalCI\Injectable;
+use Pimple\Container;
 
 /**
  * Starts a service container daemon for the specified database type.
  *
  * @PluginID("db")
  */
-class DbEnvironment extends EnvironmentBase implements BuildTaskInterface {
+class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
+
+  public function setContainer(Container $container) {
+    $this->buildVars = $container['build.vars'];
+  }
 
   public function getDefaultConfiguration() {
     return [

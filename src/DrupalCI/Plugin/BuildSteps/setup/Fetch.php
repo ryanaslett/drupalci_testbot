@@ -4,9 +4,11 @@ namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
 use GuzzleHttp\Client;
+use Pimple\Container;
 
 /**
  * Processes "setup: fetch:" instructions from within a build definition.
@@ -16,9 +18,13 @@ use GuzzleHttp\Client;
  * @todo This task uses a string to specify multiple files and their
  *   destinations. Improve this to use some kind of more structured data.
  */
-class Fetch extends FileHandlerBase implements BuildTaskInterface {
+class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
+
+  public function setContainer(Container $container) {
+    $this->buildVars = $container['build.vars'];
+  }
 
   public function getDefaultConfiguration() {
     return [

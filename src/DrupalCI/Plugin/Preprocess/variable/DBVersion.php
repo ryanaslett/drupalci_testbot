@@ -15,12 +15,14 @@ class DBVersion extends DBUrlBase {
    * {@inheritdoc}
    */
   public function process($db_url, $source_value) {
-    $mod_value = explode(':', $source_value, 2)[0];
-    $dbtype = explode('-', $mod_value, 2)[0];
-    $host_part = str_replace([':', '.'], '-', $source_value);
-    $host = 'drupaltestbot-db-' . $host_part;
-    $db_url = $this->changeUrlPart($db_url, 'scheme', $dbtype);
-    $db_url = $this->changeUrlPart($db_url, 'host', $host);
+    $db_type = $this->buildVars->get('DCI_DBType');
+    if (!empty($db_type)) {
+      // $source_value will be DCI_DBVersion, which looks like: 5.5.
+      $host_part = $db_type . '-' . str_replace([':', '.'], '-', $source_value);
+      $host = 'drupaltestbot-db-' . $host_part;
+      $db_url = $this->changeUrlPart($db_url, 'scheme', $db_type);
+      $db_url = $this->changeUrlPart($db_url, 'host', $host);
+    }
     return $db_url;
   }
 

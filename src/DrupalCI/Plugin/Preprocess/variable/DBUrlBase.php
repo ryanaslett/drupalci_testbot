@@ -6,16 +6,30 @@
 
 namespace DrupalCI\Plugin\Preprocess\variable;
 
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\Preprocess\VariableInterface;
 
-abstract class DBUrlBase extends PluginBase implements VariableInterface {
+abstract class DBUrlBase extends PluginBase implements VariableInterface, Injectable {
+
+  /**
+   * Build variables service.
+   *
+   * @var \DrupalCI\Build\BuildVariablesInterface
+   */
+  protected $buildVars;
+
+  public function setContainer(\Pimple\Container $container) {
+    $this->buildVars = $container['build.vars'];
+  }
 
   /**
    * {@inheritdoc}
    */
   public function target() {
-    return 'DCI_DBUrl';
+    return [
+      'DCI_DBUrl',
+    ];
   }
 
   /**

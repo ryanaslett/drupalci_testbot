@@ -10,28 +10,53 @@ namespace DrupalCI\Build\Definition;
 use DrupalCI\Helpers\ConfigHelper;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
-use DrupalCI\InjectableTrait;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginManager;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
+use Pimple\Container;
 
 class BuildDefinition Implements Injectable {
 
-  use InjectableTrait;
+  /**
+   * @var \Pimple\Container
+   */
+  protected $container;
+
+  public function setContainer(Container $container) {
+    $this->container = $container;
+    $this->dciVariables = $container['build.vars'];
+    $this->preprocessPluginManager = $container['plugin.manager.factory']->create('Preprocess');
+  }
 
   // Location of our build definition template
   protected $template_file;
   protected function setTemplateFile($template_file) {  $this->template_file = $template_file; }
 
-  // Contains our array of DCI_* variables
-  protected $dci_variables;
-  public function getDCIVariables() {  return $this->dci_variables;  }
-  public function setDCIVariables($dci_variables) {  $this->dci_variables = $dci_variables;  }
-  public function setDCIVariable($dci_variable, $value) {  $this->dci_variables[$dci_variable] = $value;  }
+  /**
+   * Build variables service.
+   *
+   * @var \DrupalCI\Build\BuildVariablesInterface
+   *
+   * @todo Remove the getters and setters.
+   */
+  protected $dciVariables;
+
+  public function getDCIVariables() {
+    return $this->dciVariables->getAll();
+  }
+
+  public function setDCIVariables($dci_variables) {
+    return $this->dciVariables->setAll($dci_variables);
+  }
+
+  public function setDCIVariable($dci_variable, $value) {
+    return $this->dciVariables->set($dci_variable, $value);
+  }
+
   public function getDCIVariable($dci_variable) {
-    return (!empty($this->dci_variables[$dci_variable])) ? $this->dci_variables[$dci_variable] : NULL;
+    return $this->dciVariables->get($dci_variable, NULL);
   }
 
   // Contains the parsed build definition
@@ -47,7 +72,7 @@ class BuildDefinition Implements Injectable {
   /**
    * @var \DrupalCI\Plugin\PluginManager;
    */
-  protected $pluginManager;
+  protected $preprocessPluginManager;
 
   public function loadTemplateFile($template_file) {
 
@@ -97,7 +122,7 @@ class BuildDefinition Implements Injectable {
     $this->substituteTemplateVariables();
     // Add the build variables and build definition to our build object, for
     // compatibility.
-    $build->setBuildVars($this->getDCIVariables() + $build->getBuildVars());
+    $build->setBuildVars(array_merge($this->getDCIVariables(), $build->getBuildVars()));
     // Split out the final array of build steps into it's own element and store
     // it for future use.
     $this->setBuildSteps($this->parseBuildSteps());
@@ -139,6 +164,7 @@ class BuildDefinition Implements Injectable {
 
     // 1. Out-of-the-box DrupalCI platform defaults, as defined in DrupalCI/Build/BuildBase->platformDefaults
     $platform_defaults = $build->getPlatformDefaults();
+    $this->dciVariables->add($platform_defaults, 'default');
     if (!empty($platform_defaults)) {
       Output::writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($platform_defaults)));
@@ -146,6 +172,7 @@ class BuildDefinition Implements Injectable {
 
     // 2. Out-of-the-box DrupalCI BuildType defaults, as defined in DrupalCI/Plugin/BuildTypes/<jobtype>->defaultArguments
     $buildtype_defaults = $build->getDefaultArguments();
+    $this->dciVariables->add($buildtype_defaults, 'default');
     if (!empty($buildtype_defaults)) {
       Output::writeLn("<comment>Loading build type default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($buildtype_defaults)));
@@ -154,6 +181,7 @@ class BuildDefinition Implements Injectable {
     // 3. Local overrides defined in ~/.drupalci/config
     $confighelper = new ConfigHelper();
     $local_overrides = $confighelper->getCurrentConfigSetParsed();
+    $this->dciVariables->add($local_overrides, 'local');
     if (!empty($local_overrides)) {
       Output::writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
       Output::writeLn(implode(",", array_keys($local_overrides)));
@@ -161,6 +189,7 @@ class BuildDefinition Implements Injectable {
 
     // 4. 'DCI_' namespaced environment variable overrides
     $environment_variables = $confighelper->getCurrentEnvVars();
+    $this->dciVariables->add($environment_variables, 'environment');
     if (!empty($environment_variables)) {
       Output::writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
       Output::writeLn(implode(",", array_keys($environment_variables)));
@@ -169,12 +198,10 @@ class BuildDefinition Implements Injectable {
     // 5. Additional variables passed in via the command line
     // TODO: Not yet implemented
     $cli_variables = ['DCI_BuildId' => $build->getBuildId()];
-
-    // Combine the above to generate the final array of DCI_* key=>value pairs
-    $dci_variables = $cli_variables + $environment_variables + $local_overrides + $buildtype_defaults + $platform_defaults;
+    $this->dciVariables->add($cli_variables, 'default');
 
     // Reorder array, placing priority variables at the front
-    if (!empty($build->priorityArguments)) {
+/*    if (!empty($build->priorityArguments)) {
       $original_array = $dci_variables;
       $original_keys = array_keys($original_array);
       $ordered_variables = [];
@@ -185,18 +212,13 @@ class BuildDefinition Implements Injectable {
         }
       }
       $dci_variables = array_merge($ordered_variables, $original_array);
-    }
-
-    $this->setDCIVariables($dci_variables);
+    }*/
   }
 
   /**
    * Execute Variable preprocessor Plugin logic
    */
   protected function executeVariablePreprocessors() {
-    // For each DCI_* element in the array, check to see if a variable
-    // preprocessor exists, and process it if it does.
-    $replacements = [];
     $dci_variables = $this->getDCIVariables();
     $plugin_manager = $this->getPreprocessPluginManager();
     foreach ($dci_variables as $key => &$value) {
@@ -205,7 +227,6 @@ class BuildDefinition Implements Injectable {
         if ($plugin_manager->hasPlugin('variable', $name)) {
           /** @var \DrupalCI\Plugin\Preprocess\VariableInterface $plugin */
           $plugin = $plugin_manager->getPlugin('variable', $name);
-          // @TODO: perhaps this should be on the annotation.
           $new_keys = $plugin->target();
           if (!is_array($new_keys)) {
             $new_keys = [$new_keys];
@@ -293,10 +314,7 @@ class BuildDefinition Implements Injectable {
    * @return \DrupalCI\Plugin\PluginManager
    */
   protected function getPreprocessPluginManager() {
-    if (!isset($this->pluginManager)) {
-      $this->pluginManager = new PluginManager('Preprocess', $this->container);
-    }
-    return $this->pluginManager;
+    return $this->preprocessPluginManager;
   }
 
 }

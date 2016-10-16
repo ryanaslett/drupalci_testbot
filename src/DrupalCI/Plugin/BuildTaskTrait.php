@@ -2,13 +2,21 @@
 
 namespace DrupalCI\Plugin;
 
-use DrupalCI\Build\ConfigResolver;
 use DrupalCI\Plugin\BuildTaskInterface;
 
 /**
  * Support cascading config resolution in plugins.
  */
 trait BuildTaskTrait {
+
+  /**
+   * Build variables service.
+   *
+   * Your class must set this from the container.
+   *
+   * @var \DrupalCI\Build\BuildVariablesInterface
+   */
+  protected $buildVars;
 
   /**
    * Performs substitution on DCI_* variables within config.
@@ -25,7 +33,7 @@ trait BuildTaskTrait {
   protected function resolveDciVariables(&$config) {
     if ($this instanceof BuildTaskInterface) {
       // Use $this->dciReplace() as a callback for walking the array.
-      array_walk_recursive($config, [$this, 'dciReplace'], $this->getDefaultConfiguration());
+      array_walk_recursive($config, [$this, 'dciReplace'], [$this->getDefaultConfiguration(), $this->buildVars]);
     }
     return $config;
   }
@@ -39,14 +47,18 @@ trait BuildTaskTrait {
    *   The value where we'll resolve DCI variables.
    * @param type $key
    *   Unused.
-   * @param type $dci_defaults
-   *   The DCI defaults for this class.
+   * @param array $injection
+   *   - Array of the default config for this plugin.
+   *   - The build variables service so we can look things up.
    */
-  private function dciReplace(&$value, $key, $dci_defaults) {
+  private function dciReplace(&$value, $key, $injection) {
     if (preg_match_all("/%(.*?)%/", $value, $match)) {
-      foreach ($match[1] as $i => $dci_variable) {
-        $dci_default = isset($dci_defaults[$dci_variable]) ? $dci_defaults[$dci_variable] : '';
-        $value = ConfigResolver::getConfig($dci_variable, $dci_default);
+      $defaults = $injection[0];
+      /* @var $build_vars \DrupalCI\Build\BuildVariablesInterface */
+      $build_vars = $injection[1];
+      foreach ($match[1] as $i => $dci_name) {
+        $dci_default = isset($defaults[$dci_name]) ? $defaults[$dci_name] : '';
+        $value = $build_vars->get($dci_name, $dci_default);
       }
     }
   }

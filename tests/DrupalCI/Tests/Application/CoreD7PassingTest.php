@@ -30,7 +30,8 @@ class CoreD7PassingTest extends DrupalCIFunctionalTestBase {
     'DCI_RunScript=/var/www/html/scripts/run-tests.sh',
     'DCI_TestGroups=Syslog',
     'DCI_PHPVersion=7',
-    'DCI_DBVersion=mysql-5.5',
+    'DCI_DBType=mysql',
+    'DCI_DBVersion=5.5',
   ];
 
   public function testCoreD7Passes() {

@@ -9,6 +9,7 @@ namespace DrupalCI\Console\Command\Run;
 
 use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Helpers\ConfigHelper;
+use DrupalCI\Injectable;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\CodeBase;
 use DrupalCI\Build\Definition\BuildDefinition;
@@ -27,9 +28,23 @@ class RunCommand extends DrupalCICommandBase  {
    * @todo This needs to be replaced with a service
    * in the container.
    *
-   * @var $build \DrupalCI\Build\BuildInterface
+   * @var DrupalCI\Build\BuildInterface
    */
   protected $build;
+
+  /**
+   * The build type plugin manager.
+   *
+   * @var \DrupalCI\Plugin\PluginManagerInterface
+   */
+  protected $buildTypePluginManager;
+
+  /**
+   * The build step plugin manager.
+   *
+   * @var \DrupalCI\Plugin\PluginManagerInterface
+   */
+  protected $buildStepPluginManager;
 
   /**
    * Gets the build from the RunCommand.
@@ -62,6 +77,12 @@ class RunCommand extends DrupalCICommandBase  {
       ->addArgument('definition', InputArgument::OPTIONAL, 'Build definition.');
   }
 
+  protected function initialize(InputInterface $input, OutputInterface $output) {
+    parent::initialize($input, $output);
+    $this->buildStepPluginManager = $this->container['plugin.manager.factory']->create('BuildSteps');
+    $this->buildTypePluginManager = $this->container['plugin.manager.factory']->create('BuildTypes');
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -69,7 +90,7 @@ class RunCommand extends DrupalCICommandBase  {
     $arg = $input->getArgument('definition');
 
     $config_helper = new ConfigHelper();
-    $local_overrides = $config_helper->getCurrentConfigSetParsed();
+    $this->buildVars->setAll($config_helper->getCurrentConfigSetParsed(), 'local');
 
     // Determine the Build Type based on the first argument to the run command
     if ($arg) {
@@ -77,15 +98,11 @@ class RunCommand extends DrupalCICommandBase  {
     }
     else {
       // If no argument defined, then check for a default in the local overrides
-      $build_type = (!empty($local_overrides['DCI_JobType'])) ? $local_overrides['DCI_JobType'] : 'generic';
+      $build_type = $this->buildVars->get('DCI_JobType', 'generic');
     }
 
-    // Load the associated class for this build type
-    /** @var PluginManager $build_plugin_manager */
-    $build_plugin_manager = $this->container['plugin.manager.factory']->create('BuildTypes');
-
-    /** @var $build \DrupalCI\Build\BuildInterface */
-    $this->build = $build_plugin_manager->getPlugin($build_type, $build_type);
+    $this->build = $this->buildTypePluginManager->getPlugin($build_type, $build_type);
+    $this->build->setContainer($this->container);
 
     // Link our $output variable to the build.
     Output::setOutput($output);
@@ -93,16 +110,18 @@ class RunCommand extends DrupalCICommandBase  {
     // Generate a unique build_id, and store it within the build object
     $this->build->generateBuildId();
 
-    // Create our build Codebase object and attach it to the build.
-    $codeBase = new CodeBase();
-    $this->build->setCodebase($codeBase);
-
     // Create our build Definition object and attach it to the build.
     $build_definition = new BuildDefinition();
+    $build_definition->setContainer($this->container);
     $this->build->setBuildDefinition($build_definition);
 
     // Compile our complete list of DCI_* variables
     $build_definition->compile($this->build);
+
+    // Create our build Codebase object and attach it to the build.
+    $codeBase = new CodeBase();
+    $codeBase->setContainer($this->container);
+    $this->build->setCodebase($codeBase);
 
     // Setup our project and version metadata
     $codeBase->setupProject($build_definition);
@@ -164,10 +183,7 @@ class RunCommand extends DrupalCICommandBase  {
       foreach ($steps as $build_step => $data) {
         $build_results->updateStepStatus($build_stage, $build_step, 'Executing');
         // Execute the build step
-        /** @var PluginManager $build_steps_plugin_manager */
-        $build_steps_plugin_manager = $this->container['plugin.manager.factory']->create('BuildSteps');
-        $build_steps_plugin_manager->getPlugin($build_stage, $build_step)->run($this->build, $data);
-
+        $this->buildStepPluginManager->getPlugin($build_stage, $build_step)->run($this->build, $data);
 
         // Check for errors / failures after build step execution
         $status = $build_results->getResultByStep($build_stage, $build_step);

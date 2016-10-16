@@ -2,6 +2,7 @@
 
 namespace DrupalCI\Providers;
 
+use DrupalCI\Build\BuildVariables;
 use DrupalCI\Console\DrupalCIConsoleApp;
 use DrupalCI\Plugin\PluginManagerFactory;
 use DrupalCI\Providers\DockerServiceProvider;
@@ -25,6 +26,9 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     };
     $container['plugin.manager.factory'] = function ($container) {
       return new PluginManagerFactory($container);
+    };
+    $container['build.vars'] = function ($container) {
+      return new BuildVariables($container['plugin.manager.factory']->create('Preprocess'));
     };
   }
 

@@ -35,21 +35,28 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
 
   public function setContainer(Container $container) {
     $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
+    $this->buildVars = $container['build.vars'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function run(BuildInterface $build, &$config) {
+    $config = $this->resolveDciVariables($config);
     $target_directory = $config['artifact_directory'];
+
+    // Since some artifact information could be generated based on DCI_
+    // variables, we wait until this late in the process to create the artifact
+    // list.
+    // @todo: Refactor artifact management into a separate class for sanity.
+    $build->createArtifactList();
 
     Output::writeLn("<comment>Gathering build artifacts in a common directory ...</comment>");
 
     // Create the destination directory
     if (!empty($target_directory)) {
-      $cmd = "mkdir -p $target_directory";
-      $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
-      $command->run($build, $cmd);
+      $command = $this->buildStepPluginManager->getPlugin('generic', 'mkdir', [$target_directory]);
+      $command->run($build, $target_directory);
     }
 
     // Store the directory in our build object

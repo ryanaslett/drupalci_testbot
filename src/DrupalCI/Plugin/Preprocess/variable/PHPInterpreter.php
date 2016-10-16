@@ -17,7 +17,9 @@ class PHPInterpreter extends PluginBase {
    * {@inheritdoc}
    */
   public function target() {
-    return 'DCI_RunOptions';
+    return [
+      'DCI_RunOptions',
+    ];
   }
 
   /**
