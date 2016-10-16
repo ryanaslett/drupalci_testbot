@@ -24,6 +24,36 @@ class Database implements DatabaseInterface {
   protected $host;
 
   /**
+   * @var
+   *
+   * This is the role that this database plays. Could be system, or results database for now.
+   */
+  protected $dbrole;
+
+  /**
+   * Database constructor.
+   *
+   * @param $dbrole
+   */
+  public function __construct($dbrole) {
+    $this->dbrole = $dbrole;
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getDbrole() {
+    return $this->dbrole;
+  }
+
+  /**
+   * @param mixed $dbrole
+   */
+  public function setDbrole($dbrole) {
+    $this->dbrole = $dbrole;
+  }
+
+  /**
    * @inheritDoc
    */
   public function getConnection() {

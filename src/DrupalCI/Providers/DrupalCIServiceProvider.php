@@ -8,7 +8,7 @@ use DrupalCI\Plugin\PluginManagerFactory;
 use DrupalCI\Providers\DockerServiceProvider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Providers\DatabaseServiceProvider;
+use DrupalCI\Providers\DatabaseServiceProvider;
 
 /**
  * Registers application-level services.
@@ -22,12 +22,14 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     */
   public function register(Container $container) {
     $container->register(new DockerServiceProvider());
+    $container->register(new DatabaseServiceProvider());
     $container['console'] = function ($container) {
       return new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.2', $container);
     };
     $container['plugin.manager.factory'] = function ($container) {
       return new PluginManagerFactory($container);
     };
+
   }
 
 }

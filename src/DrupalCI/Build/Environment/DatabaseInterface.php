@@ -11,6 +11,21 @@ namespace DrupalCI\Build\Environment;
 interface DatabaseInterface {
 
   /**
+   * Returns the role for this database in the build.
+   * A build may have a database that is used for the tests, as well as a
+   * database that stores test results, we can use this to determine which is
+   * which.
+   *
+   * @return string
+   */
+  public function getDbrole();
+
+  /**
+   * @param mixed $dbrole
+   */
+  public function setDbrole($dbrole);
+
+  /**
    * Returns a PDO connection to this database
    *
    * @return \PDO
