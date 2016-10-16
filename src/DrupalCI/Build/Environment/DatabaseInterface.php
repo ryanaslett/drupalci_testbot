@@ -6,7 +6,7 @@ namespace DrupalCI\Build\Environment;
 /**
  * Interface DatabaseInterface
  *
- * @package Build\Environment
+ * @package DrupalCI\Build\Environment
  */
 interface DatabaseInterface {
 

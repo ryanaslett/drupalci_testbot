@@ -29,7 +29,6 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     $container['plugin.manager.factory'] = function ($container) {
       return new PluginManagerFactory($container);
     };
-
   }
 
 }
