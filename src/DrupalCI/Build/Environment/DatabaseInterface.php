@@ -107,14 +107,16 @@ interface DatabaseInterface {
   public function setUsername($username);
 
   /**
-   * Returns the port that the database is listening on. Maybe someday socket support?
+   * Returns the port that the database is listening on. Maybe someday socket
+   * support?
    *
    * @return string
    */
   public function getPort();
 
   /**
-   * Sets the port that the database is listening on. Maybe someday socket support?
+   * Sets the port that the database is listening on. Maybe someday socket
+   * support?
    *
    * @param $port
    *

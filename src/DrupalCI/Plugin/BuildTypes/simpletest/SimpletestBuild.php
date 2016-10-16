@@ -76,10 +76,7 @@ class SimpletestBuild extends BuildBase {
    * always be the case for other build types.
    */
   public $requiredArguments = array(
-    // 'DCI_DBVersion' => 'environment:db',
-    // 'DCI_PHPVersion' => 'environment:web',
-    // 'DCI_RunScript' => 'execute:command',
-    // 'DCI_TestGroups' => 'execute:command'
+
   );
 
   /**
