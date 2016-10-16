@@ -20,7 +20,7 @@ use DOMDocument;
  * @PluginID("junit_xmlformat")
  */
 class JunitXMLFormat extends PluginBase {
-
+//DBX
   protected $testlist = [];
   public function setTestlist($testlist)  {  $this->testlist = $testlist; }
   public function getTestlist() {  return $this->testlist; }
