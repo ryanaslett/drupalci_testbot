@@ -31,7 +31,6 @@ abstract class DBUrlBase extends PluginBase implements VariableInterface {
    * @return string
    *   The new DCI_DBUrl.
    */
-  //DBX Set 2,4,6,8
   protected function changeUrlPart($db_url, $part, $value) {
     $parts = parse_url($db_url);
 

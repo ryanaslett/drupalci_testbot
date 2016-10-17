@@ -14,7 +14,6 @@ class DBVersion extends DBUrlBase {
   /**
    * {@inheritdoc}
    */
-  //DBX Set 3
   public function process($db_url, $source_value) {
     $mod_value = explode(':', $source_value, 2)[0];
     $dbtype = explode('-', $mod_value, 2)[0];
