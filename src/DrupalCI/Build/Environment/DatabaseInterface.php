@@ -103,6 +103,14 @@ interface DatabaseInterface {
   public function setUrl($url);
 
   /**
+   * Returns the scheme part of a database url. It is based on the type of the
+   * database
+   *
+   * @return string
+   */
+  public function getScheme();
+
+  /**
    * Returns the username needed to connect to this database
    *
    * @return string
@@ -117,6 +125,22 @@ interface DatabaseInterface {
    * @return string
    */
   public function setUsername($username);
+
+  /**
+   * Gets the full path to the sqlite db filename
+   *
+   * @return string
+   */
+  public function getDBFile();
+
+  /**
+   * Sets the full path to the sqlite db filename
+   *
+   * @param $filename
+   *
+   * @return string
+   */
+  public function setDBFile($filename);
 
   /**
    * Returns the port that the database is listening on. Maybe someday socket
@@ -183,4 +207,20 @@ interface DatabaseInterface {
    * @return string
    */
   public function setConfigurationFile($configuration_file);
+
+  /**
+   * Creates a PDO connection to the database
+   *
+   * @param null $database database name if you want to connect to a specific
+   * db name. Otherwise blank to connect to the server as a whole.
+   *
+   * @return
+   */
+  public function connect($database = NULL);
+
+  /**
+   * Creates a database using the established connection
+   */
+  public function createDB();
+
 }

@@ -14,7 +14,7 @@ use DrupalCI\Build\BuildInterface;
 /**
  * @PluginID("dbcreate")
  */
-class DBBase extends PluginBase implements Injectable  {
+class DBCreate extends PluginBase implements Injectable  {
   /* @var $database \DrupalCI\Build\Environment\DatabaseInterface */
   protected $database;
 
