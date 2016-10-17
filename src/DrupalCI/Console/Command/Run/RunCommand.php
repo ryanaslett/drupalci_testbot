@@ -98,7 +98,8 @@ class RunCommand extends DrupalCICommandBase  {
     $this->build->setCodebase($codeBase);
 
     // Create our build Definition object and attach it to the build.
-    $build_definition = new BuildDefinition();
+    /* @var $build_definition \DrupalCI\Build\Definition\BuildDefinition */
+    $build_definition = $this->container['build.definition'];
     $this->build->setBuildDefinition($build_definition);
 
     // Compile our complete list of DCI_* variables

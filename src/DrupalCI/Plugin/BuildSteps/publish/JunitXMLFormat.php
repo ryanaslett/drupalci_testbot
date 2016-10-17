@@ -12,16 +12,21 @@ namespace DrupalCI\Plugin\BuildSteps\publish;
 use Docker\Docker;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
 use PDO;
 use DOMDocument;
+use Pimple\Container;
 
 /**
  * @PluginID("junit_xmlformat")
  */
-class JunitXMLFormat extends PluginBase {
+class JunitXMLFormat extends PluginBase implements Injectable  {
 
   protected $testlist = [];
+
+  /* @var $results_db \DrupalCI\Build\Definition\BuildDefinition */
+  protected $build_definition;
   public function setTestlist($testlist)  {  $this->testlist = $testlist; }
   public function getTestlist() {  return $this->testlist; }
 

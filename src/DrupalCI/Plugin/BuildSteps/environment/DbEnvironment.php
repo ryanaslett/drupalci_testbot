@@ -14,7 +14,6 @@ use DrupalCI\Build\Environment\DatabaseInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
-use DrupalCI\Pimple;
 use Pimple\Container;
 
 /**
@@ -28,11 +27,19 @@ class DbEnvironment extends EnvironmentBase implements Injectable {
   protected $database;
 
   /**
+  /**
+   * @var $build_definition \DrupalCI\Build\Definition\BuildDefinition
+   */
+  protected $build_definition;
+
+  /**
    * @inheritDoc
    */
   public function setContainer(Container $container) {
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     $this->database = $container['db.system'];
+    /* @var \DrupalCI\Build\Definition\BuildDefinition */
+    $this->build_definition = $container['build.definition'];
   }
 
   /**

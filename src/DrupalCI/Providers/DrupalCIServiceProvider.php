@@ -3,6 +3,7 @@
 namespace DrupalCI\Providers;
 
 
+use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Console\DrupalCIConsoleApp;
 use DrupalCI\Plugin\PluginManagerFactory;
 use DrupalCI\Providers\DockerServiceProvider;
@@ -28,6 +29,9 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     };
     $container['plugin.manager.factory'] = function ($container) {
       return new PluginManagerFactory($container);
+    };
+    $container['build.definition'] = function ($container) {
+      return new BuildDefinition();
     };
   }
 
