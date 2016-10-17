@@ -27,39 +27,6 @@ class VariablePreprocessorTest extends \PHPUnit_Framework_TestCase
 
   public function provideBasicVariablePreprocessorInputs() {
     return [
-      // DCI_Color
-      ['Color', 'abc', 'true', 'abc --color'],
-      ['Color', 'abc', 'false', 'abc'],
-      ['Color', 'abc', '', 'abc'],
-      ['Color', 'abc', 'abc', 'abc'],
-      // DCI_Concurrency
-      ['Concurrency', 'abc', '1', 'abc --concurrency 1'],
-      ['Concurrency', 'abc', '2', 'abc --concurrency 2'],
-      ['Concurrency', 'abc', '', 'abc --concurrency '],   // TODO: Fix logic for empty input
-      // DCI_DieOnFail
-      ['DieOnFail', 'abc', 'true', 'abc --die-on-fail'],
-      ['DieOnFail', 'abc', 'false', 'abc'],
-      ['DieOnFail', 'abc', 'abc', 'abc'],
-      ['DieOnFail', 'abc', '', 'abc'],
-      // DCI_PHPInterpreter
-      ['PHPInterpreter', 'abc', '/mypath', 'abc --php /mypath'],
-      ['PHPInterpreter', 'abc', 'mypath', 'abc --php mypath'],
-      ['PHPInterpreter', 'abc', '', 'abc'],       // TODO: Fix logic for empty input
-      // DCI_RunOptions
-      ['RunOptions', 'abc', 'arg1', ' --arg1'],
-      ['RunOptions', 'abc', 'arg1,', ' --arg1 '],    // TODO: Fix logic for trailing comma input
-      ['RunOptions', 'abc', 'arg1;', ' --arg1'],
-      ['RunOptions', 'abc', 'arg1,val1', ' --arg1 val1'],
-      ['RunOptions', 'abc', 'arg1,val1;', ' --arg1 val1'],
-      ['RunOptions', 'abc', 'arg1,val1;arg2', ' --arg1 val1 --arg2'],
-      ['RunOptions', 'abc', 'arg1,val1;arg2,', ' --arg1 val1 --arg2 '],  // TODO: Fix logic for trailing comma input
-      ['RunOptions', 'abc', 'arg1,val1;arg2,val2', ' --arg1 val1 --arg2 val2'],
-      ['RunOptions', 'abc', 'arg1,val1;arg2,val2;', ' --arg1 val1 --arg2 val2'],
-      ['RunOptions', 'abc', '', ''],
-      // DCI_SQLite
-      ['SQLite', 'abc', 'mydir', 'abc --sqlite mydir'],
-      ['SQLite', 'abc', '\mydir', 'abc --sqlite \mydir'],
-      ['SQLite', 'abc', '', 'abc'],
       // DCI_TestItem
       ['TestItem', 'abc', '', 'abc'],
       ['TestItem', 'abc', 'all', '--all'],

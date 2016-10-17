@@ -35,6 +35,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
     return [
       'DCI_CoreBranch' => '',
       'DCI_DBUrl' => '',
+      'DCI_DBType' => '',
       'DCI_DBVersion' => '',
       'DCI_SQLite' => '',
       'DCI_JunitXml' => 'xml',
@@ -57,8 +58,6 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
   public function run(BuildInterface $build, &$data) {
     $config = $this->resolveDciVariables($data);
 
-    $core_branch = $config['core_branch'];
-
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
@@ -75,6 +74,8 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
     $group = 'nogroup';
     // Iterate through and process the test list
     $test_list = $this->getTestlist();
+
+    $core_branch = $config['core_branch'];
     if(strcmp($core_branch,'7.x') === 0 || strcmp($core_branch,'6.x') === 0){
       $DBUrlArray = parse_url($config['db_url']);
       $DBVersion = $config['db_version'];
@@ -82,7 +83,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
       $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
       $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
       $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
-      $DBIp = $build->getServiceContainers()["db"][$DBVersion]["ip"];
+      $DBIp = $build->getServiceContainers()["db"][$config['db_type'] . '-' . $DBVersion]["ip"];
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
@@ -128,7 +129,6 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
 
     $classes = [];
 
-    //while ($result = $q_result->fetchAll()) {
     while ($result = $q_result->fetch(PDO::FETCH_ASSOC)) {
       if (isset($results_map[$result['status']])) {
         // Set the group from the lookup table

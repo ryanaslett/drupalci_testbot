@@ -82,7 +82,8 @@ publish:
     xml_directory: %DCI_JunitXml%
     # xml_output: %DCI_XMLOutput%
     core_branch: %DCI_CoreBranch%
-    db_url: %DCI_DBUrl&
+    db_url: %DCI_DBUrl%
+    db_type: %DCI_DBType%
     db_version: %DCI_DBVersion%
     sqlite: %DCI_SQLite%
 

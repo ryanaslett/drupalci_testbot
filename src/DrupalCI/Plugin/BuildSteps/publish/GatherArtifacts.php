@@ -71,6 +71,8 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
         $destination_filename = $artifact->getValue();
 
         // Retrieve the build definition from the build
+        // @todo: Plugin-scoped config means the build object's build definition
+        // won't have DCI_ variable replacements, so fix that.
         $definition = $build->getBuildDefinition()->getDefinition();
         // write the build definition out to a file in the artifact directory on the container.
         if (!empty($destination_filename)) {
@@ -85,7 +87,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
           Output::writeLn('<info>Error generating build definition build artifact.');
         }
       }
-      elseif (strtolower($artifact->getType()) == 'file' || $artifact->getType() == 'directory') {
+      elseif (strtolower($artifact->getType()) == 'file' || strtolower ($artifact->getType()) == 'directory') {
         // Copy artifact file to the build artifacts directory
         $file = $artifact->getValue();
         $dest = $target_directory . DIRECTORY_SEPARATOR . basename($file);
