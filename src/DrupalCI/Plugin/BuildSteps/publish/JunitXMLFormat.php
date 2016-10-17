@@ -27,6 +27,30 @@ class JunitXMLFormat extends PluginBase implements Injectable  {
 
   /* @var $results_db \DrupalCI\Build\Definition\BuildDefinition */
   protected $build_definition;
+
+  /* @var $results_db \DrupalCI\Build\Environment\DatabaseInterface */
+  protected $results_db;
+
+  /**
+   * @inheritDoc
+   */
+  public function setContainer(Container $container) {
+    $this->build_definition = $container['build.definition'];
+    $CoreBranch = $this->build_definition->getDCIVariable('DCI_CoreBranch');
+    if(strcmp($CoreBranch,'7.x') === 0) {
+      // If this is a d7 site, the system database and the results database
+      // are The same
+      // @TODO move this out of here. when we can establish the results db
+      // In the runtests task. Also we should get the core branch from
+      // the Codebase when its a service.
+      $this->results_db = $container['db.system'];
+    } else {
+      $this->results_db = $container['db.results'];
+    }
+
+  }
+
+
   public function setTestlist($testlist)  {  $this->testlist = $testlist; }
   public function getTestlist() {  return $this->testlist; }
 
@@ -42,15 +66,6 @@ class JunitXMLFormat extends PluginBase implements Injectable  {
   public function run(BuildInterface $build, $output_directory) {
     // Set up initial variable to store tests
     $CoreBranch = $build->getBuildVars()["DCI_CoreBranch"];
-    //DBX Get 4
-    $DBUrlArray = parse_url($build->getBuildVars()["DCI_DBUrl"]);
-    $DBVersion = $build->getBuildVars()["DCI_DBVersion"];
-    $DBScheme = $DBUrlArray["scheme"];
-    $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
-    $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
-    $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
-    $DBIp = $build->getServiceContainers()["db"][$DBVersion]["ip"];
-    $tests = [];
 
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
@@ -68,7 +83,7 @@ class JunitXMLFormat extends PluginBase implements Injectable  {
     $group = 'nogroup';
     // Iterate through and process the test list
     $test_list = $this->getTestlist();
-    if(strcmp($CoreBranch,'7.x') === 0 || strcmp($CoreBranch,'6.x') === 0){
+    if(strcmp($CoreBranch,'7.x') === 0){
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
@@ -82,8 +97,6 @@ class JunitXMLFormat extends PluginBase implements Injectable  {
           $group = ucwords($output_line);
         }
       }
-      $PDO_con = "$DBScheme:host=$DBIp;dbname=$DBDatabase";
-      $db = new PDO( $PDO_con, $DBUser, $DBPass);
 
     } else {
 
@@ -98,10 +111,9 @@ class JunitXMLFormat extends PluginBase implements Injectable  {
           $group = ucwords($output_line);
         }
       }
-      // Crack open the sqlite database.
-      $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($build->getBuildVar('DCI_SQLite'));
-      $db = new PDO('sqlite:' . $dbfile);
     }
+    // @TODO fix this api. This seems a little obtuse.
+    $db = $this->results_db->connect($this->results_db->getDbname());
 
     // query for simpletest results
     $results_map = array(

@@ -57,12 +57,19 @@ class DbEnvironment extends EnvironmentBase implements Injectable {
    * {@inheritdoc}
    */
   public function run(BuildInterface $build, $data) {
+    $this->setUpDatabase();
+
+    // @TODO get rid of this. and move it to where a results db actually
+    // gets created and needed, in RunTests task
+    $majver = $build->getCodebase()->getCoreMajorVersion();
+    if($majver > 7) {
+      $this->setUpResultsDB($build);
+    }
+
     // We don't need to initialize any service container for SQLite.
-    //DBX Get 1
     if (strpos($build->getBuildVar('DCI_DBVersion'), 'sqlite') === 0) {
       return;
     }
-
     // Data format: 'mysql-5.5' or array('mysql-5.5', 'pgsql-9.1')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
