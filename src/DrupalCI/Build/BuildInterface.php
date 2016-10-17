@@ -7,6 +7,7 @@ namespace DrupalCI\Build;
 
 use DrupalCI\Build\Codebase\CodeBase;
 use DrupalCI\Build\Definition\BuildDefinition;
+use DrupalCI\Build\Results\Artifacts\BuildArtifactList;
 use DrupalCI\Build\Results\BuildResults;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -170,7 +171,7 @@ interface BuildInterface {
   /**
    * @deprecated
    */
-  public function setArtifacts($artifacts);
+  public function setArtifacts(BuildArtifactList $artifacts);
 
   /**
    * @deprecated

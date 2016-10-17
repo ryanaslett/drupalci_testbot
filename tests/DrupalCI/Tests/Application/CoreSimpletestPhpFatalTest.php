@@ -14,7 +14,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  *
  * @see TESTING.md
  */
-class coreSimpletestPhpFatalTest extends DrupalCIFunctionalTestBase {
+class CoreSimpletestPhpFatalTest extends DrupalCIFunctionalTestBase {
 
   /**
    * {@inheritdoc}

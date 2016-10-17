@@ -9,6 +9,7 @@
 namespace DrupalCI\Plugin\BuildSteps\execute;
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
@@ -37,7 +38,8 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
       'DCI_RTColor' => TRUE,
       'DCI_RTConcurrency' => 4,
       'DCI_RTDieOnFail' => TRUE,
-      'DCI_RTKeepResultsTable' => FALSE,
+      'DCI_RTKeepResults' => TRUE,
+      'DCI_RTKeepResultsTable' => TRUE,
       'DCI_SQLite' => '/var/www/html/results/simpletest.sqlite',
       'DCI_RTTypes' => '',
       'DCI_RTUrl' => 'http://localhost/checkout',
@@ -88,6 +90,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
     $flags = [
       'color',
       'die-on-fail',
+      'keep-results',
       'keep-results-table',
       'verbose',
     ];

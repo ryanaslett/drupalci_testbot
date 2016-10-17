@@ -474,10 +474,10 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   /**
-   * @var /DrupalCI/Build/Results/Artifacts/BuildArtifactList
+   * @var /DrupalCI\Build\Results\Artifacts\BuildArtifactList
    */
   protected $artifacts;
-  public function setArtifacts($artifacts) { $this->artifacts = $artifacts; }
+  public function setArtifacts(BuildArtifactList $artifacts) { $this->artifacts = $artifacts; }
   public function getArtifacts() { return $this->artifacts; }
 
   public function getBuildArtifacts() {
