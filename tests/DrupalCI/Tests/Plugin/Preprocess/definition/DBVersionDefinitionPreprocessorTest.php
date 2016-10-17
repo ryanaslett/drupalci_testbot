@@ -17,7 +17,7 @@ class DBVersionDefinitionPreprocessorTest extends DefinitionPreprocessorTestBase
     $definition = $this->getDefinitionTemplate();
     $value = 'mysql';
     $dci_variables = [];
-    $expected_result = ['mysql' => FALSE];
+    $expected_result = ['dbcreate' => TRUE];
 
     $plugin = new DBVersion();
     $plugin->process($definition, $value, $dci_variables);
