@@ -68,4 +68,13 @@ class DbEnvironment extends EnvironmentBase implements Injectable {
     return $images;
   }
 
+  public function buildImageNames($data, BuildInterface $build) {
+    $images = [];
+    foreach ($data as $key => $db_version) {
+      $images["$db_version"]['image'] = "drupalci/$db_version";
+      Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
+    }
+    return $images;
+  }
+
 }
