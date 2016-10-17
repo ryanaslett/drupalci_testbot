@@ -13,7 +13,7 @@ use DrupalCI\Build\BuildInterface;
  * @PluginID("mariadb")
  */
 class MariaDB extends ContainerCommand {
-//DBX
+//DBX Get
   /**
    * {@inheritdoc}
    */

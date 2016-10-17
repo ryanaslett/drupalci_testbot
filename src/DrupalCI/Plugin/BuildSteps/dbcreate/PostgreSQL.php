@@ -13,7 +13,7 @@ use DrupalCI\Build\BuildInterface;
  * @PluginID("pgsql")
  */
 class PostgreSQL extends ContainerCommand {
-//DBX
+//DBX Get
   /**
    * {@inheritdoc}
    */

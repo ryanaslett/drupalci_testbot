@@ -11,7 +11,7 @@ use DrupalCI\Plugin\Preprocess\VariableInterface;
  * @PluginID("dbuser")
  */
 class DBUser extends DBUrlBase implements VariableInterface {
-//DBX
+//DBX Set
   /**
    * {@inheritdoc}
    */

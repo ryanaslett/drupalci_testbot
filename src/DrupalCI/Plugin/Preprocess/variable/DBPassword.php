@@ -10,10 +10,11 @@ namespace DrupalCI\Plugin\Preprocess\variable;
  * @PluginID("dbpassword")
  */
 class DBPassword extends DBUrlBase {
-//DBX
+
   /**
    * {@inheritdoc}
    */
+  //DBX Set
   public function process($db_url, $source_value) {
     return $this->changeUrlPart($db_url, 'pass', $source_value);
   }

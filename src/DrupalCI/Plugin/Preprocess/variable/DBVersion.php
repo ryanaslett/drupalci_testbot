@@ -10,10 +10,11 @@ namespace DrupalCI\Plugin\Preprocess\variable;
  * @PluginID("dbversion")
  */
 class DBVersion extends DBUrlBase {
-//DBX
+
   /**
    * {@inheritdoc}
    */
+  //DBX Set
   public function process($db_url, $source_value) {
     $mod_value = explode(':', $source_value, 2)[0];
     $dbtype = explode('-', $mod_value, 2)[0];

@@ -13,10 +13,11 @@ use DrupalCI\Build\BuildInterface;
  * @PluginID("mysql")
  */
 class MySQL extends ContainerCommand {
-//DBX
+
   /**
    * {@inheritdoc}
    */
+  //DBX Get
   public function run(BuildInterface $build, $data) {
     $parts = parse_url($build->getBuildVar('DCI_DBUrl'));
     $host = $parts['host'];
