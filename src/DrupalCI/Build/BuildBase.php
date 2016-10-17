@@ -404,7 +404,7 @@ class BuildBase implements BuildInterface, Injectable {
       $short_id = substr($container_id, 0, 8);
       Output::writeln("<comment>Created new <options=bold>${image['image']}</options=bold> container instance with ID <options=bold>$short_id</options=bold></comment>");
     }
-    //DBX Get
+    //DBX Get 2
     $dburl_parts = parse_url($this->buildVars['DCI_DBUrl']);
     $dburl_parts['host'] = $container_ip;
     if(!strpos('sqlite', $dburl_parts['scheme'])){
@@ -427,7 +427,7 @@ class BuildBase implements BuildInterface, Injectable {
       }
     }
   }
-// DBX Get
+// DBX Get 3
   public function checkDBStatus($dburl_parts)
   {
     if(strcmp('mariadb',$dburl_parts['scheme']) === 1){

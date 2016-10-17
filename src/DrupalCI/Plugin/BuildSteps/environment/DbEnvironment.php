@@ -10,20 +10,37 @@
 
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
+use DrupalCI\Build\Environment\DatabaseInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
+use DrupalCI\Pimple;
+use Pimple\Container;
 
 /**
  * @PluginID("db")
  */
-class DbEnvironment extends EnvironmentBase {
+class DbEnvironment extends EnvironmentBase implements Injectable {
+
+  /**
+   * @var \DrupalCI\Build\Environment\DatabaseInterface
+   */
+  protected $database;
+
+  /**
+   * @inheritDoc
+   */
+  public function setContainer(Container $container) {
+    /* @var \DrupalCI\Build\Environment\DatabaseInterface */
+    $this->database = $container['db.system'];
+  }
 
   /**
    * {@inheritdoc}
    */
   public function run(BuildInterface $build, $data) {
     // We don't need to initialize any service container for SQLite.
-    //DBX Get
+    //DBX Get 1
     if (strpos($build->getBuildVar('DCI_DBVersion'), 'sqlite') === 0) {
       return;
     }

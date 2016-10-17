@@ -37,7 +37,7 @@ class JunitXMLFormat extends PluginBase {
   public function run(BuildInterface $build, $output_directory) {
     // Set up initial variable to store tests
     $CoreBranch = $build->getBuildVars()["DCI_CoreBranch"];
-    //DBX Get
+    //DBX Get 4
     $DBUrlArray = parse_url($build->getBuildVars()["DCI_DBUrl"]);
     $DBVersion = $build->getBuildVars()["DCI_DBVersion"];
     $DBScheme = $DBUrlArray["scheme"];
