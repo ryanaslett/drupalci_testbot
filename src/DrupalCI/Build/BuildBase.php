@@ -428,44 +428,13 @@ class BuildBase implements BuildInterface, Injectable {
       $short_id = substr($container_id, 0, 8);
       Output::writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
     }
+    /* @var $database \DrupalCI\Build\Environment\Database */
+    $database = $this->container['db.system'];
+    // @TODO: should probably add the container environment as a service
+    $database->setHost($container_ip);
+    // @TODO: all of this should probably live inside of the database
+    $database->connect();
 
-    $dburl_parts = parse_url($this->getBuildVar('DCI_DBUrl'));
-    $dburl_parts['host'] = $container_ip;
-    if(!strpos('sqlite', $dburl_parts['scheme'])){
-      $counter = 0;
-      $increment = 10;
-      $max_sleep = 120;
-      while($counter < $max_sleep ){
-        if ($this->checkDBStatus($dburl_parts)){
-          Output::writeln("<comment>Database is active.</comment>");
-          break;
-        }
-        if ($counter >= $max_sleep){
-          Output::writeln("<error>Max retries reached, exiting promgram.</error>");
-          exit(1);
-        }
-        Output::writeln("<comment>Sleeping " . $increment . " seconds to allow service to start.</comment>");
-        sleep($increment);
-        $counter += $increment;
-
-      }
-    }
-  }
-
-  public function checkDBStatus($dburl_parts)
-  {
-    if(strcmp('mariadb',$dburl_parts['scheme']) === 1){
-      $dburl_parts['scheme'] = 'mysql';
-    }
-    try {
-      $conn_string = $dburl_parts['scheme'] . ':host=' . $dburl_parts['host'];
-      Output::writeln("<comment>Attempting to connect to database server.</comment>");
-      $conn = new PDO($conn_string, $dburl_parts['user'], $dburl_parts['pass']);
-    } catch (\PDOException $e) {
-      Output::writeln("<comment>Could not connect to database server.</comment>");
-      return FALSE;
-    }
-    return TRUE;
   }
 
   public function getErrorState() {

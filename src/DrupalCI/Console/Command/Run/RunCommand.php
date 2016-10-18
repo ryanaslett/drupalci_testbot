@@ -28,7 +28,7 @@ class RunCommand extends DrupalCICommandBase  {
    * @todo This needs to be replaced with a service
    * in the container.
    *
-   * @var DrupalCI\Build\BuildInterface
+   * @var \DrupalCI\Build\BuildInterface
    */
   protected $build;
 
@@ -111,7 +111,8 @@ class RunCommand extends DrupalCICommandBase  {
     $this->build->generateBuildId();
 
     // Create our build Definition object and attach it to the build.
-    $build_definition = new BuildDefinition();
+    /* @var $build_definition \DrupalCI\Build\Definition\BuildDefinition */
+    $build_definition = $this->container['build.definition'];
     $build_definition->setContainer($this->container);
     $this->build->setBuildDefinition($build_definition);
 

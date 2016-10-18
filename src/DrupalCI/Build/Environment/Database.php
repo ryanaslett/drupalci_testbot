@@ -2,9 +2,13 @@
 
 namespace DrupalCI\Build\Environment;
 
+use DrupalCI\Console\Output;
 
 class Database implements DatabaseInterface {
 
+  /**
+   * @var \PDO
+   */
   protected $connection;
 
   protected $version;
@@ -22,6 +26,54 @@ class Database implements DatabaseInterface {
   protected $password;
 
   protected $host;
+
+  protected $dbfile;
+
+  /**
+   * @var
+   *
+   * This is the role that this database plays. Could be system, or results database for now.
+   */
+  protected $dbrole;
+
+  protected $dbname;
+
+  /**
+   * Database constructor.
+   *
+   * @param $dbrole
+   */
+  public function __construct($dbrole) {
+    $this->dbrole = $dbrole;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDbname() {
+    return $this->dbname;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setDbname($dbname) {
+    $this->dbname = $dbname;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDbrole() {
+    return $this->dbrole;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setDbrole($dbrole) {
+    $this->dbrole = $dbrole;
+  }
 
   /**
    * @inheritDoc
@@ -72,6 +124,7 @@ class Database implements DatabaseInterface {
    * @inheritDoc
    */
   public function getUrl() {
+
     return $this->url;
   }
 
@@ -156,6 +209,119 @@ class Database implements DatabaseInterface {
   public function setHost($host) {
     $this->host = $host;
     return $this;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDbfile() {
+    return $this->dbfile;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setDbfile($dbfile) {
+    $this->dbfile = $dbfile;
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  public function createDB() {
+    try {
+      $this->connection->exec('CREATE DATABASE ' . $this->dbname);
+    } catch (\PDOException $e) {
+      Output::writeln("<comment>Could not create database $this->dbname.</comment>");
+      return FALSE;
+    }
+    return TRUE;
+
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getScheme() {
+    // This is kinda gross, but will do for now.
+    $scheme = $this->dbtype;
+    // @TODO find out what happens if we percona?
+    switch ($this->dbtype) {
+      case 'sqlite':
+        $scheme = 'sqlite:';
+        break;
+      case 'mariadb':
+        $scheme = 'mysql:';
+        break;
+      default:
+        $scheme = $this->dbtype . ':';
+    }
+    return $scheme;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function connect($database = NULL) {
+    // @TODO: maybe this can work with sqlite?
+   // if($this->dbtype != 'sqlite') {
+      $counter = 0;
+      $increment = 10;
+      $max_sleep = 120;
+      // @TODO explore using PDO:ATTR_TIMEOUT to see if that works instead of polling in php.
+      while($counter < $max_sleep ){
+        if ($this->establishDBConnection($database)){
+          Output::writeln("<comment>Database is active.</comment>");
+          break;
+        }
+        if ($counter >= $max_sleep){
+          Output::writeln("<error>Max retries reached, exiting promgram.</error>");
+          exit(1);
+        }
+        Output::writeln("<comment>Sleeping " . $increment . " seconds to allow service to start.</comment>");
+        sleep($increment);
+        $counter += $increment;
+      }
+      return $this->connection;
+   // }
+  }
+
+
+  protected function establishDBConnection($database = NULL)
+  {
+    try {
+      $conn_string = $this->getPDODsn($database);
+      Output::writeln("<comment>Attempting to connect to database server.</comment>");
+      // @TODO: This shouldnt happen here, but lets just do it like this for now.
+      $conn = new \PDO($conn_string, $this->username, $this->password);
+    } catch (\PDOException $e) {
+      Output::writeln("<comment>Could not connect to database server.</comment>");
+      return FALSE;
+    }
+    $this->setConnection($conn);
+    return TRUE;
+  }
+
+  /**
+   * @param null $database
+   * If set, tries to connect to a specific database
+   *
+   * @return string
+   */
+  protected function getPDODsn($database = NULL): string {
+
+    $conn_string = $this->getScheme();
+    // @TODO FIX: again, I think I wanna see subclasses vs If's n switches.
+    if ($this->dbtype == 'sqlite') {
+      $conn_string .= $this->dbfile;
+    } else {
+      $conn_string .= 'host=' . $this->host;
+      if (!empty($database)) {
+        $conn_string .= ';dbname=' . $this->dbname;
+      }
+    }
+    return $conn_string;
   }
 
 }

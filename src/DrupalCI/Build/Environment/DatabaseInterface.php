@@ -6,9 +6,36 @@ namespace DrupalCI\Build\Environment;
 /**
  * Interface DatabaseInterface
  *
- * @package Build\Environment
+ * @package DrupalCI\Build\Environment
  */
 interface DatabaseInterface {
+
+  /**
+   * Returns the role for this database in the build.
+   * A build may have a database that is used for the tests, as well as a
+   * database that stores test results, we can use this to determine which is
+   * which.
+   *
+   * @return string
+   */
+  public function getDbrole();
+
+  /**
+   * @param mixed $dbrole
+   */
+  public function setDbrole($dbrole);
+
+  /**
+   * Returns the name of the database
+   *
+   * @return string
+   */
+  public function getDbname();
+
+  /**
+   * @param string $dbname
+   */
+  public function setDbname($dbname);
 
   /**
    * Returns a PDO connection to this database
@@ -76,6 +103,14 @@ interface DatabaseInterface {
   public function setUrl($url);
 
   /**
+   * Returns the scheme part of a database url. It is based on the type of the
+   * database
+   *
+   * @return string
+   */
+  public function getScheme();
+
+  /**
    * Returns the username needed to connect to this database
    *
    * @return string
@@ -92,14 +127,32 @@ interface DatabaseInterface {
   public function setUsername($username);
 
   /**
-   * Returns the port that the database is listening on. Maybe someday socket support?
+   * Gets the full path to the sqlite db filename
+   *
+   * @return string
+   */
+  public function getDBFile();
+
+  /**
+   * Sets the full path to the sqlite db filename
+   *
+   * @param $filename
+   *
+   * @return string
+   */
+  public function setDBFile($filename);
+
+  /**
+   * Returns the port that the database is listening on. Maybe someday socket
+   * support?
    *
    * @return string
    */
   public function getPort();
 
   /**
-   * Sets the port that the database is listening on. Maybe someday socket support?
+   * Sets the port that the database is listening on. Maybe someday socket
+   * support?
    *
    * @param $port
    *
@@ -154,4 +207,20 @@ interface DatabaseInterface {
    * @return string
    */
   public function setConfigurationFile($configuration_file);
+
+  /**
+   * Creates a PDO connection to the database
+   *
+   * @param null $database database name if you want to connect to a specific
+   * db name. Otherwise blank to connect to the server as a whole.
+   *
+   * @return
+   */
+  public function connect($database = NULL);
+
+  /**
+   * Creates a database using the established connection
+   */
+  public function createDB();
+
 }

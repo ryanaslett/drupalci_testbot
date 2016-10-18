@@ -44,7 +44,7 @@ class DrupalInstall {
     $function = "process_{$value}_install";
     $this->$function($definition, $core_version, $dci_variables);
   }
-
+// @TODO find out if we can even use this and update it.
   protected function process_drush_install(&$definition, $core_version, $dci_variables) {
     // TODO: Implement drush installation process
     if (empty($definition['install']['command'])) {

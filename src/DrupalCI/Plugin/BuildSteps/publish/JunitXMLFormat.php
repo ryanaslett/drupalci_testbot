@@ -27,8 +27,27 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
 
   use BuildTaskTrait;
 
+  /* @var $build_definition \DrupalCI\Build\Definition\BuildDefinition */
+  protected $build_definition;
+
+  /* @var $results_db \DrupalCI\Build\Environment\DatabaseInterface */
+  protected $results_db;
   public function setContainer(Container $container) {
     $this->buildVars = $container['build.vars'];
+    // BUILDVARS
+    $this->build_definition = $container['build.definition'];
+    $CoreBranch = $this->build_definition->getDCIVariable('DCI_CoreBranch');
+    if(strcmp($CoreBranch,'7.x') === 0) {
+      // If this is a d7 site, the system database and the results database
+      // are The same
+      // @TODO move this out of here. when we can establish the results db
+      // In the runtests task. Also we should get the core branch from
+      // the Codebase when its a service.
+      $this->results_db = $container['db.system'];
+    } else {
+      $this->results_db = $container['db.results'];
+    }
+
   }
 
   public function getDefaultConfiguration() {
@@ -57,7 +76,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
    */
   public function run(BuildInterface $build, &$data) {
     $config = $this->resolveDciVariables($data);
-
+    $CoreBranch = $build->getBuildVars()["DCI_CoreBranch"];
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
@@ -74,16 +93,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
     $group = 'nogroup';
     // Iterate through and process the test list
     $test_list = $this->getTestlist();
-
-    $core_branch = $config['core_branch'];
-    if(strcmp($core_branch,'7.x') === 0 || strcmp($core_branch,'6.x') === 0){
-      $DBUrlArray = parse_url($config['db_url']);
-      $DBVersion = $config['db_version'];
-      $DBScheme = $DBUrlArray["scheme"];
-      $DBUser   = (!empty($DBUrlArray["user"])) ? $DBUrlArray["user"] : "";
-      $DBPass   = (!empty($DBUrlArray["pass"])) ? $DBUrlArray["pass"] : "";
-      $DBDatabase = str_replace('/','',$DBUrlArray["path"]);
-      $DBIp = $build->getServiceContainers()["db"][$config['db_type'] . '-' . $DBVersion]["ip"];
+    if(strcmp($CoreBranch,'7.x') === 0){
 
       foreach ($test_list as $output_line) {
         if (substr($output_line, 0, 3) == ' - ') {
@@ -97,8 +107,6 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
           $group = ucwords($output_line);
         }
       }
-      $PDO_con = "$DBScheme:host=$DBIp;dbname=$DBDatabase";
-      $db = new \PDO( $PDO_con, $DBUser, $DBPass);
 
     } else {
 
@@ -113,10 +121,9 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
           $group = ucwords($output_line);
         }
       }
-      // Crack open the sqlite database.
-      $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($config['sqlite']);
-      $db = new \PDO('sqlite:' . $dbfile);
     }
+    // @TODO fix this api. This seems a little obtuse.
+    $db = $this->results_db->connect($this->results_db->getDbname());
 
     // query for simpletest results
     $results_map = array(
@@ -128,6 +135,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
 
     $q_result = $db->query('SELECT * FROM simpletest ORDER BY test_id, test_class, message_id;');
 
+    $results = [];
     $classes = [];
 
     while ($result = $q_result->fetch(PDO::FETCH_ASSOC)) {
