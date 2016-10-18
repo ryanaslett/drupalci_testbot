@@ -112,7 +112,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
   public function setUpDatabase() {
      // BUILDVARS
       $this->setDBName($this->build_definition->getDCIVariable('DCI_BuildId'));
-      $this->setDBVersion($this->build_definition->getDCIVariable('DCI_DBVersion'));
+      $this->setDBVersion($this->build_definition->getDCIVariable('DCI_DBType'));
       $this->setPassword($this->build_definition->getDCIVariable('DCI_DBPassword'));
       $this->setUser($this->build_definition->getDCIVariable('DCI_DBUser'));
 
