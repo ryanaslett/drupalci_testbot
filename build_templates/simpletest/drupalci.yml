@@ -49,15 +49,15 @@ execute:
     runtests:
       color: %DCI_RTColor%
       concurrency: %DCI_RTConcurrency%
-      die-on-fail: %DCI_RTDieOnFail%
+      # die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
-      keep-results-table: %DCI_RTKeepResultsTable%
+      keep-results: %DCI_RTKeepResults%
       sqlite: %DCI_SQLite%
       testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%
       types: Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional
       url: %DCI_RTUrl%
-      verbose: %DCI_RTVerbose%
+      # verbose: %DCI_RTVerbose%
       xml: %DCI_RTXmlPath%
   # Run JS tests.
   simpletest:
@@ -65,7 +65,7 @@ execute:
     runtests:
       color: %DCI_RTColor%
       concurrency: 1
-      die-on-fail: %DCI_RTDieOnFail%
+      # die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
       keep-results-table: TRUE
       sqlite: %DCI_SQLite%

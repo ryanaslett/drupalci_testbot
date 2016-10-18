@@ -50,7 +50,7 @@ execute:
       php: %DCI_PHPInterpreter%
       color: %DCI_RTColor%
       concurrency: %DCI_RTConcurrency%
-      keep-results-table: %DCI_RTKeepResultsTable%
+      # keep-results-table: %DCI_RTKeepResultsTable%
       sqlite: %DCI_SQLite%
       testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%

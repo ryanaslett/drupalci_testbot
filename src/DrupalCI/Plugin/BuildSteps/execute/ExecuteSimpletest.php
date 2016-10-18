@@ -37,9 +37,9 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
       'DCI_DBurl' => '',
       'DCI_RTColor' => TRUE,
       'DCI_RTConcurrency' => 4,
-      'DCI_RTDieOnFail' => TRUE,
+     # 'DCI_RTDieOnFail' => TRUE,
       'DCI_RTKeepResults' => TRUE,
-      'DCI_RTKeepResultsTable' => TRUE,
+      #'DCI_RTKeepResultsTable' => TRUE,
       'DCI_SQLite' => '/var/www/html/results/simpletest.sqlite',
       'DCI_RTTypes' => '',
       'DCI_RTUrl' => 'http://localhost/checkout',
@@ -126,7 +126,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
     foreach ($config as $key => $value) {
       if (in_array($key, $args)) {
         if ($value) {
-          $command[] = "--$key $value";
+          $command[] = "--$key \"$value\"";
         }
       }
     }
