@@ -34,7 +34,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
-    /* @var \DrupalCI\Build\Definition\BuildDefinition */
+
     $this->build_definition = $container['build.definition'];
   }
 
@@ -61,7 +61,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
   protected $results_database;
 
   /**
-   * @var $build_definition \DrupalCI\Build\Definition\BuildDefinition
+   * @var \DrupalCI\Build\Definition\BuildDefinition
    */
   protected $build_definition;
 
