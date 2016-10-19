@@ -125,8 +125,13 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
     if (empty($this->dciConfig)) {
       throw new \PHPUnit_Framework_Exception('You must provide ' . get_class($this) . '::$dciConfig.');
     }
-    $this->configLoad('blank');
-    $this->configSet($this->dciConfig);
+    foreach ($this->dciConfig as $variable) {
+      list($env_var,$value) = explode('=',$variable);
+      $_ENV[$env_var]=$value;
+    }
+    //$this->configLoad('blank');
+    //$this->configSet($this->dciConfig);
+
     $app = $this->getConsoleApp();
     $app->setAutoExit(FALSE);
   }

@@ -91,9 +91,10 @@ class RunCommand extends DrupalCICommandBase  {
 
     $config_helper = new ConfigHelper();
     $this->buildVars->setAll($config_helper->getCurrentConfigSetParsed(), 'local');
-//    if (!empty($_ENV['DCI_JobType'])) {
-//      $this->buildVars->set('DCI_JobType',$_ENV['DCI_JobType']);
-//    }
+    // @TODO: get rid of DCI_JobType plugins entirely.
+    if (!empty($_ENV['DCI_JobType'])) {
+      $this->buildVars->set('DCI_JobType',$_ENV['DCI_JobType'], 'local');
+    }
     // Determine the Build Type based on the first argument to the run command
     if ($arg) {
       $build_type = (strtolower(substr(trim($arg), -4)) == ".yml") ? "generic" : trim($arg);

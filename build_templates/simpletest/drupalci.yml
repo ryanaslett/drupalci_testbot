@@ -51,7 +51,7 @@ execute:
       concurrency: %DCI_RTConcurrency%
       # die-on-fail: %DCI_RTDieOnFail%
       dburl: %DCI_DBurl%
-      keep-results: %DCI_RTKeepResults%
+      keep-results: TRUE
       sqlite: %DCI_SQLite%
       testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
       testgroups: %DCI_TestGroups%
