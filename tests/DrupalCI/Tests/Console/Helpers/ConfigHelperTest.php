@@ -12,9 +12,8 @@ use DrupalCI\Tests\DrupalCITestCase;
 
 class ConfigHelperTest extends DrupalCITestCase {
 
-  private $origHome;
-  private $tmp_home;
-  private $dci_config;
+  // TODO: This goes away once the env's are gathered directly in the build
+  // steps.
   private $data = [
     'DCI_PHPVersion' => '7',
     'DCI_Concurrency' => '2',

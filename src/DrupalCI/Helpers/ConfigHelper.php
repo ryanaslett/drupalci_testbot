@@ -12,9 +12,8 @@ use DrupalCI\Console\Output;
 
 class ConfigHelper extends DrupalCIHelperBase {
 
-  /**
-   * {@inheritdoc}
-   */
+  // TODO: This goes away once the env's are gathered directly in the build
+  // steps.
   public function getCurrentEnvVars() {
     $current = [];
     if (!empty($_ENV)) {
