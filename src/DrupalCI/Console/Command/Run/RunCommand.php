@@ -8,7 +8,6 @@
 namespace DrupalCI\Console\Command\Run;
 
 use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
-use DrupalCI\Helpers\ConfigHelper;
 use DrupalCI\Injectable;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\CodeBase;
@@ -88,9 +87,6 @@ class RunCommand extends DrupalCICommandBase  {
    */
   public function execute(InputInterface $input, OutputInterface $output) {
     $arg = $input->getArgument('definition');
-
-    $config_helper = new ConfigHelper();
-    $this->buildVars->setAll($config_helper->getCurrentConfigSetParsed(), 'local');
     // @TODO: get rid of DCI_JobType plugins entirely.
     if (!empty($_ENV['DCI_JobType'])) {
       $this->buildVars->set('DCI_JobType',$_ENV['DCI_JobType'], 'local');

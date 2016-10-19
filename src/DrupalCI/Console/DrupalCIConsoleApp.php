@@ -17,18 +17,10 @@ use DrupalCI\InjectableTrait;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
 use DrupalCI\Console\Command\Init\InitAllCommand;
-use DrupalCI\Console\Command\Init\InitConfigCommand;
 use DrupalCI\Console\Command\Docker\DockerBuildCommand;
 use DrupalCI\Console\Command\Docker\DockerPullCommand;
 use DrupalCI\Console\Command\Docker\DockerRemoveCommand;
 use DrupalCI\Console\Command\Run\RunCommand;
-use DrupalCI\Console\Command\Config\ConfigListCommand;
-use DrupalCI\Console\Command\Config\ConfigLoadCommand;
-use DrupalCI\Console\Command\Config\ConfigResetCommand;
-use DrupalCI\Console\Command\Config\ConfigSaveCommand;
-use DrupalCI\Console\Command\Config\ConfigSetCommand;
-use DrupalCI\Console\Command\Config\ConfigShowCommand;
-use DrupalCI\Console\Command\Config\ConfigClearCommand;
 use DrupalCI\Console\Command\Status\StatusCommand;
 use DrupalCI\Providers\ConsoleCommandProvider;
 

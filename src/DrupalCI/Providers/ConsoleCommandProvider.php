@@ -3,17 +3,9 @@
 namespace DrupalCI\Providers;
 
 use DrupalCI\Console\Command\Docker\DockerBuildCommand;
-use DrupalCI\Console\Command\Config\ConfigClearCommand;
-use DrupalCI\Console\Command\Config\ConfigListCommand;
-use DrupalCI\Console\Command\Config\ConfigLoadCommand;
-use DrupalCI\Console\Command\Config\ConfigResetCommand;
-use DrupalCI\Console\Command\Config\ConfigSaveCommand;
-use DrupalCI\Console\Command\Config\ConfigSetCommand;
-use DrupalCI\Console\Command\Config\ConfigShowCommand;
 use DrupalCI\Console\Command\Docker\DockerRemoveCommand;
 use DrupalCI\Console\Command\Init\InitAllCommand;
 use DrupalCI\Console\Command\Init\InitBaseContainersCommand;
-use DrupalCI\Console\Command\Init\InitConfigCommand;
 use DrupalCI\Console\Command\Init\InitDatabaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitDependenciesCommand;
 use DrupalCI\Console\Command\Init\InitDockerCommand;
@@ -44,27 +36,6 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
     $container['command.pull'] = function ($container) {
       return new DockerPullCommand();
     };
-    $container['command.config.list'] = function ($container) {
-      return new ConfigListCommand();
-    };
-    $container['command.config.load'] = function ($container) {
-      return new ConfigLoadCommand();
-    };
-    $container['command.config.reset'] = function ($container) {
-      return new ConfigResetCommand();
-    };
-    $container['command.config.save'] = function ($container) {
-      return new ConfigSaveCommand();
-    };
-    $container['command.config.set'] = function ($container) {
-      return new ConfigSetCommand();
-    };
-    $container['command.config.show'] = function ($container) {
-      return new ConfigShowCommand();
-    };
-    $container['command.config.clear'] = function ($container) {
-      return new ConfigClearCommand();
-    };
     $container['command.docker.remove'] = function ($container) {
       return new DockerRemoveCommand();
     };
@@ -83,9 +54,6 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
     $container['command.init.docker'] = function ($container) {
       return new InitDockerCommand();
     };
-    $container['command.init.config'] = function ($container) {
-      return new InitConfigCommand();
-    };
     $container['command.init.web'] = function ($container) {
       return new InitWebContainersCommand();
     };
@@ -101,20 +69,12 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
         $container['command.status'],
         $container['command.build'],
         $container['command.pull'],
-        $container['command.config.list'],
-        $container['command.config.load'],
-        $container['command.config.reset'],
-        $container['command.config.save'],
-        $container['command.config.set'],
-        $container['command.config.show'],
-        $container['command.config.clear'],
         $container['command.docker.remove'],
         $container['command.init.all'],
         $container['command.init.base'],
         $container['command.init.db'],
         $container['command.init.dependencies'],
         $container['command.init.docker'],
-        $container['command.init.config'],
         $container['command.init.web'],
         $container['command.init.php'],
         $container['command.run']

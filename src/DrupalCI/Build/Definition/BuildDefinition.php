@@ -180,17 +180,8 @@ class BuildDefinition Implements Injectable {
       Output::writeLn(implode(",", array_keys($buildtype_defaults)));
     }
 
-    // 3. Local overrides defined in ~/.drupalci/config
+    // 3. 'DCI_' namespaced environment variable overrides
     $confighelper = new ConfigHelper();
-    $local_overrides = $confighelper->getCurrentConfigSetParsed();
-    $this->dciVariables->add($local_overrides, 'local');
-    if (!empty($local_overrides)) {
-      // OPUT
-      Output::writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
-      Output::writeLn(implode(",", array_keys($local_overrides)));
-    }
-
-    // 4. 'DCI_' namespaced environment variable overrides
     $environment_variables = $confighelper->getCurrentEnvVars();
     $this->dciVariables->add($environment_variables, 'environment');
     if (!empty($environment_variables)) {

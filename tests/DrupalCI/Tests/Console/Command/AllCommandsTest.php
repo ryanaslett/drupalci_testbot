@@ -14,17 +14,10 @@ class AllCommandsPresentTest extends CommandTestBase {
   public function provideCommandNames() {
     return [
       ['build'],
-      ['config:clear'],
-      ['config:list'],
-      ['config:load'],
-      ['config:reset'],
-      ['config:save'],
-      ['config:set'],
-      ['config:show'],
+
       ['docker-rm'],
       ['init'],
       ['init:base'],
-      ['init:config'],
       ['init:database'],
       ['init:dependencies'],
       ['init:docker'],

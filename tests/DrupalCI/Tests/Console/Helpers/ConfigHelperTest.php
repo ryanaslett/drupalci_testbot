@@ -23,11 +23,6 @@ class ConfigHelperTest extends DrupalCITestCase {
   ];
 
   public function setUp(){
-    $this->tmp_home = "/tmp/confighelpertest";
-    putenv('HOME='.$this->tmp_home);
-    mkdir($this->tmp_home . '/.drupalci', 0775, true);
-    $this->dci_config = $this->tmp_home . '/.drupalci/config';
-    copy(__DIR__ . '/Fixtures/ConfigHelperTest_config', $this->dci_config);
     foreach ($this->data as $key => $value) {
       $_ENV[$key] = $value;
     }
@@ -39,23 +34,5 @@ class ConfigHelperTest extends DrupalCITestCase {
     foreach ($this->data as $key => $value) {
       $this->assertEquals( $value, $results[$key]);
     }
-  }
-
-  public function testGetCurrentConfigSetContents() {
-    $confighelper = new ConfigHelper();
-    $results = $confighelper->getCurrentConfigSetContents();
-    $r2 = '';
-    foreach ($results as $key => $value) {
-      $r2 .= $value . PHP_EOL;
-    }
-    $this->assertFileExists($this->dci_config);
-    $this->assertStringEqualsFile(__DIR__ . '/Fixtures/ConfigHelperTest_config', $r2, 'The file has been altered.');
-
-  }
-
-  protected function tearDown(){
-    unlink($this->tmp_home . '/.drupalci/config');
-    rmdir($this->tmp_home . '/.drupalci');
-    rmdir($this->tmp_home);
   }
 }
