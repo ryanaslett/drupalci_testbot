@@ -19,7 +19,7 @@ abstract class DBUrlBase extends PluginBase implements VariableInterface, Inject
    */
   protected $buildVars;
 
-  public function setContainer(\Pimple\Container $container) {
+  public function inject(\Pimple\Container $container) {
     $this->buildVars = $container['build.vars'];
   }
 

@@ -27,7 +27,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
 
   use BuildTaskTrait;
 
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->buildVars = $container['build.vars'];
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     $this->database = $container['db.system'];

@@ -23,7 +23,7 @@ class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
 
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->buildVars = $container['build.vars'];
   }
 
