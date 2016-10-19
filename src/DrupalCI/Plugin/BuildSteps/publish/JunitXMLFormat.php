@@ -32,7 +32,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
 
   /* @var $results_db \DrupalCI\Build\Environment\DatabaseInterface */
   protected $results_db;
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->buildVars = $container['build.vars'];
     // BUILDVARS
     $this->build_definition = $container['build.definition'];

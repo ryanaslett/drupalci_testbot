@@ -52,7 +52,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
     ];
   }
 
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
     $this->buildVars = $container['build.vars'];
   }
