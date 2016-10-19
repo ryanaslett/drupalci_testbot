@@ -60,8 +60,6 @@ execute:
       xml: %DCI_RTXmlPath%
     #- cd /var/www/html && sudo -u www-data php %DCI_RunScript% --php %DCI_PHPInterpreter% --url http://localhost/checkout %DCI_RunOptions% %DCI_TestGroups%
 publish:
-  gather_artifacts:
-    artifact_directory: /var/www/html/artifacts
   junit_xmlformat:
     xml_directory: %DCI_JunitXml%
     # xml_output: %DCI_XMLOutput%

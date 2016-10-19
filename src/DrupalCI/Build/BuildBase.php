@@ -14,8 +14,6 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
-use DrupalCI\Build\Results\Artifacts\BuildArtifact;
-use DrupalCI\Build\Results\Artifacts\BuildArtifactList;
 use DrupalCI\Build\Codebase\CodeBase;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\Results\BuildResults;
@@ -458,59 +456,6 @@ class BuildBase implements BuildInterface, Injectable {
   public function getErrorState() {
     $results = $this->getBuildResults();
     return ($results->getResultByStep($results->getCurrentStage(), $results->getCurrentStep()) === "Error");
-  }
-
-  /**
-   * @var /DrupalCI\Build\Results\Artifacts\BuildArtifactList
-   */
-  protected $artifacts;
-  public function setArtifacts(BuildArtifactList $artifacts) { $this->artifacts = $artifacts; }
-  public function getArtifacts() { return $this->artifacts; }
-
-  public function getBuildArtifacts() {
-    throw new \Exception('Your build class must override ' . __METHOD__);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function createArtifactList() {
-    if (!isset($this->artifacts)) {
-      $this->artifacts = New BuildArtifactList();
-    }
-    // Load the standard base build artifacts into the list
-    foreach($this->defaultBuildArtifacts as $key => $value) {
-      $artifact = New BuildArtifact('file', $value);
-      $this->artifacts->addArtifact($key, $artifact);
-    }
-    // Load the buildType specific build artifacts into the list
-    // Format: array(key, target, [type = file])
-    foreach ($this->getBuildArtifacts() as $value) {
-      $key = $value[0];
-      $target = $value[1];
-      $type = isset($value[2]) ? $value[2] : 'file';
-      $artifact = New BuildArtifact($type, $target);
-      $this->artifacts->addArtifact($key, $artifact);
-    }
-  }
-
-  // Provide the default file locations for standard build artifacts.
-  protected $defaultBuildArtifacts = array(
-    //'stdout' => 'stdout.txt',
-    //'stderr' => 'stderr.txt',
-    'buildDefinition' => 'buildDefinition.txt',
-  );
-  // ENVIRONMENT - artifact Directory
-  protected $artifactDirectory;
-
-  /**
-   * @param mixed $artifactDirectory
-   */
-  // ENVIRONMENT - artifact directory
-
-  public function setArtifactDirectory($artifactDirectory)
-  {
-    $this->artifactDirectory = $artifactDirectory;
   }
 
   /**

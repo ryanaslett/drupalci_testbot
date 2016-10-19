@@ -39,8 +39,4 @@ class GenericBuild extends BuildBase {
     return "./drupalci.yml";
   }
 
-  public function getBuildArtifacts() {
-    return [];
-  }
-
 }

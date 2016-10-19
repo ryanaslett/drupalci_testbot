@@ -42,7 +42,7 @@ class SimpletestBuild extends BuildBase {
     'DCI_DBPassword' => 'drupaltestbotpw',
     'DCI_DBUrl' => 'dbtype://host', // DBVersion, DBUser and DBPassword variable plugins will change this.
     'DCI_TestGroups' => '--all',
-    'DCI_SQLite' => '/var/www/html/results/simpletest.sqlite',
+    'DCI_SQLite' => '/var/www/html/artifacts/simpletest.sqlite',
     'DCI_Concurrency' => 4,
     'DCI_GitCommitHash' => '',
     // 'DCI_XMLOutput' => '/var/www/html/results/xml',
@@ -143,16 +143,5 @@ class SimpletestBuild extends BuildBase {
     // SQLite option is added to RunOptions
     'DCI_CoreBranch',
   );
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getBuildArtifacts() {
-    return [
-      ['testgroups', '/var/www/html/artifacts/testgroups.txt'],
-      ['sqlite_test_db', $this->buildVars->get('DCI_SQLite', '/var/www/html/results/simpletest.sqlite')],
-    ];
-    
-  }
 
 }

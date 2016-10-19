@@ -41,7 +41,7 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
       'DCI_RTKeepResults' => TRUE,
       #'DCI_RTKeepResultsTable' => TRUE,
       // ENVIRONMENT - results database
-      'DCI_SQLite' => '/var/www/html/results/simpletest.sqlite',
+      'DCI_SQLite' => '/var/www/html/artifacts/simpletest.sqlite',
       'DCI_RTTypes' => '',
       'DCI_RTUrl' => 'http://localhost/checkout',
       'DCI_RTVerbose' => TRUE,

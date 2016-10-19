@@ -76,8 +76,6 @@ execute:
       verbose: %DCI_RTVerbose%
       xml: %DCI_RTXmlPath%
 publish:
-  gather_artifacts:
-    artifact_directory: /var/www/html/artifacts
   junit_xmlformat:
     xml_directory: %DCI_JunitXml%
     # xml_output: %DCI_XMLOutput%

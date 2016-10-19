@@ -145,10 +145,4 @@ class SimpletestLegacy7Build extends BuildBase {
     'DCI_CoreBranch',
   );
 
-  public function getBuildArtifacts() {
-    return [
-      ['testgroups', '/var/www/html/artifacts/testgroups.txt'],
-    ];
-  }
-
 }
