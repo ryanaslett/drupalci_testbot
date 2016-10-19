@@ -51,11 +51,13 @@ interface BuildInterface {
   /**
    * @return \DrupalCI\Build\Codebase\CodeBase
    */
+  // CODEBASE
   public function getCodebase();
 
   /**
    * @param \DrupalCI\Build\Codebase\CodeBase $codeBase
    */
+  // CODEBASE
   public function setCodebase(CodeBase $codeBase);
 
   /**

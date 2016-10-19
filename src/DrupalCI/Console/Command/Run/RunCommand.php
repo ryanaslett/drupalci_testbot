@@ -91,40 +91,52 @@ class RunCommand extends DrupalCICommandBase  {
 
     $config_helper = new ConfigHelper();
     $this->buildVars->setAll($config_helper->getCurrentConfigSetParsed(), 'local');
-
+//    if (!empty($_ENV['DCI_JobType'])) {
+//      $this->buildVars->set('DCI_JobType',$_ENV['DCI_JobType']);
+//    }
     // Determine the Build Type based on the first argument to the run command
     if ($arg) {
       $build_type = (strtolower(substr(trim($arg), -4)) == ".yml") ? "generic" : trim($arg);
-    }
-    else {
+    } else {
       // If no argument defined, then check for a default in the local overrides
       $build_type = $this->buildVars->get('DCI_JobType', 'generic');
     }
 
+    // WORKFLOW - buildtype shouldnt really be a plugin. This is where we should
+    // Either read in the default build.yml or load a named build.yml, or
+    // read in the build.yml from the command line.
     $this->build = $this->buildTypePluginManager->getPlugin($build_type, $build_type);
+
+
     $this->build->setContainer($this->container);
 
     // Link our $output variable to the build.
     Output::setOutput($output);
 
     // Generate a unique build_id, and store it within the build object
+    // WORKFLOW - Move this to the build object constructor
     $this->build->generateBuildId();
 
     // Create our build Definition object and attach it to the build.
     /* @var $build_definition \DrupalCI\Build\Definition\BuildDefinition */
     $build_definition = $this->container['build.definition'];
     $build_definition->setContainer($this->container);
+    // WORKFLOW the build should get this from the container, not have a getter/setter for it.
     $this->build->setBuildDefinition($build_definition);
 
     // Compile our complete list of DCI_* variables
+    // WORKFLOW - no, we should not compile a build.
+
     $build_definition->compile($this->build);
 
     // Create our build Codebase object and attach it to the build.
+    // CODEBASE
     $codeBase = new CodeBase();
     $codeBase->setContainer($this->container);
     $this->build->setCodebase($codeBase);
 
     // Setup our project and version metadata
+    // CODEBASE
     $codeBase->setupProject($build_definition);
 
     // Determine the build definition template to be used
@@ -155,6 +167,7 @@ class RunCommand extends DrupalCICommandBase  {
     }
 
     // Set up the local working directory
+    // CODEBASE
     $result = $codeBase->setupWorkingDirectory($build_definition);
     if ($result === FALSE) {
       // Error encountered while setting up the working directory. Error output

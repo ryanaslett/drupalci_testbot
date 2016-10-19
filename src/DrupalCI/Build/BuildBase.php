@@ -107,6 +107,7 @@ class BuildBase implements BuildInterface, Injectable {
    *
    * @var \DrupalCI\Build\Codebase\CodeBase
    */
+  // CODEBASE
   protected $codeBase;
   public function getCodebase() {  return $this->codeBase;  }
   public function setCodebase(CodeBase $codeBase)  {  $this->codeBase = $codeBase;  }
@@ -191,6 +192,7 @@ class BuildBase implements BuildInterface, Injectable {
   /**
    * @return \Docker\Docker
    */
+  // DOCKER
   public function getDocker()
   {
     $client = Client::createFromEnv();
@@ -217,10 +219,12 @@ class BuildBase implements BuildInterface, Injectable {
   public $executableContainers = [];
 
   public function getServiceContainers() {
+    // DOCKER
     return $this->serviceContainers;
   }
 
   public function setServiceContainers(array $service_containers) {
+    // DOCKER
     $this->serviceContainers = $service_containers;
   }
 
@@ -241,6 +245,7 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   public function getExecContainers() {
+    // DOCKER
     $configs = $this->executableContainers;
     foreach ($configs as $type => $containers) {
       foreach ($containers as $key => $container) {
@@ -257,10 +262,12 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   public function setExecContainers(array $containers) {
+    // DOCKER
     $this->executableContainers = $containers;
   }
 
   public function startContainer(&$container) {
+    // DOCKER
     $docker = $this->getDocker();
     $manager = $docker->getContainerManager();
     // Get container configuration, which defines parameters such as exposed ports, etc.
@@ -313,6 +320,7 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   protected function createContainerLinks(&$config) {
+    // DOCKER
     $links = array();
     if (empty($this->serviceContainers)) {
       return;
@@ -326,14 +334,17 @@ class BuildBase implements BuildInterface, Injectable {
   }
 
   protected function createContainerVolumes(&$config) {
+    // DOCKER
     $volumes = array();
     // Map working directory
+    // CODEBASE
     $working = $this->getCodebase()->getWorkingDir();
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
     $config['HostConfig']['Binds'][] = "$working:$mount_point";
   }
 
   public function getContainerConfiguration($image = NULL) {
+    // DOCKER
     $path = __DIR__ . '/../Containers';
     // RecursiveDirectoryIterator recurses into directories and returns an
     // iterator for each directory. RecursiveIteratorIterator then iterates over
@@ -363,6 +374,7 @@ class BuildBase implements BuildInterface, Injectable {
 
   public function startServiceContainerDaemons($container_type) {
     $needs_sleep = FALSE;
+    // DOCKER
     $docker = $this->getDocker();
     $manager = $docker->getContainerManager();
     $instances = array();

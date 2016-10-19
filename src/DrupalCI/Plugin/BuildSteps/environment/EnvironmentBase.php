@@ -19,6 +19,7 @@ abstract class EnvironmentBase extends PluginBase {
   public function validateImageNames($containers, BuildInterface $build) {
     // Verify that the appropriate container images exist
     Output::writeLn("<comment>Validating container images exist</comment>");
+    // DOCKER
     $docker = $build->getDocker();
     $manager = $docker->getImageManager();
     foreach ($containers as $key => $image_name) {

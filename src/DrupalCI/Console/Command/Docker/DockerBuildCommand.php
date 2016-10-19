@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Docker\Context\Context;
 
 class DockerBuildCommand extends DrupalCICommandBase {
-
+  // DOCKER
   /**
    * {@inheritdoc}
    */
