@@ -21,7 +21,7 @@ class DBCreate extends PluginBase implements Injectable  {
   /**
    * @inheritDoc
    */
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     $this->database = $container['db.system'];
   }

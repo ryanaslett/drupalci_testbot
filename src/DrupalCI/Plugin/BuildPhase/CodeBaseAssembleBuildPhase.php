@@ -7,7 +7,7 @@ use Plugin\BuildPhase\BuildPhaseInterface;
 /**
  * @PluginID("assemble_codebase")
  */
-class CodeBaseAssemblePhase implements BuildPhaseInterface {
+class CodeBaseAssembleBuildPhase implements BuildPhaseInterface {
 
 
 }

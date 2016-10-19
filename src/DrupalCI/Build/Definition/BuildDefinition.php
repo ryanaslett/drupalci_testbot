@@ -24,7 +24,7 @@ class BuildDefinition Implements Injectable {
    */
   protected $container;
 
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->container = $container;
     $this->dciVariables = $container['build.vars'];
     $this->preprocessPluginManager = $container['plugin.manager.factory']->create('Preprocess');

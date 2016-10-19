@@ -23,7 +23,7 @@ class CodeBase implements CodeBaseInterface, Injectable {
    */
   protected $buildVars;
 
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->buildVars = $container['build.vars'];
   }
 

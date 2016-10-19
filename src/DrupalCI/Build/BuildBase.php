@@ -40,7 +40,7 @@ class BuildBase implements BuildInterface, Injectable {
   /**
    * {@inheritdoc}
    */
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->container = $container;
     $this->buildVars = $container['build.vars'];
   }
@@ -98,7 +98,7 @@ class BuildBase implements BuildInterface, Injectable {
   protected $buildDefinition = NULL;
   public function getBuildDefinition() {  return $this->buildDefinition;  }
   public function setBuildDefinition(BuildDefinition $build_definition) {
-    $build_definition->setContainer($this->container);
+    $build_definition->inject($this->container);
     $this->buildDefinition = $build_definition;
   }
 

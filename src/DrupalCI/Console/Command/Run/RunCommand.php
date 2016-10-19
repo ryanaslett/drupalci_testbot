@@ -105,7 +105,7 @@ class RunCommand extends DrupalCICommandBase  {
     $this->build = $this->buildTypePluginManager->getPlugin($build_type, $build_type);
 
 
-    $this->build->setContainer($this->container);
+    $this->build->inject($this->container);
 
     // Link our $output variable to the build.
     // OPUT
@@ -118,7 +118,7 @@ class RunCommand extends DrupalCICommandBase  {
     // Create our build Definition object and attach it to the build.
     /* @var $build_definition \DrupalCI\Build\Definition\BuildDefinition */
     $build_definition = $this->container['build.definition'];
-    $build_definition->setContainer($this->container);
+    $build_definition->inject($this->container);
     // WORKFLOW the build should get this from the container, not have a getter/setter for it.
     $this->build->setBuildDefinition($build_definition);
 
@@ -130,7 +130,7 @@ class RunCommand extends DrupalCICommandBase  {
     // Create our build Codebase object and attach it to the build.
     // CODEBASE
     $codeBase = new CodeBase();
-    $codeBase->setContainer($this->container);
+    $codeBase->inject($this->container);
     $this->build->setCodebase($codeBase);
 
     // Setup our project and version metadata
