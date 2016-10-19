@@ -34,7 +34,7 @@ setup:
   syntaxcheck: true
   composer:
     - install --prefer-dist --working-dir
-install:
+dbcreate:
   dbcreate:
     type: %DCI_DBType%
     url: %DCI_DBUrl%

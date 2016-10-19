@@ -26,7 +26,7 @@ setup:
     - chown -fR www-data:www-data /var/www/html
     - chmod 0777 /var/www/html/artifacts
     - chmod 0777 /tmp
-install:
+dbcreate:
   dbcreate:
     type: %DCI_DBType%
     url: %DCI_DBUrl%
