@@ -45,12 +45,14 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
     $files = $this->process($config['files']);
 
     if (empty($files)) {
+      // OPUT
       Output::writeLn('No files to fetch.');
     }
     foreach ($files as $details) {
       // URL and target directory
       // TODO: Ensure $details contains all required parameters
       if (empty($details['from'])) {
+        // OPUT
         Output::error("Fetch error", "No valid target file provided for fetch command.");
         $build->error();
         return;
@@ -71,10 +73,12 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
           ->get($url, ['save_to' => $destination_file]);
       }
       catch (\Exception $e) {
+        // OPUT
         Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$directory</info>");
         $build->error();
         return;
       }
+      // OPUT
       Output::writeLn("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
     }
   }

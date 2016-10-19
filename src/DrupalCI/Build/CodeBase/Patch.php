@@ -170,6 +170,7 @@ class Patch implements PatchInterface {
   public function __construct($patch_details, $codebase)
   {
     // Copy working directory from the initial codebase
+    // ENVIRONMENT - Host working dir not sure why copy?
     $working_dir = $codebase->getWorkingDir();
     $this->setWorkingDir($working_dir);
 
@@ -211,9 +212,12 @@ class Patch implements PatchInterface {
     $file_info = pathinfo($url);
     $directory = $this->working_dir;
 
+    // ENVIRONMENT - Host working dir
+
     $destination_file = $directory . DIRECTORY_SEPARATOR . $file_info['basename'];
     $this->httpClient()
       ->get($url, ['save_to' => "$destination_file"]);
+    // OPUT
     Output::writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
     return $destination_file;
   }
@@ -242,6 +246,7 @@ class Patch implements PatchInterface {
     $real_file = realpath($source);
     if ($real_file === FALSE) {
       // Invalid patch file
+      // OPUT
       Output::error("Patch Error", "The patch file <info>$source</info> is invalid.");
       return FALSE;
     }
@@ -255,10 +260,12 @@ class Patch implements PatchInterface {
    */
   public function validate_target()
   {
+    // ENVIRONMENT -codebase working directory
     $apply_dir = $this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir();
     $real_directory = realpath($apply_dir);
     if ($real_directory === FALSE) {
       // Invalid target directory
+      // OPUT
       Output::error("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.");
       return FALSE;
     }
@@ -272,6 +279,8 @@ class Patch implements PatchInterface {
    */
   public function apply()
   {
+    // ENVIRONMENT - Host working dir
+
     $source = realpath($this->getLocalSource());
     $target = realpath($this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir());
 
@@ -281,11 +290,14 @@ class Patch implements PatchInterface {
     $this->setPatchApplyResults($cmdoutput);
     if ($result !== 0) {
       // The command threw an error.
+      // OPUT
       Output::writeLn($cmdoutput);
+      // OPUT
       Output::error("Patch Error", "The patch attempt returned an error.  Error code: $result");
       // TODO: Pass on the actual return value for the patch attempt
       return FALSE;
     }
+    // OPUT
     Output::writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
     $this->applied = TRUE;
     return TRUE;
@@ -304,15 +316,20 @@ class Patch implements PatchInterface {
     }
     if (empty($this->modified_files)) {
       // Calculate modified files
+      // ENVIRONMENT - Host working dir
+
       $apply_dir = $this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir();
       $cmd = "cd $apply_dir && git diff --name-only";
       exec($cmd, $cmdoutput, $return);
       if ($return !== 0) {
         // git diff returned a non-zero error code
+        // OPUT
         Output::writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
         return FALSE;
       }
       $files = $cmdoutput;
+      // ENVIRONMENT - Host working dir
+
       $this->modified_files = array();
       foreach ($files as $file) {
         $this->modified_files[] = $this->getApplyDir(). DIRECTORY_SEPARATOR . $file;

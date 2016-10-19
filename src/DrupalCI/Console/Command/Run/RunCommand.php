@@ -111,6 +111,7 @@ class RunCommand extends DrupalCICommandBase  {
     $this->build->setContainer($this->container);
 
     // Link our $output variable to the build.
+    // OPUT
     Output::setOutput($output);
 
     // Generate a unique build_id, and store it within the build object
@@ -146,7 +147,7 @@ class RunCommand extends DrupalCICommandBase  {
     else {
       $template_file = $this->build->getDefaultDefinitionTemplate($build_type);
     }
-
+    // OPUT
     Output::writeLn("<info>Using build definition template: <options=bold>$template_file</options=bold></info>");
 
     // Load our build template file into the build definition.  If $template_file
@@ -203,11 +204,13 @@ class RunCommand extends DrupalCICommandBase  {
         $status = $build_results->getResultByStep($build_stage, $build_step);
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
+          // OPUT
           Output::error("Execution Error", "Error encountered while executing build step <options=bold>$build_stage:$build_step</options=bold>");
           break 2;
         }
         if ($status == 'Fail') {
           // Step returned an failure.  Halt execution.
+          // OPUT
           Output::error("Execution Failure", "Build step <options=bold>$build_stage:$build_step</options=bold> FAILED");
           break 2;
         }

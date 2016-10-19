@@ -26,6 +26,7 @@ class WebEnvironment extends EnvironmentBase {
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
     $data = is_array($data) ? $data : [$data];
+    // OPUT
     Output::writeLn("<info>Parsing required Web container image names ...</info>");
     $containers = $build->getExecContainers();
     $containers['web'] = $this->buildImageNames($data, $build);
@@ -41,6 +42,7 @@ class WebEnvironment extends EnvironmentBase {
     $images = [];
     foreach ($data as $key => $php_version) {
       $images["web-$php_version"]['image'] = "drupalci/web-$php_version";
+      // OPUT
       Output::writeLn("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
     }
     return $images;

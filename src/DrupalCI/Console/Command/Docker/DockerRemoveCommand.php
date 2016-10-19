@@ -55,10 +55,12 @@ class DockerRemoveCommand extends DrupalCICommandBase {
    * (@inheritdoc)
    */
   protected function listContainers($type, InputInterface $input, OutputInterface $output) {
+    // OPUT
     Output::setOutput($output);
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     foreach ($containers as $containerLabel => $containerName) {
+      // OPUT
       Output::writeln("<comment>$containerLabel, $containerName</comment>");
     }
   }
@@ -89,7 +91,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
    * (@inheritdoc)
    */
   protected function removeContainers($type, InputInterface $input,OutputInterface $output) {
-
+    // OPUT
     Output::setOutput($output);
 
     // DCI search string
@@ -106,6 +108,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     exec($cmd_docker_psa, $createdContainers);
 
     if($createdContainers) {
+      // OPUT
       Output::writeln('<comment>Removing containers.</comment>');
       exec($cmd_docker_ps, $runningContainers);
       if(!empty($runningContainers)){
@@ -119,6 +122,7 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec( $cmd_docker_rm, $rmContainers);
 
       // list removed containers
+      // OPUT
       Output::writeln('Removed Containers:');
       Output::writeln($rmContainers);
 
@@ -129,15 +133,18 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec($cmd_docker_psa, $remove_check);
 
       if (!empty($remove_check)) {
+        // OPUT
         Output::writeln('<error>Error:</error>');
         Output::writeln($remove_check);
       }
       else {
+        // OPUT
         Output::writeln('<comment>Remove complete.</comment>');
       }
     }
     else {
       // nothing to remove
+      // OPUT
       Output::writeln('<comment>Nothing to Remove</comment> ');
     }
 

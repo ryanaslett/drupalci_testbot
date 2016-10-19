@@ -43,6 +43,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
    */
   public function run(BuildInterface $build, &$config) {
     $config = $this->resolveDciVariables($config);
+    // ENVIRONMENT - artifact directory
     $target_directory = $config['artifact_directory'];
 
     // Since some artifact information could be generated based on DCI_
@@ -51,9 +52,11 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
     // @todo: Refactor artifact management into a separate class for sanity.
     $build->createArtifactList();
 
+    // OPUT
     Output::writeLn("<comment>Gathering build artifacts in a common directory ...</comment>");
 
     // Create the destination directory
+    // ENVIRONMENT - artifact directory
     if (!empty($target_directory)) {
       $command = $this->buildStepPluginManager->getPlugin('generic', 'mkdir', [$target_directory]);
       $command->run($build, $target_directory);
@@ -84,6 +87,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
         }
         else {
           // TODO: Exception handling
+          // OPUT
           Output::writeLn('<info>Error generating build definition build artifact.');
         }
       }
@@ -97,6 +101,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
           $command->run($build, $cmd);
         }
         else {
+          // OPUT
           Output::writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
         }
       }

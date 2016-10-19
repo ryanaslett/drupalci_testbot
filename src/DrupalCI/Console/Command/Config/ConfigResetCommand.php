@@ -43,6 +43,7 @@ class ConfigResetCommand extends DrupalCICommandBase {
     $configsets = $helper->getAllConfigSets();
     // Get default config sets
     $defaultsets = $helper->getDefaultConfigSets();
+    // ENVIRONMENT - user config dir
     $homedir = getenv('HOME');
     $configdir = $homedir . "/.drupalci/configs/";
     // TODO: configdir absolute path

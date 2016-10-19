@@ -85,7 +85,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
     if (strpos($config['type'], 'sqlite') === 0) {
       return;
     }
-
+    // OPUT
     Output::writeLn("<info>Parsing required database container image names ...</info>");
     $containers = $this->buildImageNames($config, $build);
     if ($valid = $this->validateImageNames($containers, $build)) {
@@ -100,6 +100,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
   public function buildImageNames($config, BuildInterface $build) {
     $db_version = $config['type'] . '-' . $config['version'];
     $images["$db_version"]['image'] = "drupalci/$db_version";
+    // OPUT
     Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     return $images;
   }

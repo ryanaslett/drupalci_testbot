@@ -64,6 +64,7 @@ class DbCreate extends PluginBase implements BuildTaskInterface, Injectable {
         $this->createDbPostgre($job, $config['url']);
         break;
       case 'sqlite':
+        // OPUT
         Output::writeLn('SQLite is the destination database. No creation performed.');
         // No db creation is needed for SQLite.
         break;

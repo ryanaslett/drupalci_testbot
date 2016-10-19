@@ -36,6 +36,7 @@ class DockerPullCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
+    // OPUT
     Output::setOutput($output);
     $output->writeln("<info>Executing pull ...</info>");
     $images = $input->getArgument('container_name');
@@ -43,6 +44,7 @@ class DockerPullCommand extends DrupalCICommandBase {
     foreach ($images as $image) {
         $name = explode (':',$image);
         $container = $name[0];
+      // OPUT
         Output::writeln("<comment>Pulling <options=bold>$container</options=bold> container</comment>");
         $this->pull($container, $input);
     }
@@ -62,15 +64,18 @@ class DockerPullCommand extends DrupalCICommandBase {
         if ($createImageInfo->getStatus() === "Downloading") {
           $progress = $createImageInfo->getProgress();
           preg_match("/\]\s+(?P<current>(?:[0-9\.]+)?)\s[kM]*B\/(?P<total>(?:[0-9\.]+)?)\s/",$progress,$status);
+          // OPUT
           $progressbar = new ProgressBar(Output::getOutput(), $status['total']);
           $progressbar->start();
           $progressbar->advance($status['current']);
         } else {
+          // OPUT
           Output::writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
         }
     });
     $response->wait();
 
+    // OPUT
     Output::writeln("");
   }
 }

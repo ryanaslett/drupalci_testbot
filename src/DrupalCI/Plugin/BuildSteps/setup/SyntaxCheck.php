@@ -22,8 +22,10 @@ class SyntaxCheck extends SetupBase {
    */
   public function run(BuildInterface $build, $data) {
     if ($data != FALSE) {
+      // OPUT
       Output::writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
 
+      // CODEBASE
       $codebase = $build->getCodebase();
       $modified_files = $codebase->getModifiedFiles();
 
@@ -31,6 +33,7 @@ class SyntaxCheck extends SetupBase {
         return;
       }
 
+      // ENVIRONMENT - codebase working dir
       $workingdir = $codebase->getWorkingDir();
       $concurrency = $build->getBuildDefinition()->getDCIVariable('DCI_Concurrency');
       $bash_array = "";
@@ -41,7 +44,10 @@ class SyntaxCheck extends SetupBase {
           $bash_array .= "$file\n";
         }
       }
+
+      // ENVIRONMENT - artifact directory.
       $lintable_files = 'artifacts/lintable_files.txt';
+      // OPUT
       Output::writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
       file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
       // Make sure

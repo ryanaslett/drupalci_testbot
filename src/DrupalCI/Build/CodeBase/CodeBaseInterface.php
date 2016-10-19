@@ -5,8 +5,10 @@ namespace DrupalCI\Build\Codebase;
 use DrupalCI\Build\Definition\BuildDefinition;
 
 interface CodeBaseInterface {
+  // ENVIRONMENT - Host working dir
   public function setWorkingDir($working_dir);
 
+  // ENVIRONMENT - Host working dir
   public function getWorkingDir();
 
   public function getCoreProject();
@@ -43,5 +45,6 @@ interface CodeBaseInterface {
    *
    * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
    */
+  // ENVIRONMENT - Host working dir
   public function setupWorkingDirectory(BuildDefinition $build_definition);
 }

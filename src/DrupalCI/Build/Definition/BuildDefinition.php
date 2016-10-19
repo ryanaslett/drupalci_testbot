@@ -166,6 +166,7 @@ class BuildDefinition Implements Injectable {
     $platform_defaults = $build->getPlatformDefaults();
     $this->dciVariables->add($platform_defaults, 'default');
     if (!empty($platform_defaults)) {
+      // OPUT
       Output::writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($platform_defaults)));
     }
@@ -174,6 +175,7 @@ class BuildDefinition Implements Injectable {
     $buildtype_defaults = $build->getDefaultArguments();
     $this->dciVariables->add($buildtype_defaults, 'default');
     if (!empty($buildtype_defaults)) {
+      // OPUT
       Output::writeLn("<comment>Loading build type default arguments:</comment>");
       Output::writeLn(implode(",", array_keys($buildtype_defaults)));
     }
@@ -183,6 +185,7 @@ class BuildDefinition Implements Injectable {
     $local_overrides = $confighelper->getCurrentConfigSetParsed();
     $this->dciVariables->add($local_overrides, 'local');
     if (!empty($local_overrides)) {
+      // OPUT
       Output::writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
       Output::writeLn(implode(",", array_keys($local_overrides)));
     }
@@ -191,6 +194,7 @@ class BuildDefinition Implements Injectable {
     $environment_variables = $confighelper->getCurrentEnvVars();
     $this->dciVariables->add($environment_variables, 'environment');
     if (!empty($environment_variables)) {
+      // OPUT
       Output::writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
       Output::writeLn(implode(",", array_keys($environment_variables)));
     }

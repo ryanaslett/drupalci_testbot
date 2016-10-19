@@ -94,6 +94,7 @@ class AdditionalRepositories {
       $components = explode(',', $entry);
       // Ensure we have at least 3 components
       if (count($components) < 4) {
+        // OPUT
         Output::writeLn("<error>Unable to parse repository information for value <options=bold>$entry</options=bold>.</error>");
         // TODO: Bail out of processing.  For now, we'll just keep going with the next entry.
         continue;

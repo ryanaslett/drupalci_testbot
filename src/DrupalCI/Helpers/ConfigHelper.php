@@ -19,6 +19,7 @@ class ConfigHelper extends DrupalCIHelperBase {
     // TODO: Filter out 'directories'
     $homedir = getenv('HOME');
     $configsets = array();
+    // ENVIRONMENT - user configset directory
     $options = glob($homedir . '/.drupalci/configs/*');
     foreach ($options as $option) {
       $option_parts = explode('/', $option);
@@ -34,6 +35,7 @@ class ConfigHelper extends DrupalCIHelperBase {
   public function getDefaultConfigSets() {
     $configsets = array();
     // TODO: Fix the hardcoded directory
+    // ENVIRONMENT - drupalci configset directory
     $options = glob('./configsets/*');
     foreach ($options as $option) {
       $optionpart = explode('/', $option);
@@ -48,6 +50,7 @@ class ConfigHelper extends DrupalCIHelperBase {
    */
   public function getCurrentConfigSetContents() {
     $homedir = getenv('HOME');
+    // ENVIRONMENT - user configset directory
     $filename = $homedir . '/.drupalci/config';
     $options = array();
     if (file_exists($filename)) {
@@ -84,6 +87,7 @@ class ConfigHelper extends DrupalCIHelperBase {
     $homedir = getenv('HOME');
     $configsets = $this->getAllConfigSets();
     if (in_array($configset, array_keys($configsets))) {
+      // ENVIRONMENT - users configset directory
       $destination = $homedir . '/.drupalci/config';
       if (copy($configsets[$configset], $destination)) {
         return true;
@@ -133,6 +137,7 @@ class ConfigHelper extends DrupalCIHelperBase {
    */
   public function writeConfig($config) {
     $homedir = getenv('HOME');
+    // ENVIRONMENT - user config directory
     $configpath = $homedir . '/.drupalci';
     $filename = $configpath . '/config';
     if (!file_exists($configpath)) {
@@ -152,6 +157,8 @@ class ConfigHelper extends DrupalCIHelperBase {
    */
   function saveCurrentConfig($config_name) {
     $homedir = getenv('HOME');
+    // ENVIRONMENT - user config directory
+
     $configpath = $homedir . '/.drupalci/';
     $current = $configpath . 'config';
     $filename = $configpath . 'configs/' . $config_name;

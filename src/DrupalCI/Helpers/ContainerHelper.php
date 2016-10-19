@@ -19,6 +19,7 @@ class ContainerHelper extends DrupalCIHelperBase {
   public function getContainers($type){
     // TODO: Make sure we're starting from the DrupalCI root
     $option = array();
+    // ENVIRONMENT - drupalci docker containers directory
     $containers = glob('containers/'.$type.'/*', GLOB_ONLYDIR);
     foreach ($containers as $container) {
       $option['drupalci/' . explode('/', $container)[2]] = $container;

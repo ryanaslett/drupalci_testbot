@@ -178,6 +178,7 @@ interface BuildInterface {
   /**
    * @deprecated
    */
+  // ENVIRONMENT - artifact directory
   public function setArtifactDirectory($directory);
 
   /**

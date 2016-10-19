@@ -42,7 +42,7 @@ class InitConfigCommand extends DrupalCICommandBase {
     # TODO: Parameterize the DrupalCI directory
 
     $homedir = getenv('HOME');
-
+    // ENVIRONMENT - user home config dir
     if (file_exists($homedir . "/.drupalci") && !($input->getOption('force'))) {
       # Output 'configuration directory already exists, use --force to reset the DrupalCI environment' message.
       $output->writeln('<error>WARNING: The ~/.drupalci configuration directory already exists.</error>');
@@ -63,6 +63,7 @@ class InitConfigCommand extends DrupalCICommandBase {
         // Forcing re-initialization of the DrupalCI environment.
         // Delete existing directory.
         $finder = new Finder();
+        // ENVIRONMENT - local configuration directory
         $iterator = $finder->files()->in($homedir . '/.drupalci');
 
         foreach ($iterator as $file) {
@@ -71,6 +72,7 @@ class InitConfigCommand extends DrupalCICommandBase {
       }
       // We now have a clean environment.
       // Create directories
+      // ENVIRONMENT - user home config dir
       $configsdir = $homedir . "/.drupalci/configs";
       $configlink = $homedir . "/.drupalci/config";
       if (!file_exists($configsdir)) {
@@ -84,6 +86,7 @@ class InitConfigCommand extends DrupalCICommandBase {
       // Copy default files over to the configs directory
       // TODO: Currently using placeholder files.  Populate file contents.
       $finder = new Finder();
+      // ENVIRONMENT - drupalci configset directory
       $directory = "./configsets";
       // TODO: This means we can only execute the command from the DrupalCI
       // directory.  Need to be able to run from anywhere - determine how to
@@ -91,6 +94,7 @@ class InitConfigCommand extends DrupalCICommandBase {
       // and construct an absolute directory path above.
       $iterator = $finder->files()->in($directory);
       foreach ($iterator as $file) {
+        // ENVIRONMENT - config set dir
         copy($file->getRealPath(), $configsdir . "/" . $file->getFileName() );
       }
       $output->writeln("<info>Created default configuration sets.</info>");

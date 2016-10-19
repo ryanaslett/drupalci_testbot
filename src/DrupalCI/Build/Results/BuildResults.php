@@ -64,6 +64,7 @@ class BuildResults {
     $this->setCurrentStage($build_stage);
     $this->setResultByStage($build_stage, $status);
     // TODO: Determine if we have any publishers, and progress the build step if we do.
+    // OPUT
     Output::writeln("<comment><options=bold>$status</options=bold> $build_stage</comment>");
   }
 
@@ -72,6 +73,7 @@ class BuildResults {
     global $stepstart;
     if ($status == 'Executing'){
         $stepstart[$build_stage][$build_step] = microtime(TRUE);
+      // OPUT
       // Output::writeln("<comment><options=bold>Current: $foo</options=bold> </comment>");
     }
 
@@ -80,6 +82,7 @@ class BuildResults {
 
     if ($status == 'Completed'){
       $elasped = microtime(TRUE) - $stepstart[$build_stage][$build_step];
+      // OPUT
       // Output::writeln("<comment>Elapsed: $elasped <options=bold>$status</options=bold> $build_stage:$build_step </comment>");
     }
     Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");

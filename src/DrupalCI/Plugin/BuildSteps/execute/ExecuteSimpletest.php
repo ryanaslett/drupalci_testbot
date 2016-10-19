@@ -40,11 +40,13 @@ class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Inject
      # 'DCI_RTDieOnFail' => TRUE,
       'DCI_RTKeepResults' => TRUE,
       #'DCI_RTKeepResultsTable' => TRUE,
+      // ENVIRONMENT - results database
       'DCI_SQLite' => '/var/www/html/results/simpletest.sqlite',
       'DCI_RTTypes' => '',
       'DCI_RTUrl' => 'http://localhost/checkout',
       'DCI_RTVerbose' => TRUE,
       'DCI_RTXmlPath' => '',
+      // ENVIRONMENT - webroot in container + core/scripts/run-test.sh
       'DCI_RunScript' => '/var/www/html/core/scripts/run-tests.sh',
       'DCI_TestGroups' => '--all',
     ];

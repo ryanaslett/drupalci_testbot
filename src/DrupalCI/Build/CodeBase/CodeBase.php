@@ -32,6 +32,7 @@ class CodeBase implements CodeBaseInterface, Injectable {
    *
    * @var string
    */
+  // ENVIRONMENT - root directory of the codebase on the HOST
   protected $working_dir;
   public function setWorkingDir($working_dir) {  $this->working_dir = $working_dir;  }
   public function getWorkingDir() {  return $this->working_dir;  }
@@ -155,6 +156,7 @@ class CodeBase implements CodeBaseInterface, Injectable {
   /**
    * Initialize Codebase
    */
+  // ENVIRONMENT - Working Directory
   public function setupWorkingDirectory(BuildDefinition $build_definition) {
     // Check if the target working directory has been specified.
     $working_dir = $build_definition->getDCIVariable('DCI_WorkingDir');
@@ -181,9 +183,11 @@ class CodeBase implements CodeBaseInterface, Injectable {
       $result = mkdir($working_dir, 0777, TRUE);
       if (!$result) {
         // Error creating checkout directory
+        // OPUT
         Output::error('Directory Creation Error', 'Error encountered while attempting to create local working directory');
         return FALSE;
       }
+      // OPUT
       Output::writeLn("<info>Checkout directory created at <options=bold>$working_dir</options=bold></info>");
     }
 
@@ -193,6 +197,7 @@ class CodeBase implements CodeBaseInterface, Injectable {
     $iterator = new \FilesystemIterator($working_dir);
     if ($iterator->valid()) {
       // Existing files found in directory.
+      // OPUT
       Output::error('Directory not empty', 'Unable to use a non-empty working directory.');
       return FALSE;
     };
@@ -201,12 +206,14 @@ class CodeBase implements CodeBaseInterface, Injectable {
     $working_dir = realpath($working_dir);
     if (!$working_dir) {
       // Directory not found after conversion to canonicalized absolute path
+      // OPUT
       Output::error('Directory not found', 'Unable to determine working directory absolute path.');
       return FALSE;
     }
 
     // Ensure we're still within the system temp directory
     if (strpos(realpath($working_dir), realpath($tmp_directory)) !== 0) {
+      // OPUT
       Output::error('Directory error', 'Detected attempt to traverse out of the system temp directory.');
       return FALSE;
     }

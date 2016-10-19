@@ -312,6 +312,7 @@ class BuildBase implements BuildInterface, Injectable {
     $container['ip'] = $service_container->getNetworkSettings()->getIPAddress();
     $container['created'] = TRUE;
     $short_id = substr($container['id'], 0, 8);
+    // OPUT
     Output::writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
   }
 
@@ -339,12 +340,14 @@ class BuildBase implements BuildInterface, Injectable {
     // Map working directory
     // CODEBASE
     $working = $this->getCodebase()->getWorkingDir();
+    // ENVIRONMENT - Volume mount for docker
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
     $config['HostConfig']['Binds'][] = "$working:$mount_point";
   }
 
   public function getContainerConfiguration($image = NULL) {
     // DOCKER
+    // ENVIRONMENT - container config directory
     $path = __DIR__ . '/../Containers';
     // RecursiveDirectoryIterator recurses into directories and returns an
     // iterator for each directory. RecursiveIteratorIterator then iterates over
@@ -389,6 +392,7 @@ class BuildBase implements BuildInterface, Injectable {
     foreach ($this->serviceContainers[$container_type] as $key => $image) {
       if (in_array($image['image'], array_keys($instances))) {
         // TODO: Determine service container ports, id, etc, and save it to the build.
+        // OPUT
         Output::writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
         // TODO: Load up container parameters
         $container = $manager->find($instances[$image['image']]);
@@ -401,6 +405,7 @@ class BuildBase implements BuildInterface, Injectable {
         continue;
       }
       // Container not running, so we'll need to create it.
+      // OPUT
       Output::writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
 
       // Get container configuration, which defines parameters such as exposed ports, etc.
@@ -438,6 +443,7 @@ class BuildBase implements BuildInterface, Injectable {
       $this->serviceContainers[$container_type][$key]['name'] = $container_name;
       $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
       $short_id = substr($container_id, 0, 8);
+      // OPUT
       Output::writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
     }
     /* @var $database \DrupalCI\Build\Environment\Database */
@@ -494,12 +500,14 @@ class BuildBase implements BuildInterface, Injectable {
     //'stderr' => 'stderr.txt',
     'buildDefinition' => 'buildDefinition.txt',
   );
-
+  // ENVIRONMENT - artifact Directory
   protected $artifactDirectory;
 
   /**
    * @param mixed $artifactDirectory
    */
+  // ENVIRONMENT - artifact directory
+
   public function setArtifactDirectory($artifactDirectory)
   {
     $this->artifactDirectory = $artifactDirectory;
@@ -518,6 +526,7 @@ class BuildBase implements BuildInterface, Injectable {
    *   The location of the default build definition template
    */
   public function getDefaultDefinitionTemplate($build_type) {
+    // ENVIRONMENT - Build definition template"
     return __DIR__ . "/../../../build_templates/$build_type/drupalci.yml";
   }
 
@@ -532,6 +541,7 @@ class BuildBase implements BuildInterface, Injectable {
       $build_id = $this->getBuildType() . '_' . time();
     }
     $this->setBuildId($build_id);
+    // OPUT
     Output::writeLn("<info>Executing build with build ID: <options=bold>$build_id</options=bold></info>");
   }
 

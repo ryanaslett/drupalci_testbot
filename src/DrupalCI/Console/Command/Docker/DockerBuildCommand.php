@@ -38,6 +38,7 @@ class DockerBuildCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
+    // OPUT
     Output::setOutput($output);
     $output->writeln("<info>Executing build ...</info>");
     $helper = new ContainerHelper();
@@ -46,11 +47,13 @@ class DockerBuildCommand extends DrupalCICommandBase {
     // TODO: Validate passed arguments
     foreach ($names as $name) {
       if (in_array($name, array_keys($containers))) {
+        // OPUT
         Output::writeln("<comment>Building <options=bold>$name</options=bold> container</comment>");
         $this->build($name, $input);
       }
       else {
         // Container name not found.  Skip build.
+        // OPUT
         Output::writeln("<error>No '$name' container found.  Skipping container build.</error>");
         // TODO: Error handling
       }
@@ -66,18 +69,22 @@ class DockerBuildCommand extends DrupalCICommandBase {
     $container_path = $containers[$name];
     $docker = $this->getDocker();
     $context = new Context($container_path);
+    // OPUT
     Output::writeln("-------------------- Start build script --------------------");
     $response = $docker->build($context, $name, function ($output) {
       if (isset($output['stream'])) {
+        // OPUT
         Output::writeLn('<info>' . $output['stream'] . '</info>');
       }
       elseif (isset($output['error'])) {
+        // OPUT
         Output::error('Error', $output['error']);
       }
     });
-
+    // OPUT
     Output::writeln("--------------------- End build script ---------------------");
     $response->getBody()->getContents();
+    // OPUT
     Output::writeln((string) $response);
 
     // TODO: Capture return value and determine whether build was successful or not, throwing an error if it isn't.
