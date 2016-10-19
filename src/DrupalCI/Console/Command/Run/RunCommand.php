@@ -109,7 +109,7 @@ class RunCommand extends DrupalCICommandBase  {
     $this->build = $this->buildTypePluginManager->getPlugin($build_type, $build_type);
 
 
-    $this->build->setContainer($this->container);
+    $this->build->inject($this->container);
 
     // Link our $output variable to the build.
     // OPUT
