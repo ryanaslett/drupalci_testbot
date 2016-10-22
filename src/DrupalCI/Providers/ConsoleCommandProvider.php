@@ -17,7 +17,6 @@ use DrupalCI\Console\Command\Init\InitConfigCommand;
 use DrupalCI\Console\Command\Init\InitDatabaseContainersCommand;
 use DrupalCI\Console\Command\Init\InitDependenciesCommand;
 use DrupalCI\Console\Command\Init\InitDockerCommand;
-use DrupalCI\Console\Command\Init\InitPhpContainersCommand;
 use DrupalCI\Console\Command\Init\InitWebContainersCommand;
 use DrupalCI\Console\Command\Docker\DockerPullCommand;
 use DrupalCI\Console\Command\Run\RunCommand;
@@ -89,9 +88,6 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
     $container['command.init.web'] = function ($container) {
       return new InitWebContainersCommand();
     };
-    $container['command.init.php'] = function ($container) {
-      return new InitPhpContainersCommand();
-    };
     $container['command.run'] = function ($container) {
       return new RunCommand();
     };
@@ -116,7 +112,6 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
         $container['command.init.docker'],
         $container['command.init.config'],
         $container['command.init.web'],
-        $container['command.init.php'],
         $container['command.run']
       );
     };
