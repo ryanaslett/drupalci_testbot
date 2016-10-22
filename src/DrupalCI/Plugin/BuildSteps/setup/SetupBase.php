@@ -9,9 +9,23 @@
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
+use Pimple\Container;
+use DrupalCI\Console\Output;
 
-abstract class SetupBase extends PluginBase {
+abstract class SetupBase extends PluginBase implements Injectable {
+
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  public function inject(Container $container) {
+    $this->io = $container['console.io'];
+  }
 
   protected function validateDirectory(BuildInterface $build, $dir) {
     // Validate target directory.  Must be within workingdir.
@@ -44,7 +58,7 @@ abstract class SetupBase extends PluginBase {
     if (!strpos(realpath($directory), realpath($working_dir)) === 0) {
       // Invalid checkout directory
       // OPUT
-      Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
+      $this->io->drupalCIError("Directory error", "The checkout directory <info>$directory</info> is invalid.");
       $build->error();
       return FALSE;
     }

@@ -24,6 +24,13 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
 
   use BuildTaskTrait;
 
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
   public function getDefaultConfiguration() {
     return [];
   }
@@ -53,7 +60,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
     $build->createArtifactList();
 
     // OPUT
-    Output::writeLn("<comment>Gathering build artifacts in a common directory ...</comment>");
+    $this->io->writeLn("<comment>Gathering build artifacts in a common directory ...</comment>");
 
     // Create the destination directory
     // ENVIRONMENT - artifact directory
@@ -88,7 +95,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
         else {
           // TODO: Exception handling
           // OPUT
-          Output::writeLn('<info>Error generating build definition build artifact.');
+          $this->io->writeLn('<info>Error generating build definition build artifact.');
         }
       }
       elseif (strtolower($artifact->getType()) == 'file' || strtolower ($artifact->getType()) == 'directory') {
@@ -102,7 +109,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
         }
         else {
           // OPUT
-          Output::writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
+          $this->io->writeLn("<info>Skipping $file, as it already exists in the build artifact directory.");
         }
       }
       elseif (strtolower($artifact->getType) == 'string') {

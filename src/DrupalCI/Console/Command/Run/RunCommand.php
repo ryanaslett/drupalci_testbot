@@ -149,7 +149,7 @@ class RunCommand extends DrupalCICommandBase  {
       $template_file = $this->build->getDefaultDefinitionTemplate($build_type);
     }
     // OPUT
-    Output::writeLn("<info>Using build definition template: <options=bold>$template_file</options=bold></info>");
+    $this->io->writeln("<info>Using build definition template: <options=bold>$template_file</options=bold></info>");
 
     // Load our build template file into the build definition.  If $template_file
     // doesn't exist, this will trigger a FileNotFound or ParseError exception.
@@ -206,13 +206,13 @@ class RunCommand extends DrupalCICommandBase  {
         if ($status == 'Error') {
           // Step returned an error.  Halt execution.
           // OPUT
-          Output::error("Execution Error", "Error encountered while executing build step <options=bold>$build_stage:$build_step</options=bold>");
+          $this->io->drupalCIError("Execution Error", "Error encountered while executing build step <options=bold>$build_stage:$build_step</options=bold>");
           break 2;
         }
         if ($status == 'Fail') {
           // Step returned an failure.  Halt execution.
           // OPUT
-          Output::error("Execution Failure", "Build step <options=bold>$build_stage:$build_step</options=bold> FAILED");
+          $this->io->drupalCIError("Execution Failure", "Build step <options=bold>$build_stage:$build_step</options=bold> FAILED");
           break 2;
         }
         $build_results->updateStepStatus($build_stage, $build_step, 'Completed');

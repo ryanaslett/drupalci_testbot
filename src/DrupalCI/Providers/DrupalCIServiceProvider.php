@@ -26,7 +26,9 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     $container->register(new DockerServiceProvider());
     $container->register(new DatabaseServiceProvider());
     $container['console'] = function ($container) {
-      return new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.2', $container);
+      $console = new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.2');
+      $console->inject($container);
+      return $console;
     };
     $container['plugin.manager.factory'] = function ($container) {
       return new PluginManagerFactory($container);

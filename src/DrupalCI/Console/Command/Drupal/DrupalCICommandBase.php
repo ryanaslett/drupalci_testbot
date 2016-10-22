@@ -7,19 +7,15 @@
 
 namespace DrupalCI\Console\Command\Drupal;
 
-use DrupalCI\Console\Output;
-use DrupalCI\Providers\DockerServiceProvider;
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use DrupalCI\Providers\ConsoleOutputServiceProvider;
+use DrupalCI\Providers\ConsoleIOServiceProvider;
 
 /**
  * Just some helpful debugging stuff for now.
  */
-class DrupalCICommandBase extends SymfonyCommand {
+class DrupalCICommandBase extends Command {
 
   /**
    * The container object.
@@ -36,16 +32,23 @@ class DrupalCICommandBase extends SymfonyCommand {
   protected $buildVars;
 
   /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  /**
    * {@inheritdoc}
    */
   protected function initialize(InputInterface $input, OutputInterface $output) {
     parent::initialize($input, $output);
     // Perform some container set-up before command execution.
     $this->container = $this->getApplication()->getContainer();
-    $this->container->register(new ConsoleOutputServiceProvider($output));
+    $this->container->register(new ConsoleIOServiceProvider($input, $output));
+    $this->io = $this->container['console.io'];
     $this->buildVars = $this->container['build.vars'];
   }
-
 
   // Defaults for the underlying commands i.e. when commands run with --no-interaction or
   // when we are given options to setup containers.

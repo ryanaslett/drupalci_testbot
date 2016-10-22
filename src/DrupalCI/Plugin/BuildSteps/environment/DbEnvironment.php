@@ -27,7 +27,11 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
 
   use BuildTaskTrait;
 
+  /**
+   * {@inheritdoc}
+   */
   public function inject(Container $container) {
+    parent::inject($container);
     $this->buildVars = $container['build.vars'];
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     $this->database = $container['db.system'];
@@ -86,7 +90,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
       return;
     }
     // OPUT
-    Output::writeLn("<info>Parsing required database container image names ...</info>");
+    $this->io->writeLn("<info>Parsing required database container image names ...</info>");
     $containers = $this->buildImageNames($config, $build);
     if ($valid = $this->validateImageNames($containers, $build)) {
       // @todo Move the housekeeping to the build instead of doing it here.
@@ -101,7 +105,7 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
     $db_version = $config['type'] . '-' . $config['version'];
     $images["$db_version"]['image'] = "drupalci/$db_version";
     // OPUT
-    Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
+    $this->io->writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     return $images;
   }
 

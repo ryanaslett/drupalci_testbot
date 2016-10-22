@@ -27,12 +27,21 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
 
   use BuildTaskTrait;
 
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
   /* @var $build_definition \DrupalCI\Build\Definition\BuildDefinition */
   protected $build_definition;
 
   /* @var $results_db \DrupalCI\Build\Environment\DatabaseInterface */
   protected $results_db;
+
   public function inject(Container $container) {
+    $this->io = $container['console.io'];
     $this->buildVars = $container['build.vars'];
     // BUILDVARS
     $this->build_definition = $container['build.definition'];
@@ -298,7 +307,7 @@ class JunitXMLFormat extends PluginBase implements BuildTaskInterface, Injectabl
 
     file_put_contents($output_dir . '/testresults.xml', $doc->saveXML());
     // OPUT
-    Output::writeln("<info>Reformatted test results written to <options=bold>" . $output_dir . '/testresults.xml</options=bold></info>');
+    $this->io->writeln("<info>Reformatted test results written to <options=bold>" . $output_dir . '/testresults.xml</options=bold></info>');
   }
 
 }

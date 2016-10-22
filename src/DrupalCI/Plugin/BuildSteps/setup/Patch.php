@@ -44,12 +44,12 @@ class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
     $codebase = $build->getCodebase();
     if (empty($files)) {
       // OPUT
-      Output::writeLn('No patches to apply.');
+      $this->io->writeLn('No patches to apply.');
     }
     foreach ($files as $key => $details) {
       if (empty($details['from'])) {
         // OPUT
-        Output::error("Patch error", "No valid patch file provided for the patch command.");
+        $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
         $build->error();
         return;
       }

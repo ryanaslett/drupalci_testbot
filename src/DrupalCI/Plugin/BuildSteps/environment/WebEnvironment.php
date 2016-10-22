@@ -10,7 +10,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\environment;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 
 /**
@@ -27,7 +26,7 @@ class WebEnvironment extends EnvironmentBase {
     // Normalize data to the array format, if necessary
     $data = is_array($data) ? $data : [$data];
     // OPUT
-    Output::writeLn("<info>Parsing required Web container image names ...</info>");
+    $this->io->writeLn("<info>Parsing required Web container image names ...</info>");
     $containers = $build->getExecContainers();
     $containers['web'] = $this->buildImageNames($data, $build);
     $valid = $this->validateImageNames($containers['web'], $build);
@@ -43,7 +42,7 @@ class WebEnvironment extends EnvironmentBase {
     foreach ($data as $key => $php_version) {
       $images["web-$php_version"]['image'] = "drupalci/web-$php_version";
       // OPUT
-      Output::writeLn("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
+      $this->io->writeLn("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
     }
     return $images;
   }

@@ -8,7 +8,6 @@
 
 namespace DrupalCI\Plugin\BuildSteps\setup;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 
@@ -23,7 +22,7 @@ class SyntaxCheck extends SetupBase {
   public function run(BuildInterface $build, $data) {
     if ($data != FALSE) {
       // OPUT
-      Output::writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
+      $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
       // CODEBASE
       $codebase = $build->getCodebase();
@@ -48,7 +47,7 @@ class SyntaxCheck extends SetupBase {
       // ENVIRONMENT - artifact directory.
       $lintable_files = 'artifacts/lintable_files.txt';
       // OPUT
-      Output::writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
+      $this->io->writeln("<info>" . $workingdir . "/" . $lintable_files . "</info>");
       file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
       // Make sure
       if (0 < filesize($workingdir . "/" . $lintable_files)) {

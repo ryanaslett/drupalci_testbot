@@ -9,7 +9,6 @@
 namespace DrupalCI\Plugin\BuildSteps\execute;
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTaskTrait;
