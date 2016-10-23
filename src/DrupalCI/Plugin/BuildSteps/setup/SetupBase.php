@@ -12,7 +12,6 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
 use Pimple\Container;
-use DrupalCI\Console\Output;
 
 abstract class SetupBase extends PluginBase implements Injectable {
 
@@ -23,6 +22,9 @@ abstract class SetupBase extends PluginBase implements Injectable {
    */
   protected $io;
 
+  /**
+   * {@inheritdoc}
+   */
   public function inject(Container $container) {
     $this->io = $container['console.io'];
   }

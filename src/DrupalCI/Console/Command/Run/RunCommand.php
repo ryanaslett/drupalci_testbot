@@ -113,7 +113,7 @@ class RunCommand extends DrupalCICommandBase  {
 
     // Link our $output variable to the build.
     // OPUT
-    Output::setOutput($output);
+//    Output::setOutput($output);
 
     // Generate a unique build_id, and store it within the build object
     // WORKFLOW - Move this to the build object constructor
@@ -180,6 +180,7 @@ class RunCommand extends DrupalCICommandBase  {
 
     // Create our build Results object and attach it to the build.
     $build_results = new BuildResults($this->build);
+    $build_results->inject($this->container);
     $this->build->setBuildResults($build_results);
 
     // The build should now have a fully merged build definition file, including

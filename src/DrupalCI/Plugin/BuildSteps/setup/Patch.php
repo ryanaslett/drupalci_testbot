@@ -23,7 +23,18 @@ class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
 
+  /**
+   * The container.
+   *
+   * We need this to inject into Patch objects.
+   *
+   * @var \Pimple\Container
+   */
+  protected $container;
+
   public function inject(Container $container) {
+    parent::inject($container);
+    $this->container = $container;
     $this->buildVars = $container['build.vars'];
   }
 
@@ -55,6 +66,7 @@ class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
       }
       // Create a new patch object
       $patch = new PatchFile($details, $codebase);
+      $patch->inject($this->container);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
         $build->error();

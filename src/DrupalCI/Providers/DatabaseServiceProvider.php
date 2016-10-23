@@ -16,10 +16,14 @@ class DatabaseServiceProvider implements ServiceProviderInterface {
   public function register(Container $container) {
 
     $container['db.system'] = function ($container) {
-      return new Database('system');
+      $db = new Database('system');
+      $db->inject($container);
+      return $db;
     };
     $container['db.results'] = function ($container) {
-      return new Database('results');
+      $db = new Database('results');
+      $db->inject($container);
+      return $db;
     };
   }
 }

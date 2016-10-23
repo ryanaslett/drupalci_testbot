@@ -74,6 +74,7 @@ class ContainerCommandTest extends DrupalCITestCase {
       ->will($this->returnValue($exec_command));
 
     $command = new ContainerCommand();
+    $command->inject($this->getContainer());
     $command->run($build, $cmd);
   }
 

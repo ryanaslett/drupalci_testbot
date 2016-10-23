@@ -41,6 +41,7 @@ class GatherArtifacts extends PluginBase implements BuildTaskInterface, Injectab
   protected $buildStepPluginManager;
 
   public function inject(Container $container) {
+    $this->io = $container['console.io'];
     $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
     $this->buildVars = $container['build.vars'];
   }

@@ -8,6 +8,11 @@
 namespace DrupalCI\Tests;
 
 use DrupalCI\Console\Output;
+use DrupalCI\Providers\ConsoleIOServiceProvider;
+use DrupalCI\Providers\DrupalCIServiceProvider;
+use Pimple\Container;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
 
@@ -25,6 +30,17 @@ class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
     $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
     Output::setOutput($this->output);
     $this->build = $this->getMock('DrupalCI\Build\BuildInterface');
+  }
+
+  protected function getContainer($services = []) {
+    $container = new Container();
+    $container->register(new DrupalCIServiceProvider());
+    $io_provider = new ConsoleIOServiceProvider(new ArrayInput([]), new NullOutput());
+    $container->register($io_provider);
+    foreach ($services as $name => $service) {
+      $container[$name] = $service;
+    }
+    return $container;
   }
 
 }

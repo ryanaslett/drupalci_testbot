@@ -44,6 +44,7 @@ class FetchTest extends DrupalCITestCase {
       ->will($this->returnValue($codebase));
 
     $fetch = new TestFetch();
+    $fetch->inject($this->getContainer());
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
     $data = [

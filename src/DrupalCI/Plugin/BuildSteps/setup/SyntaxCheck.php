@@ -10,11 +10,26 @@ namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
+use Pimple\Container;
 
 /**
  * @PluginID("syntaxcheck")
  */
 class SyntaxCheck extends SetupBase {
+
+  /**
+   *
+   * @var \DrupalCI\Plugin\PluginManagerInterface
+   */
+  protected $buildStepPluginManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function inject(Container $container) {
+    parent::inject($container);
+    $this->buildStepPluginManager = $container['plugin.manager.factory']->create('BuildSteps');
+  }
 
   /**
    * {@inheritdoc}
@@ -55,7 +70,7 @@ class SyntaxCheck extends SetupBase {
         // This should be come CodeBase->getLocalDir() or similar
         // Use xargs to concurrently run linting on file.
         $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
-        $command = new ContainerCommand();
+        $command = $this->buildStepPluginManager->getPlugin('generic', 'command', [$cmd]);
         $command->run($build, $cmd);
       }
     }

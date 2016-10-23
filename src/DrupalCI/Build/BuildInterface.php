@@ -19,16 +19,6 @@ interface BuildInterface {
   public function getBuildType();
 
   /**
-   * @return \Symfony\Component\Console\Output\OutputInterface
-   */
-  public function getOutput();
-
-  /**
-   * @param \Symfony\Component\Console\Output\OutputInterface $output
-   */
-  public function setOutput(OutputInterface $output);
-
-  /**
    * @return string
    */
   public function getBuildId();

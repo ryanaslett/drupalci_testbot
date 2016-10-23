@@ -17,17 +17,25 @@ use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 use Pimple\Container;
 
-class BuildDefinition Implements Injectable {
+class BuildDefinition implements Injectable {
 
   /**
    * @var \Pimple\Container
    */
   protected $container;
 
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
   public function inject(Container $container) {
     $this->container = $container;
     $this->dciVariables = $container['build.vars'];
     $this->preprocessPluginManager = $container['plugin.manager.factory']->create('Preprocess');
+    $this->io = $container['console.io'];
   }
 
   // Location of our build definition template
@@ -167,8 +175,8 @@ class BuildDefinition Implements Injectable {
     $this->dciVariables->add($platform_defaults, 'default');
     if (!empty($platform_defaults)) {
       // OPUT
-      Output::writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
-      Output::writeLn(implode(",", array_keys($platform_defaults)));
+      $this->io->writeLn("<comment>Loading DrupalCI platform default arguments:</comment>");
+      $this->io->writeLn(implode(",", array_keys($platform_defaults)));
     }
 
     // 2. Out-of-the-box DrupalCI BuildType defaults, as defined in DrupalCI/Plugin/BuildTypes/<jobtype>->defaultArguments
@@ -176,8 +184,8 @@ class BuildDefinition Implements Injectable {
     $this->dciVariables->add($buildtype_defaults, 'default');
     if (!empty($buildtype_defaults)) {
       // OPUT
-      Output::writeLn("<comment>Loading build type default arguments:</comment>");
-      Output::writeLn(implode(",", array_keys($buildtype_defaults)));
+      $this->io->writeLn("<comment>Loading build type default arguments:</comment>");
+      $this->io->writeLn(implode(",", array_keys($buildtype_defaults)));
     }
 
     // 3. Local overrides defined in ~/.drupalci/config
@@ -186,8 +194,8 @@ class BuildDefinition Implements Injectable {
     $this->dciVariables->add($local_overrides, 'local');
     if (!empty($local_overrides)) {
       // OPUT
-      Output::writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
-      Output::writeLn(implode(",", array_keys($local_overrides)));
+      $this->io->writeLn("<comment>Loading local DrupalCI environment config override arguments.</comment>");
+      $this->io->writeLn(implode(",", array_keys($local_overrides)));
     }
 
     // 4. 'DCI_' namespaced environment variable overrides
@@ -195,8 +203,8 @@ class BuildDefinition Implements Injectable {
     $this->dciVariables->add($environment_variables, 'environment');
     if (!empty($environment_variables)) {
       // OPUT
-      Output::writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
-      Output::writeLn(implode(",", array_keys($environment_variables)));
+      $this->io->writeLn("<comment>Loading local namespaced environment variable override arguments.</comment>");
+      $this->io->writeLn(implode(",", array_keys($environment_variables)));
     }
 
     // 5. Additional variables passed in via the command line

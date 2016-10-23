@@ -7,10 +7,23 @@
 
 namespace DrupalCI\Build\Results;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
+use Pimple\Container;
 
-class BuildResults {
+class BuildResults implements Injectable {
+
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  public function inject(Container $container) {
+    $this->io = $container['console.io'];
+  }
 
   protected $current_stage;
   public function getCurrentStage() {  return $this->current_stage;  }
@@ -65,7 +78,7 @@ class BuildResults {
     $this->setResultByStage($build_stage, $status);
     // TODO: Determine if we have any publishers, and progress the build step if we do.
     // OPUT
-    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage</comment>");
+    $this->io->writeln("<comment><options=bold>$status</options=bold> $build_stage</comment>");
   }
 
   public function updateStepStatus($build_stage, $build_step, $status) {
@@ -85,7 +98,7 @@ class BuildResults {
       // OPUT
       // Output::writeln("<comment>Elapsed: $elasped <options=bold>$status</options=bold> $build_stage:$build_step </comment>");
     }
-    Output::writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
+    $this->io->writeln("<comment><options=bold>$status</options=bold> $build_stage:$build_step</comment>");
   }
 
 }

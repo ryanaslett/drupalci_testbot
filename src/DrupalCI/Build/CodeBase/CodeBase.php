@@ -23,8 +23,16 @@ class CodeBase implements CodeBaseInterface, Injectable {
    */
   protected $buildVars;
 
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
   public function inject(Container $container) {
     $this->buildVars = $container['build.vars'];
+    $this->io = $container['console.io'];
   }
 
   /**
@@ -184,11 +192,11 @@ class CodeBase implements CodeBaseInterface, Injectable {
       if (!$result) {
         // Error creating checkout directory
         // OPUT
-        Output::error('Directory Creation Error', 'Error encountered while attempting to create local working directory');
+        $this->io->drupalCIError('Directory Creation Error', 'Error encountered while attempting to create local working directory');
         return FALSE;
       }
       // OPUT
-      Output::writeLn("<info>Checkout directory created at <options=bold>$working_dir</options=bold></info>");
+      $this->io->writeLn("<info>Checkout directory created at <options=bold>$working_dir</options=bold></info>");
     }
 
     // Validate that the working directory is empty.  If the directory contains
@@ -198,7 +206,7 @@ class CodeBase implements CodeBaseInterface, Injectable {
     if ($iterator->valid()) {
       // Existing files found in directory.
       // OPUT
-      Output::error('Directory not empty', 'Unable to use a non-empty working directory.');
+      $this->io->drupalCIError('Directory not empty', 'Unable to use a non-empty working directory.');
       return FALSE;
     };
 
@@ -207,14 +215,14 @@ class CodeBase implements CodeBaseInterface, Injectable {
     if (!$working_dir) {
       // Directory not found after conversion to canonicalized absolute path
       // OPUT
-      Output::error('Directory not found', 'Unable to determine working directory absolute path.');
+      $this->io->drupalCIError('Directory not found', 'Unable to determine working directory absolute path.');
       return FALSE;
     }
 
     // Ensure we're still within the system temp directory
     if (strpos(realpath($working_dir), realpath($tmp_directory)) !== 0) {
       // OPUT
-      Output::error('Directory error', 'Detected attempt to traverse out of the system temp directory.');
+      $this->io->drupalCIError('Directory error', 'Detected attempt to traverse out of the system temp directory.');
       return FALSE;
     }
 

@@ -22,10 +22,17 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
 
+  /**
+   * {@inheritdoc}
+   */
   public function inject(Container $container) {
+    parent::inject($container);
     $this->buildVars = $container['build.vars'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getDefaultConfiguration() {
     return [
       'DCI_Fetch' => '',

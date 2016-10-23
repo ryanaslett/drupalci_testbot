@@ -9,14 +9,23 @@ namespace DrupalCI\Build\Codebase;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Injectable;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use Pimple\Container;
 
 /**
  * Class Patch
  * @package DrupalCI\Build\CodeBase
  */
-class Patch implements PatchInterface {
+class Patch implements PatchInterface, Injectable {
+
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
 
   /**
    * Local or Remote Patch File
@@ -24,6 +33,10 @@ class Patch implements PatchInterface {
    * @var string
    */
   protected $type = 'remote';
+
+  public function inject(Container $container) {
+    $this->io = $container['console.io'];
+  }
 
   /**
    * @return string
@@ -218,7 +231,7 @@ class Patch implements PatchInterface {
     $this->httpClient()
       ->get($url, ['save_to' => "$destination_file"]);
     // OPUT
-    Output::writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
+    $this->io->writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
     return $destination_file;
   }
 
@@ -247,7 +260,7 @@ class Patch implements PatchInterface {
     if ($real_file === FALSE) {
       // Invalid patch file
       // OPUT
-      Output::error("Patch Error", "The patch file <info>$source</info> is invalid.");
+      $this->io->drupalCIError("Patch Error", "The patch file <info>$source</info> is invalid.");
       return FALSE;
     }
     return TRUE;
@@ -266,7 +279,7 @@ class Patch implements PatchInterface {
     if ($real_directory === FALSE) {
       // Invalid target directory
       // OPUT
-      Output::error("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.");
+      $this->io->drupalCIError("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.");
       return FALSE;
     }
     return TRUE;
@@ -291,14 +304,14 @@ class Patch implements PatchInterface {
     if ($result !== 0) {
       // The command threw an error.
       // OPUT
-      Output::writeLn($cmdoutput);
+      $this->io->writeLn($cmdoutput);
       // OPUT
-      Output::error("Patch Error", "The patch attempt returned an error.  Error code: $result");
+      $this->io->drupalCIError("Patch Error", "The patch attempt returned an error.  Error code: $result");
       // TODO: Pass on the actual return value for the patch attempt
       return FALSE;
     }
     // OPUT
-    Output::writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
+    $this->io->writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
     $this->applied = TRUE;
     return TRUE;
   }
@@ -324,7 +337,7 @@ class Patch implements PatchInterface {
       if ($return !== 0) {
         // git diff returned a non-zero error code
         // OPUT
-        Output::writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
+        $this->io->writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
         return FALSE;
       }
       $files = $cmdoutput;
