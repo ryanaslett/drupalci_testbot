@@ -27,7 +27,7 @@ class ContribD7PassingTest extends DrupalCIFunctionalTestBase {
     'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
     'DCI_DBType=mysql',
     'DCI_DBVersion=5.5',
-    'DCI_GitCommitHash=d33ac7e',
+    'DCI_GitCommitHash=5533335',
     'DCI_JobType=simpletestlegacy7',
     'DCI_PHPVersion=5.3',
     'DCI_RunScript=/var/www/html/scripts/run-tests.sh',
