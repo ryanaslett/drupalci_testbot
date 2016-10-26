@@ -124,8 +124,25 @@ class Database implements DatabaseInterface {
    * @inheritDoc
    */
   public function getUrl() {
+// Scheme + "://" + username + ":" + password + "@" + host + path
+    if ($this->dbtype == 'sqlite') {
+      return 'sqlite://localhost/sites/default/files/db.sqlite';
+    }
 
-    return $this->url;
+
+    $new_url = $this->getScheme() . '//';
+    if (isset($this->username)) {
+      $new_url .= $this->username;
+      if (isset($this->password)) {
+        $new_url .= ':' . $this->password;
+      }
+      $new_url .= '@';
+    }
+    $new_url .= $this->host;
+    if (isset($this->dbname)) {
+      $new_url .= "/" . $this->dbname;
+    }
+    return $new_url;
   }
 
   /**
@@ -201,6 +218,8 @@ class Database implements DatabaseInterface {
    */
   public function getHost() {
     return $this->host;
+    // return 'drupaltestbot-db-' . $this->dbtype . '-' . $this->version;
+
   }
 
   /**
@@ -322,7 +341,7 @@ class Database implements DatabaseInterface {
     if ($this->dbtype == 'sqlite') {
       $conn_string .= $this->dbfile;
     } else {
-      $conn_string .= 'host=' . $this->host;
+      $conn_string .= 'host=' . $this->getHost();
       if (!empty($database)) {
         $conn_string .= ';dbname=' . $this->dbname;
       }
