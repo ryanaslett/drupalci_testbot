@@ -31,23 +31,33 @@ class SimpletestBuild extends Build {
    * passed into an instance of that build type.
    */
   public $defaultArguments = array(
+    // ** Environment Defaults
     'DCI_DBType' => 'mysql',
     'DCI_DBVersion' => '5.5',
-    'DCI_PHPVersion' => '5.5',
-    'DCI_CoreRepository' => 'git://drupalcode.org/project/drupal.git',
-    'DCI_CoreBranch' => '8.0.x',
-    'DCI_GitCheckoutDepth' => '1',
-    'DCI_RunScript' => '/var/www/html/core/scripts/run-tests.sh ',
+    // ** Database Default
     'DCI_DBUser' => 'drupaltestbot',
     'DCI_DBPassword' => 'drupaltestbotpw',
     'DCI_DBUrl' => 'dbtype://host', // DBVersion, DBUser and DBPassword variable plugins will change this.
+    // ** startcontainers defaults
+    'DCI_PHPVersion' => '5.5',
+
+
+    // Codebase
+    'DCI_CoreRepository' => 'git://drupalcode.org/project/drupal.git',
+    'DCI_CoreBranch' => '8.0.x',
+    'DCI_GitCheckoutDepth' => '1',
+    'DCI_GitCommitHash' => '',
+
+    // Simpletest Defaults
+    'DCI_RunScript' => '/var/www/html/core/scripts/run-tests.sh ',
     'DCI_TestGroups' => '--all',
     'DCI_SQLite' => '/var/www/html/artifacts/simpletest.sqlite',
     'DCI_Concurrency' => 4,
-    'DCI_GitCommitHash' => '',
-    // 'DCI_XMLOutput' => '/var/www/html/results/xml',
-    'DCI_PHPInterpreter' => '/opt/phpenv/shims/php',
     'DCI_RunOptions' => 'color;keep-results',
+    'DCI_PHPInterpreter' => '/opt/phpenv/shims/php',
+
+    // 'DCI_XMLOutput' => '/var/www/html/results/xml',
+    // Environment
     'DCI_SyntaxCheck' => TRUE,
   );
 
