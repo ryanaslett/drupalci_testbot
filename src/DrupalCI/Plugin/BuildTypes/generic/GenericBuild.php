@@ -27,7 +27,7 @@ class GenericBuild extends Build {
    * Overrides the getDefaultDefinitionTemplate() method from within BuildBase.
    *
    * For 'generic' build types, if no file is provided, we assume the presence of
-   * a drupalci.yml file in the current working directory.
+   * a simpletest.yml file in the current working directory.
    *
    * @param $build_type
    *   The name of the build type, used to select the appropriate subdirectory
@@ -36,7 +36,7 @@ class GenericBuild extends Build {
    *   The location of the default build definition template
    */
   public function getDefaultDefinitionTemplate($build_type) {
-    return "./drupalci.yml";
+    return "./simpletest.yml";
   }
 
 }

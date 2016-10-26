@@ -472,7 +472,7 @@ class Build implements BuildInterface, Injectable {
    */
   public function getDefaultDefinitionTemplate($build_type) {
     // ENVIRONMENT - Build definition template"
-    return __DIR__ . "/../../../build_templates/$build_type/drupalci.yml";
+    return __DIR__ . "/../../../build_templates/$build_type/simpletest.yml";
   }
 
   /**

@@ -84,12 +84,12 @@ class BuildDefinition Implements Injectable {
 
     // For 'generic' builds, this is either the file passed in on the
     // 'drupalci run <filename>' command; and should be fully populated (though
-    // template placeholders *can* be supported) ... or a drupalci.yml file at
+    // template placeholders *can* be supported) ... or a simpletest.yml file at
     // the working directory root.
 
     // For other 'buildtype' builds, this is the file location returned by
     // the $build->getDefaultDefinitionTemplate() method, which defaults to
-    // build_templates/<buildtype>/drupalci.yml for most build types.
+    // build_templates/<buildtype>/simpletest.yml for most build types.
 
     if (!file_exists($template_file)) {
       //Output::writeln("Unable to locate build definition template at <options=bold>$template_file</options=bold>");
