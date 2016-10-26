@@ -49,7 +49,11 @@ class Build implements BuildInterface, Injectable {
    * @var string
    */
   protected $buildType = 'base';
-  public function getBuildType() {  return $this->buildType;  }
+
+  public function getBuildType() {
+    return $this->buildType;
+  }
+
 
   /**
    * Stores the calling command's output buffer
@@ -57,8 +61,14 @@ class Build implements BuildInterface, Injectable {
    * @var \Symfony\Component\Console\Output\OutputInterface
    */
   public $output;
-  public function setOutput(OutputInterface $output) {  $this->output = $output;  }
-  public function getOutput() {  return $this->output;  }
+
+  public function setOutput(OutputInterface $output) {
+    $this->output = $output;
+  }
+
+  public function getOutput() {
+    return $this->output;
+  }
 
   /**
    * Stores a build ID for this build
@@ -66,8 +76,14 @@ class Build implements BuildInterface, Injectable {
    * @var string
    */
   protected $buildId;
-  public function getBuildId() {  return $this->buildId;  }
-  public function setBuildId($buildId) {  $this->buildId = $buildId;  }
+
+  public function getBuildId() {
+    return $this->buildId;
+  }
+
+  public function setBuildId($buildId) {
+    $this->buildId = $buildId;
+  }
 
   /**
    * Stores the pift-ci-job id for this build.
@@ -75,8 +91,14 @@ class Build implements BuildInterface, Injectable {
    * @var string
    */
   protected $drupalOrgBuildId;
-  public function getDrupalOrgBuildId() {  return $this->drupalOrgBuildId;  }
-  public function setDrupalOrgBuildId($drupalOrgBuildId) {  $this->drupalOrgBuildId = $drupalOrgBuildId;  }
+
+  public function getDrupalOrgBuildId() {
+    return $this->drupalOrgBuildId;
+  }
+
+  public function setDrupalOrgBuildId($drupalOrgBuildId) {
+    $this->drupalOrgBuildId = $drupalOrgBuildId;
+  }
 
   /**
    * Stores the jenkins build id for this build.
@@ -84,9 +106,14 @@ class Build implements BuildInterface, Injectable {
    * @var string
    */
   protected $jenkinsBuildId;
-  public function getJenkinsBuildId() {  return $this->jenkinsBuildId;  }
-  public function setJenksinBuildId($jenkinsBuildId) {  $this->jenkinsBuildId = $jenkinsBuildId;  }
 
+  public function getJenkinsBuildId() {
+    return $this->jenkinsBuildId;
+  }
+
+  public function setJenksinBuildId($jenkinsBuildId) {
+    $this->jenkinsBuildId = $jenkinsBuildId;
+  }
 
   /**
    * Stores the build definition object for this build
@@ -107,8 +134,14 @@ class Build implements BuildInterface, Injectable {
    */
   // CODEBASE
   protected $codeBase;
-  public function getCodebase() {  return $this->codeBase;  }
-  public function setCodebase(CodeBase $codeBase)  {  $this->codeBase = $codeBase;  }
+
+  public function getCodebase() {
+    return $this->codeBase;
+  }
+
+  public function setCodebase(CodeBase $codeBase) {
+    $this->codeBase = $codeBase;
+  }
 
   /**
    * Stores the results object for this build
@@ -116,24 +149,36 @@ class Build implements BuildInterface, Injectable {
    * @var \DrupalCI\Build\Results\BuildResults
    */
   protected $buildResults;
-  public function getBuildResults() {  return $this->buildResults;  }
-  public function setBuildResults(BuildResults $build_results)  {  $this->buildResults = $build_results;  }
+
+  public function getBuildResults() {
+    return $this->buildResults;
+  }
+
+  public function setBuildResults(BuildResults $build_results) {
+    $this->buildResults = $build_results;
+  }
 
   /**
    * Defines argument variable names which are valid for this build type
    *
    * @var array
    */
-  protected $availableArguments = array();
-  public function getAvailableArguments() {  return $this->availableArguments;  }
+  protected $availableArguments = [];
+
+  public function getAvailableArguments() {
+    return $this->availableArguments;
+  }
 
   /**
    * Defines the default arguments which are valid for this build type
    *
    * @var array
    */
-  protected $defaultArguments = array();
-  public function getDefaultArguments() {  return $this->defaultArguments;  }
+  protected $defaultArguments = [];
+
+  public function getDefaultArguments() {
+    return $this->defaultArguments;
+  }
 
   /**
    * Defines the required arguments which are necessary for this build type
@@ -144,18 +189,24 @@ class Build implements BuildInterface, Injectable {
    *
    * @var array
    */
-  protected $requiredArguments = array();
-  public function getRequiredArguments() {  return $this->requiredArguments;  }
+  protected $requiredArguments = [];
+
+  public function getRequiredArguments() {
+    return $this->requiredArguments;
+  }
 
   /**
    * Defines initial platform defaults for all builds (if not overridden).
    *
    * @var array
    */
-  protected $platformDefaults = array(
+  protected $platformDefaults = [
     "DCI_CoreProject" => "Drupal",
-  );
-  public function getPlatformDefaults() {  return $this->platformDefaults;  }
+  ];
+
+  public function getPlatformDefaults() {
+    return $this->platformDefaults;
+  }
 
   /**
    * The build variables service.
@@ -191,10 +242,9 @@ class Build implements BuildInterface, Injectable {
    * @return \Docker\Docker
    */
   // DOCKER
-  public function getDocker()
-  {
+  public function getDocker() {
     $client = Client::createFromEnv();
-    if (null === $this->docker) {
+    if (NULL === $this->docker) {
       $this->docker = new Docker($client);
     }
     return $this->docker;
@@ -294,7 +344,7 @@ class Build implements BuildInterface, Injectable {
     $container_config->setHostConfig($host_config);
     $parameters = [];
     if (!empty($config['name'])) {
-      $parameters = [ 'name' => $config['name'] ];
+      $parameters = ['name' => $config['name']];
     }
 
     $create_result = $manager->create($container_config, $parameters);
@@ -320,7 +370,7 @@ class Build implements BuildInterface, Injectable {
 
   protected function createContainerLinks(&$config) {
     // DOCKER
-    $links = array();
+    $links = [];
     if (empty($this->serviceContainers)) {
       return;
     }
@@ -334,7 +384,7 @@ class Build implements BuildInterface, Injectable {
 
   protected function createContainerVolumes(&$config) {
     // DOCKER
-    $volumes = array();
+    $volumes = [];
     // Map working directory
     // CODEBASE
     $working = $this->getCodebase()->getWorkingDir();
@@ -358,7 +408,7 @@ class Build implements BuildInterface, Injectable {
         $container_name = $file->getBasename('.yml');
         $dev_suffix = '-dev';
         $isdev = strpos($container_name, $dev_suffix);
-        if ( !$isdev == 0) {
+        if (!$isdev == 0) {
           $container_name = str_replace('-dev', ':dev', $container_name);
         }
         $image_name = 'drupalci/' . $container_name;
@@ -378,12 +428,12 @@ class Build implements BuildInterface, Injectable {
     // DOCKER
     $docker = $this->getDocker();
     $manager = $docker->getContainerManager();
-    $instances = array();
+    $instances = [];
 
     $images = $manager->findAll();
 
     foreach ($manager->findAll() as $running) {
-      $running_container_name = explode(':',$running->getImage());
+      $running_container_name = explode(':', $running->getImage());
       $id = substr($running->getID(), 0, 8);
       $instances[$running_container_name[0]] = $id;
     };
@@ -420,7 +470,7 @@ class Build implements BuildInterface, Injectable {
       $container_config->setHostConfig($host_config);
       $parameters = [];
       if (!empty($config['name'])) {
-        $parameters = [ 'name' => $config['name'] ];
+        $parameters = ['name' => $config['name']];
       }
 
       $create_result = $manager->create($container_config, $parameters);
@@ -472,7 +522,7 @@ class Build implements BuildInterface, Injectable {
    */
   public function getDefaultDefinitionTemplate($build_type) {
     // ENVIRONMENT - Build definition template"
-    return __DIR__ . "/../../../build_templates/$build_type/simpletest.yml";
+    return __DIR__ . "/../../../build_templates/$build_type/drupalci.yml";
   }
 
   /**
