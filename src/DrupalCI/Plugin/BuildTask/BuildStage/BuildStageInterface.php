@@ -1,11 +1,13 @@
 <?php
 
-namespace Plugin\BuildStage;
+namespace DrupalCI\Plugin\BuildTask\BuildStage;
 
 
+/**
+ * Interface BuildStageInterface
+ *
+ * @package DrupalCI\Plugin\BuildTask\BuildStage
+ */
 interface BuildStageInterface {
 
-  public function getJobs();
-
-  public function getDefaultConfig();
 }
