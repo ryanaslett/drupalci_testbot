@@ -23,7 +23,6 @@ class RunCommandTest extends DrupalCIFunctionalTestBase {
     $commandTester->execute(['command' => $command->getName()]);
     $display = $commandTester->getDisplay(TRUE);
     $this->assertRegExp('`Executing build with build ID:`', $display);
-    $this->assertRegExp('`Loading DrupalCI platform default arguments:`', $display);
   }
 
 }
