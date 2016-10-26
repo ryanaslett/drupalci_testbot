@@ -43,8 +43,11 @@ interface CodeBaseInterface {
   /**
    * Initialize Codebase
    *
-   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
+   * @param $buildid
+   *
+   * Takes in the build_id and creates the working directory.
+   *
    */
   // ENVIRONMENT - Host working dir
-  public function setupWorkingDirectory(BuildDefinition $build_definition);
+  public function setupWorkingDirectory($buildid);
 }
