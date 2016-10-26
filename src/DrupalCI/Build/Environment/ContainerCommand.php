@@ -6,7 +6,7 @@
  * Processes "[build_step]: command:" instructions from within a build definition.
  */
 
-namespace DrupalCI\Plugin\BuildSteps\generic;
+namespace DrupalCI\Build\Environment;
 
 use Docker\API\Model\ExecConfig;
 use Docker\API\Model\ExecStartConfig;
@@ -15,10 +15,8 @@ use DrupalCI\Console\Output;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginBase;
 
-/**
- * @PluginID("command")
- */
-class ContainerCommand extends PluginBase {
+
+class ContainerCommand {
 
   /**
    * {@inheritdoc}
@@ -78,8 +76,7 @@ class ContainerCommand extends PluginBase {
             $exec_command_exit_code = $exec_manager->find($exec_id)->getExitCode();
 
             if ($this->checkCommandStatus($exec_command_exit_code) !==0) {
-              $build->error();
-              break 3;
+              return $exec_command_exit_code;
             }
           }
         }

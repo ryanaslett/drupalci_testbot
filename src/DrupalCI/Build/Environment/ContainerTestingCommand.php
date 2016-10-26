@@ -1,14 +1,9 @@
 <?php
 
-namespace DrupalCI\Plugin\BuildSteps\generic;
+namespace DrupalCI\Build\Environment;
 
 use DrupalCI\Console\Output;
 
-/**
- * Processes "[build_step]: testcommand:" instructions from within a Build definition.
- *
- * @PluginID("testcommand")
- */
 class ContainerTestingCommand extends ContainerCommand {
 
   /*
