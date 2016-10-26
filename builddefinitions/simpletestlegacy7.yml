@@ -1,70 +1,47 @@
-# Build Definition Template for the DrupalCI 'SimpletestLegacy' Build Type
-environment:
-  db:
-    type: %DCI_DBType%
-    version: %DCI_DBVersion%
-  web:
-    - %DCI_PHPVersion%
-setup:
-  checkout:
-    # DCI_UseLocalCodebase plugin can override the checkout array to look like:
-    # - protocol: local
-    #   source_dir: %DCI_SourceDirectory%
-    - protocol: git
-      repo: %DCI_CoreRepository%
-      branch: %DCI_CoreBranch%
-      depth: %DCI_GitCheckoutDepth%
-      checkout_dir: .
-      commit_hash: %DCI_GitCommitHash%
-  # Create the directory where we will store our results
-  mkdir:
-    - /var/www/html/results
-    - /var/www/html/artifacts
-    - /var/www/html/sites/simpletest/xml
-  command:
-    - ln -s /var/www/html /var/www/html/checkout
-    - chown -fR www-data:www-data /var/www/html
-    - chmod 0777 /var/www/html/artifacts
-    - chmod 0777 /tmp
-dbcreate:
-  dbcreate:
-    type: %DCI_DBType%
-    url: %DCI_DBUrl%
-execute:
-  command:
-    - sudo -u www-data %DCI_PHPInterpreter% -v
-    - cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html si -y --db-url=%DCI_DBurl% --clean-url=0 --account-name=admin --account-pass=drupal --account-mail=admin@example.com
-    - cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html vset simpletest_clear_results '0' 2>&1
-    - cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html vset simpletest_verbose '0' 2>&1
-    - cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html en -y simpletest 2>&1
-    # Patch core so we can use --directory in run-tests.sh. Only necessary for
-    # commits before 2551981 was added, but it will just fail to apply with no
-    # effect for newer versions of core.
-    - cd /var/www/html && sudo -u www-data wget -O /var/www/html/2551981-21-add-directory-option-to-run-tests.patch https://www.drupal.org/files/issues/2551981-21-add-directory-option-to-run-tests.patch
-    - cd /var/www/html && git apply ./2551981-21-add-directory-option-to-run-tests.patch || true
-  testcommand:
-    - cd /var/www/html && sudo -u www-data php %DCI_RunScript% --list --php %DCI_PHPInterpreter% > /var/www/html/artifacts/testgroups.txt
-  simpletest:
-    xmlformat: %DCI_RTXmlPath%
-    runtests:
-      php: %DCI_PHPInterpreter%
-      color: %DCI_RTColor%
-      concurrency: %DCI_RTConcurrency%
-      # keep-results-table: %DCI_RTKeepResultsTable%
-      sqlite: %DCI_SQLite%
-      testcommand: cd /var/www/html && sudo -u www-data php %DCI_RunScript%
-      testgroups: %DCI_TestGroups%
-      #url: http://localhost/checkout
-      url: %DCI_RTUrl%
-      verbose: %DCI_RTVerbose%
-      xml: %DCI_RTXmlPath%
-    #- cd /var/www/html && sudo -u www-data php %DCI_RunScript% --php %DCI_PHPInterpreter% --url http://localhost/checkout %DCI_RunOptions% %DCI_TestGroups%
-publish:
-  junit_xmlformat:
-    xml_directory: %DCI_JunitXml%
-    # xml_output: %DCI_XMLOutput%
-    core_branch: %DCI_CoreBranch%
-    db_url: %DCI_DBUrl%
-    db_type: %DCI_DBType%
-    db_version: %DCI_DBVersion%
-    sqlite: %DCI_SQLite%
+# The yml build definition is the "roadmap" for a build, that tells DrupalCI what steps to execute, in what order, and
+# Provides a way to "lock" configuration values.
+# The structure of a build.yml will always follow the following conventions:
+# There are five levels:
+# 1. The build
+# 2. Build stages and build level configuration.
+# 3. Build phases and build stage configuration.
+# 4. Build steps and Build phase configuration.
+# 5. Build step configuration.
+
+
+# The keys at each level are one of two possibilities: either the plugin name for a buildstage/job/buildtask,
+# *or* they are a configuration override that will take precedence over all other configuration directives.
+# The default build.yml file may contain keys who's default configuration is a no-op.
+# this is to allow for those configurations to be overridden, such as composer, and patches.
+
+# If any build task is an indexed array, and not a keyed array, the assumption is that we want to
+# run that build task multiple times, with different configuration overrides each time
+
+# The build level really only exists to provide for a possibility to run entire, multiple builds. It might go away.
+build:
+  environment:
+    startcontainers:
+      runcontainers:
+    create_db:
+      dbcreate:
+  codebase:
+    assemble_codebase:
+      checkout:
+      # The default configuration for the patch plugin is to do nothing. But if we do not define it, it wont run at all
+      # This allows us to optionally enable it with env variables, user config overrides, or command line overrides.
+      fetch:
+      patch:
+      # This filesystem step *should* be in the environment stage,
+      # But our organization currently expects to be able to git clone
+      # to an empty directory, *then* add in more folders.
+    filesystem:
+      prepare_filesystem:
+    validate_codebase:
+      phplint:
+  assessment:
+    testing:
+      simpletest_d7:
+
+
+
+
