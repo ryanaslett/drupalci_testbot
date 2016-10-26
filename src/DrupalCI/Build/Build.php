@@ -8,8 +8,6 @@ namespace DrupalCI\Build;
 
 use Docker\API\Model\ContainerConfig;
 use Docker\API\Model\HostConfig;
-use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
@@ -22,11 +20,13 @@ use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
 use Docker\Docker;
 use Docker\DockerClient as Client;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Parser;
 use Pimple\Container;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Yaml\Yaml;
 
 class Build implements BuildInterface, Injectable {
 
@@ -36,11 +36,22 @@ class Build implements BuildInterface, Injectable {
   protected $container;
 
   /**
+  /**
+   * @var \Symfony\Component\Yaml\Parser
+   *
+   *   Parsed Yaml of the build definition.
+   */
+  protected $yamlparser;
+
+
+  /**
    * {@inheritdoc}
    */
   public function inject(Container $container) {
     $this->container = $container;
     $this->buildVars = $container['build.vars'];
+    $this->yamlparser = $container['yaml.parser'];
+    $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
   }
 
   /**
@@ -115,6 +126,7 @@ class Build implements BuildInterface, Injectable {
     $this->jenkinsBuildId = $jenkinsBuildId;
   }
 
+
   /**
    * Stores the build definition object for this build
    *
@@ -125,6 +137,22 @@ class Build implements BuildInterface, Injectable {
   public function setBuildDefinition(BuildDefinition $build_definition) {
     $build_definition->inject($this->container);
     $this->buildDefinition = $build_definition;
+
+  /**
+   * Given a file, returns an array containing the parsed YAML contents from that file
+   *
+   * @param $source
+   *   A YAML source file
+   *
+   * @return array
+   *   an array containing the parsed YAML contents from the source file
+   * @throws ParseException
+   */
+  protected function loadYaml($source) {
+    if ($content = file_get_contents($source)) {
+      return $this->yamlparser->parse($content);
+    }
+    throw new ParseException("Unable to parse build definition file at $source.");
   }
 
   /**
