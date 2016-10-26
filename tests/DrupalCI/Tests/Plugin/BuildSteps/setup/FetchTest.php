@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\BuildSteps\setup\Fetch;
+use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -15,7 +15,7 @@ use DrupalCI\Build\Codebase\CodeBase;
 use DrupalCI\Build\BuildInterface;
 
 /**
- * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup\Fetch
+ * @coversDefaultClass DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch
  */
 class FetchTest extends DrupalCITestCase {
 
@@ -43,13 +43,14 @@ class FetchTest extends DrupalCITestCase {
       ->method('getCodebase')
       ->will($this->returnValue($codebase));
 
-    $fetch = new TestFetch();
+    $data = [
+      'files' => [['from' => "$url",'to' => "."]]
+    ];
+    $fetch = new TestFetch($data);
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
-    $data = [
-      'files' => "$url,."
-    ];
-    $fetch->run($build, $data);
+
+    $fetch->run($build);
   }
 }
 

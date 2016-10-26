@@ -2,7 +2,7 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\BuildSteps\setup\FileHandlerBase;
+use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch;
 
 /**
  * @file
@@ -25,7 +25,9 @@ class FileHandlerBaseTest extends \PHPUnit_Framework_TestCase {
    */
   public function testProcess($file_definition, $expected_result) {
 
-    $handler = $this->getMockForAbstractClass(FileHandlerBase::class);
+    // @TODO: probably need to use phpunit's built in trait testing
+    // vs a real class like fetch, but this works for now.
+    $handler = $this->getMockForAbstractClass(Fetch::class);
 
     $ref_process = new \ReflectionMethod($handler, 'process');
     $ref_process->setAccessible(TRUE);

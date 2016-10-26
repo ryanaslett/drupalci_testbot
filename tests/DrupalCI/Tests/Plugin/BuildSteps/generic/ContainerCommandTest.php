@@ -8,12 +8,12 @@ use Docker\API\Model\ExecCommand;
 use Docker\Docker;
 use Docker\Manager\ExecManager;
 use Docker\Stream\DockerRawStream;
-use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Build\Environment\ContainerCommand;
 use DrupalCI\Tests\DrupalCITestCase;
 
 /**
- * @coversDefaultClass DrupalCI\Plugin\BuildSteps\generic\ContainerCommand
+ * @coversDefaultClass DrupalCI\Build\Environment\ContainerCommand
  */
 class ContainerCommandTest extends DrupalCITestCase {
 
