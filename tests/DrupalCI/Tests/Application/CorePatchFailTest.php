@@ -26,7 +26,6 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
     'DCI_DBVersion=5.5',
     'DCI_Fetch=http://drupal.org/files/issues/does_not_apply.patch',
     'DCI_JobType=simpletest',
-    'DCI_JunitXml=xml',
     'DCI_PHPVersion=7',
     'DCI_Patch=does_not_apply.patch',
     'DCI_TestGroups=ban',

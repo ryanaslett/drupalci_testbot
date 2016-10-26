@@ -30,7 +30,6 @@ class CoreSimpletestPhpFatalTest extends DrupalCIFunctionalTestBase {
     'DCI_Fetch=https://www.drupal.org/files/issues/2684095-2.patch,.',
     'DCI_GitCommitHash=6afe359',
     'DCI_JobType=simpletest',
-    'DCI_JunitXml=xml',
     'DCI_PHPVersion=5.5',
     'DCI_Patch=2684095-2.patch,.',
     'DCI_RunScript=/var/www/html/core/scripts/run-tests.sh ',

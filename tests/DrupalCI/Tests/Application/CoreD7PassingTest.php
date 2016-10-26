@@ -25,7 +25,6 @@ class CoreD7PassingTest extends DrupalCIFunctionalTestBase {
     'DCI_CoreBranch=7.x',
     'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
     'DCI_JobType=simpletestlegacy7',
-    'DCI_JunitXml=xml',
     'DCI_GitCommitHash=3d5bcd3',
     'DCI_RunScript=/var/www/html/scripts/run-tests.sh',
     'DCI_TestGroups=Syslog',
@@ -48,7 +47,7 @@ class CoreD7PassingTest extends DrupalCIFunctionalTestBase {
     $this->assertRegExp('/.*Syslog functionality 17 passes, 0 fails, and 0 exceptions*/', $app_tester->getDisplay());
     // Look for junit xml results file
     $output_file = $build->getCodebase()
-        ->getWorkingDir() . "/artifacts/" . $build->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
+        ->getWorkingDir() . "/artifacts/xml/testresults.xml";
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.
     $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/CoreD7PassingTest_testresults.xml', $output_file);

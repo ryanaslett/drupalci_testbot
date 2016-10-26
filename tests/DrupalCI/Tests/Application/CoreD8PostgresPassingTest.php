@@ -27,7 +27,6 @@ class CoreD8PostgresPassingTest extends DrupalCIFunctionalTestBase {
     'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
     'DCI_GitCommitHash=c187f1d',
     'DCI_JobType=simpletest',
-    'DCI_JunitXml=xml',
     'DCI_TestGroups=Url',
     'DCI_PHPVersion=7',
     'DCI_DBType=pgsql',
@@ -49,7 +48,7 @@ class CoreD8PostgresPassingTest extends DrupalCIFunctionalTestBase {
     $this->assertRegExp('/.*Drupal\\\\KernelTests\\\\Core\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
     // Look for junit xml results file
     $output_file = $build->getCodebase()
-        ->getWorkingDir() . "/artifacts/" . $build->getBuildVars()["DCI_JunitXml"] . '/testresults.xml';
+        ->getWorkingDir() . "/artifacts/xml/testresults.xml";
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.
     $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/CoreD8PassingTest_testresults.xml', $output_file);
