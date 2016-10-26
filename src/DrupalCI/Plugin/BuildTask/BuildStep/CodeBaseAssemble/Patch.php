@@ -1,45 +1,43 @@
 <?php
-/**
- * @file
- * Contains \DrupalCI\Plugin\BuildSteps\setup\Patch
- *
- * Processes "setup: patch:" instructions from within a build definition.
- */
 
-namespace DrupalCI\Plugin\BuildSteps\setup;
+namespace DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble;
 
-use DrupalCI\Console\Output;
+
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Console\Output;
+use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
+use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
+use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
+use DrupalCI\Plugin\PluginBase;
+use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
+use DrupalCI\Build\Codebase\PatchInterface;
 use DrupalCI\Build\Codebase\Patch as PatchFile;
-use DrupalCI\Injectable;
-use DrupalCI\Plugin\BuildTaskInterface;
-use DrupalCI\Plugin\BuildTaskTrait;
-use Pimple\Container;
 
 /**
  * @PluginID("patch")
  */
-class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
+class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface {
 
   use BuildTaskTrait;
+  use FileHandlerTrait;
 
-  public function inject(Container $container) {
-    $this->buildVars = $container['build.vars'];
-  }
-
-  public function getDefaultConfiguration() {
-    return [
-      'DCI_Patch' => '',
-    ];
+  /**
+   * @inheritDoc
+   */
+  public function configure() {
+    // @TODO make into a test
+    // $_ENV['DCI_Patch']='https://www.drupal.org/files/issues/2796581-region-136.patch,.;https://www.drupal.org/files/issues/another.patch,.';
+    if (isset($_ENV['DCI_Patch'])) {
+      $this->configuration['patches'] = $this->process($_ENV['DCI_Patch']);
+    }
   }
 
   /**
-   * {@inheritdoc}
+   * @inheritDoc
    */
-  public function run(BuildInterface $build, &$config) {
-    $config = $this->resolveDciVariables($config);
+  public function run(BuildInterface $build) {
 
-    $files = $this->process($config['files']);
+    $files = $this->configuration['patches'];
 
     $codebase = $build->getCodebase();
     if (empty($files)) {
@@ -50,20 +48,20 @@ class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
       if (empty($details['from'])) {
         // OPUT
         Output::error("Patch error", "No valid patch file provided for the patch command.");
-        $build->error();
+
         return;
       }
       // Create a new patch object
       $patch = new PatchFile($details, $codebase);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
-        $build->error();
+
         return;
       }
 
       // Apply the patch
       if (!$patch->apply()) {
-        $build->error();
+
 
         // Hack to create a xml file for processing by Jenkins.
         // TODO: Remove once proper build failure processing is in place
@@ -101,4 +99,63 @@ class Patch extends FileHandlerBase implements BuildTaskInterface, Injectable {
       $codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }
+
+  /**
+   * @inheritDoc
+   */
+  public function complete() {
+    // TODO: Implement complete() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDefaultConfiguration() {
+    return [
+      'patches' => [],
+    ];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getChildTasks() {
+    // TODO: Implement getChildTasks() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setChildTasks($buildTasks) {
+    // TODO: Implement setChildTasks() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getShortError() {
+    // TODO: Implement getShortError() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getErrorDetails() {
+    // TODO: Implement getErrorDetails() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getResultCode() {
+    // TODO: Implement getResultCode() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getArtifacts() {
+    // TODO: Implement getArtifacts() method.
+  }
+
 }

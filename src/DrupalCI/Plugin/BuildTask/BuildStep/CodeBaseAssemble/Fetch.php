@@ -1,48 +1,42 @@
 <?php
 
-namespace DrupalCI\Plugin\BuildSteps\setup;
+namespace DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble;
+
 
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
-use DrupalCI\Injectable;
-use DrupalCI\Plugin\BuildTaskInterface;
-use DrupalCI\Plugin\BuildTaskTrait;
+use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
+use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
+use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
+use DrupalCI\Plugin\PluginBase;
+use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use GuzzleHttp\Client;
-use Pimple\Container;
 
 /**
- * Processes "setup: fetch:" instructions from within a build definition.
- *
  * @PluginID("fetch")
- *
- * @todo This task uses a string to specify multiple files and their
- *   destinations. Improve this to use some kind of more structured data.
  */
-class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
+class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface {
 
   use BuildTaskTrait;
+  use FileHandlerTrait;
 
-  public function inject(Container $container) {
-    $this->buildVars = $container['build.vars'];
-  }
-
-  public function getDefaultConfiguration() {
-    return [
-      'DCI_Fetch' => '',
-    ];
+  /**
+   * @inheritDoc
+   */
+  public function configure() {
+    // @TODO make into a test
+     // $_ENV['DCI_Fetch']='https://www.drupal.org/files/issues/2796581-region-136.patch,.;https://www.drupal.org/files/issues/another.patch,.';
+    if (isset($_ENV['DCI_Fetch'])) {
+      $this->configuration['files'] = $this->process($_ENV['DCI_Fetch']);
+    }
   }
 
   /**
-   * @var \GuzzleHttp\ClientInterface
+   * @inheritDoc
    */
-  protected $httpClient;
+  public function run(BuildInterface $build) {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function run(BuildInterface $build, &$config) {
-    $config = $this->resolveDciVariables($config);
-    $files = $this->process($config['files']);
+    $files = $this->configuration['files'];
 
     if (empty($files)) {
       // OPUT
@@ -54,7 +48,7 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
       if (empty($details['from'])) {
         // OPUT
         Output::error("Fetch error", "No valid target file provided for fetch command.");
-        $build->error();
+
         return;
       }
       $url = $details['from'];
@@ -62,8 +56,8 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
       $fetchdir = (!empty($details['to'])) ? $details['to'] : $workingdir;
       if (!($directory = $this->validateDirectory($build, $fetchdir))) {
         // Invalid checkout directory
-        Output:error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
-        $build->error();
+        Output::error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
+
         return;
       }
       $info = pathinfo($url);
@@ -74,8 +68,8 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
       }
       catch (\Exception $e) {
         // OPUT
-        Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$directory</info>");
-        $build->error();
+        Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$destination_file</info>");
+
         return;
       }
       // OPUT
@@ -84,13 +78,72 @@ class Fetch extends FileHandlerBase implements BuildTaskInterface, Injectable {
   }
 
   /**
+   * @inheritDoc
+   */
+  public function complete() {
+    // TODO: Implement complete() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDefaultConfiguration() {
+    return [
+      'files' => [],
+    ];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getChildTasks() {
+    // TODO: Implement getChildTasks() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setChildTasks($buildTasks) {
+    // TODO: Implement setChildTasks() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getShortError() {
+    // TODO: Implement getShortError() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getErrorDetails() {
+    // TODO: Implement getErrorDetails() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getResultCode() {
+    // TODO: Implement getResultCode() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getArtifacts() {
+    // TODO: Implement getArtifacts() method.
+  }
+
+  /**
    * @return \GuzzleHttp\ClientInterface
    */
   protected function httpClient() {
     if (!isset($this->httpClient)) {
-      $this->httpClient = new Client;
+      $this->httpClient = new Client();
     }
     return $this->httpClient;
   }
+
 
 }

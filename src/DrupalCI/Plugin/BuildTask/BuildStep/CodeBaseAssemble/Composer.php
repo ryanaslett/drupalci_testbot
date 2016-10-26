@@ -1,52 +1,98 @@
 <?php
 
-/**
- * @file
- * Contains \DrupalCI\Plugin\BuildSteps\setup\Composer
- */
+namespace DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble;
 
-namespace DrupalCI\Plugin\BuildSteps\setup;
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
+use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
+use DrupalCI\Plugin\PluginBase;
+use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 
 /**
  * @PluginID("composer")
- *
- * Processes "setup: composer:" instructions from within a build
- * definition.
  */
-class Composer extends SetupBase {
+class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterface {
+
+  use BuildTaskTrait;
 
   /**
-   * {@inheritdoc}
-   *
-   * @param string|array $arguments
-   *   Arguments for a composer command. May be a string if one composer command
-   *   is required to run or an array if multiple commands should run.
+   * @inheritDoc
    */
-  public function run(BuildInterface $build, $data) {
-    // Normalize the arguments to an array format.
-    $data_list = (array) $data;
+  public function configure() {
+    // TODO: Implement configure() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function run(BuildInterface $build) {
 
     $workingdir = $build->getCodebase()->getWorkingDir();
 
-    foreach ($data_list as $item) {
-      $cmd = $this->buildComposerCommand($item, $workingdir);
-      $this->exec($cmd, $cmdoutput, $result);
-    }
+    $cmd = "./bin/composer " . $this->configuration['options'] . " " . $workingdir;
+    $this->exec($cmd, $cmdoutput, $result);
+
   }
 
   /**
-   * Returns a full composer command based on the passed-in arguments.
-   *
-   * @param string $arguments
-   *   The arguments for the composer command.
-   *
-   * @return string
-   *   The full composer command string.
+   * @inheritDoc
    */
-  protected function buildComposerCommand($data, $workingdir) {
-    return "./bin/composer $data $workingdir";
+  public function complete() {
+    // TODO: Implement complete() method.
   }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDefaultConfiguration() {
+    // TODO: Implement getDefaultConfiguration() method.
+    return [
+      'options' => 'install --prefer-dist --working-dir',
+    ];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getChildTasks() {
+    // TODO: Implement getChildTasks() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function setChildTasks($buildTasks) {
+    // TODO: Implement setChildTasks() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getShortError() {
+    // TODO: Implement getShortError() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getErrorDetails() {
+    // TODO: Implement getErrorDetails() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getResultCode() {
+    // TODO: Implement getResultCode() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getArtifacts() {
+    // TODO: Implement getArtifacts() method.
+  }
+
 
 }

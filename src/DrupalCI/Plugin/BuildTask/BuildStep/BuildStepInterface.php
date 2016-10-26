@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\BuildStep;
+namespace DrupalCI\Plugin\BuildTask\BuildStep;
 
 
 interface BuildStepInterface {

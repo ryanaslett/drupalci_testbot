@@ -1,93 +1,67 @@
 <?php
-/**
- * @file
- * Contains \DrupalCI\Plugin\BuildSteps\environment\DbEnvironment
- *
- * Processes "environment: db:" parameters from within a build definition,
- * ensures appropriate Docker container images exist, and launches any new
- * database service containers as required.
- */
 
-namespace DrupalCI\Plugin\BuildSteps\environment;
+namespace DrupalCI\Plugin\BuildTask\BuildStep\StartContainers;
 
+
+use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
+use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
+use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
+use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
+use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Build\Environment\DatabaseInterface;
 use DrupalCI\Console\Output;
-use DrupalCI\Build\BuildInterface;
-use DrupalCI\Plugin\BuildTaskInterface;
-use DrupalCI\Plugin\BuildTaskTrait;
-use DrupalCI\Injectable;
+use Http\Client\Common\Exception\ClientErrorException;
 use Pimple\Container;
 
 /**
- * Starts a service container daemon for the specified database type.
- *
- * @PluginID("db")
+ * @PluginID("runcontainers")
  */
-class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injectable {
+class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable  {
 
   use BuildTaskTrait;
 
-  public function inject(Container $container) {
-    $this->buildVars = $container['build.vars'];
-    /* @var \DrupalCI\Build\Environment\DatabaseInterface */
-    $this->database = $container['db.system'];
-    /* @var \DrupalCI\Build\Environment\DatabaseInterface */
-    // @TODO move this to the simpletest execution class
-    $this->results_database = $container['db.results'];
-
-    $this->build_definition = $container['build.definition'];
-  }
-
-  public function getDefaultConfiguration() {
-    return [
-      'DCI_DBType' => 'mysql',
-      'DCI_DBVersion' => '5.5',
-    ];
-  }
-
-
-  /**
-   * @var \DrupalCI\Build\Environment\DatabaseInterface
-   */
+  /* @var DatabaseInterface */
   protected $database;
 
-  /**
-   * @var \DrupalCI\Build\Environment\DatabaseInterface
-   *
-   * @TODO: Remove this. The results database should be established as
-   * part of the RunTests execute task when it exists. For now, we'll
-   * fake it here until such time as we have the right place for it.
-   */
-  protected $results_database;
+  public function inject(Container $container) {
+    $this->database = $container['db.system'];
+  }
 
   /**
-   * @var \DrupalCI\Build\Definition\BuildDefinition
+   * @inheritDoc
    */
-  protected $build_definition;
+  public function configure() {
 
+    if (isset($_ENV['DCI_PHPVersion'])) {
+      $this->configuration['phpversion'] = $_ENV['DCI_PHPVersion'];
+    }
+
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, &$config) {
-    $this->setUpDatabase();
+  public function run(BuildInterface $build, &$config = []) {
 
-    // @TODO get rid of this. and move it to where a results db actually
-    // gets created and needed, in RunTests task
-    $majver = $build->getCodebase()->getCoreMajorVersion();
-    if($majver > 7) {
-      $this->setUpResultsDB($build);
+    // OPUT
+    Output::writeLn("<info>Parsing required Web container image names ...</info>");
+    $containers = $build->getExecContainers();
+    $containers['web'] = $this->buildWebImageNames($this->configuration['phpversion']);
+    $valid = $this->validateImageNames($containers['web'], $build);
+    if (!empty($valid)) {
+      $build->setExecContainers($containers);
+      // Actual creation and configuration of the executable containers occurs
+      // during the 'getExecContainers()' method call.
     }
 
-    $config = $this->resolveDciVariables($config);
-
     // We don't need to initialize any service container for SQLite.
-    if (strpos($config['type'], 'sqlite') === 0) {
+    if (strpos($this->database->getDbType(), 'sqlite') === 0) {
       return;
     }
     // OPUT
     Output::writeLn("<info>Parsing required database container image names ...</info>");
-    $containers = $this->buildImageNames($config, $build);
+    $containers = $this->buildImageNames();
     if ($valid = $this->validateImageNames($containers, $build)) {
       // @todo Move the housekeeping to the build instead of doing it here.
       $service_containers = $build->getServiceContainers();
@@ -97,65 +71,106 @@ class DbEnvironment extends EnvironmentBase implements BuildTaskInterface, Injec
     }
   }
 
-  public function buildImageNames($config, BuildInterface $build) {
-    $db_version = $config['type'] . '-' . $config['version'];
+  public function buildImageNames() {
+    $db_version = $this->database->getDbType() . '-' . $this->database->getVersion();
     $images["$db_version"]['image'] = "drupalci/$db_version";
     // OPUT
     Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     return $images;
   }
 
-  /*
-   * This needs to actually implement something on the interface. Not sure what
-   * That is supposed to be at this point. Right now its just
-   * Move all the preprocessing logic to here.
+  protected function buildWebImageNames($php_version) {
+    $images["web-$php_version"]['image'] = "drupalci/web-$php_version";
+    // OPUT
+    Output::writeLn("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
+    return $images;
+  }
+
+  public function validateImageNames($containers, BuildInterface $build) {
+    // Verify that the appropriate container images exist
+    // OPUT
+    Output::writeLn("<comment>Validating container images exist</comment>");
+    // DOCKER
+    $docker = $build->getDocker();
+    $manager = $docker->getImageManager();
+    foreach ($containers as $key => $image_name) {
+      $container_string = explode(':', $image_name['image']);
+      $name = $container_string[0];
+
+      try {
+        $image = $manager->find($name);
+      }
+      catch (ClientErrorException $e) {
+        // OPUT
+        Output::error("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
+        return FALSE;
+      }
+      $id = substr($image->getID(), 0, 8);
+      // OPUT
+      Output::writeLn("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
+    }
+    return TRUE;
+  }
+
+
+  /**
+   * @inheritDoc
    */
-  public function setUpDatabase() {
-     // BUILDVARS
-      $this->setDBName($this->build_definition->getDCIVariable('DCI_BuildId'));
-      $this->setDBVersion($this->build_definition->getDCIVariable('DCI_DBType'));
-      $this->setPassword($this->build_definition->getDCIVariable('DCI_DBPassword'));
-      $this->setUser($this->build_definition->getDCIVariable('DCI_DBUser'));
-
-  }
-
-  public function setPassword($password) {
-    $this->database->setPassword($password);
-  }
-
-  public function setUser($username) {
-    $this->database->setUsername($username);
+  public function complete() {
+    // TODO: Implement complete() method.
   }
 
   /**
-   * {@inheritdoc}
+   * @inheritDoc
    */
-
-  public function setDBVersion($source_value) {
-    $mod_value = explode(':', $source_value, 2)[0];
-    $dbtype = explode('-', $mod_value, 2)[0];
-    $host_part = str_replace([':', '.'], '-', $source_value);
-    $host = 'drupaltestbot-db-' . $host_part;
-    $this->database->setDbType($dbtype);
-    $this->database->setHost($host);
+  public function getDefaultConfiguration() {
+    return [
+      'phpversion' => '5.5',
+    ];
   }
 
   /**
-   * {@inheritdoc}
+   * @inheritDoc
    */
-
-  public function setDBName($db_name) {
-    $db_name = str_replace('-', '_', $db_name);
-    $db_name = preg_replace('/[^0-9_A-Za-z]/', '', $db_name);
-    $this->database->setDbname($db_name);
+  public function getChildTasks() {
+    // TODO: Implement getChildTasks() method.
   }
 
-  public function setupResultsDB(BuildInterface $build) {
-
-    $source_dir = $build->getCodebase()->getWorkingDir();
-    $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($this->build_definition->getDCIVariable('DCI_SQLite'));
-    $this->results_database->setDBFile($dbfile);
-    $this->results_database->setDbType('sqlite');
+  /**
+   * @inheritDoc
+   */
+  public function setChildTasks($buildTasks) {
+    // TODO: Implement setChildTasks() method.
   }
+
+  /**
+   * @inheritDoc
+   */
+  public function getShortError() {
+    // TODO: Implement getShortError() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getErrorDetails() {
+    // TODO: Implement getErrorDetails() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getResultCode() {
+    // TODO: Implement getResultCode() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getArtifacts() {
+    // TODO: Implement getArtifacts() method.
+  }
+
+
 
 }
