@@ -1,10 +1,11 @@
 <?php
 
-namespace DrupalCI\Plugin\BuildSteps\setup;
+namespace DrupalCI\Plugin\BuildTask;
 
-use DrupalCI\Plugin\BuildSteps\setup\SetupBase;
+use DrupalCI\Build\BuildInterface;
+use DrupalCI\Console\Output;
 
-abstract class FileHandlerBase extends SetupBase {
+trait FileHandlerTrait {
 
   /**
    * Process the DCI_Fetch/DCI_Patch variables.
@@ -17,6 +18,10 @@ abstract class FileHandlerBase extends SetupBase {
    * array('url' => 'http://example.com/file1.patch', 'fetch_directory' => 'fetch_directory1')
    * array('url' => 'http://example.com/file2.patch', 'fetch_directory' => 'fetch_directory2')
    *      ...   ]
+   *
+   * @param $value
+   *
+   * @return array
    */
   protected function process($value) {
     $data = [];
