@@ -7,13 +7,13 @@
 
 namespace DrupalCI\Plugin\BuildTypes\simpletest;
 
-use DrupalCI\Build\BuildBase;
+use DrupalCI\Build\Build;
 
 /**
  * @PluginID("simpletest")
  */
 
-class SimpletestBuild extends BuildBase {
+class SimpletestBuild extends Build {
 
   /**
    * @var string

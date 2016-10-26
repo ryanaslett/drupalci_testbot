@@ -7,13 +7,13 @@
 
 namespace DrupalCI\Plugin\BuildTypes\simpletestlegacy7;
 
-use DrupalCI\Build\BuildBase;
+use DrupalCI\Build\Build;
 
 /**
  * @PluginID("simpletestlegacy7")
  */
 
-class SimpletestLegacy7Build extends BuildBase {
+class SimpletestLegacy7Build extends Build {
 
   /**
    * Build Type (buildType)

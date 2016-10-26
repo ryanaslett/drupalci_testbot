@@ -28,7 +28,7 @@ use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\ConsoleEvents;
 
-class BuildBase implements BuildInterface, Injectable {
+class Build implements BuildInterface, Injectable {
 
   /**
    * @var \Pimple\Container

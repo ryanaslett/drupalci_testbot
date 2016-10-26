@@ -10,13 +10,13 @@
 
 namespace DrupalCI\Plugin\BuildTypes\generic;
 
-use DrupalCI\Build\BuildBase;
+use DrupalCI\Build\Build;
 
 /**
  * @PluginID("generic")
  */
 
-class GenericBuild extends BuildBase {
+class GenericBuild extends Build {
 
   /**
    * @var string
