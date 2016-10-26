@@ -157,15 +157,21 @@ class CodeBase implements CodeBaseInterface, Injectable {
    * Initialize Codebase
    */
   // ENVIRONMENT - Working Directory
-  public function setupWorkingDirectory(BuildDefinition $build_definition) {
+  /**
+   * @param $build_id
+   *
+   * @return bool
+   */
+  public function setupWorkingDirectory($build_id) {
+    // BROKEN need to make setupWorkingDirectory not use getDCIVariable.
     // Check if the target working directory has been specified.
-    $working_dir = $build_definition->getDCIVariable('DCI_WorkingDir');
+   // $working_dir = $build_definition->getDCIVariable('DCI_WorkingDir');
     $tmp_directory = sys_get_temp_dir();
 
     // Generate a default directory name if none specified
     if (empty($working_dir)) {
       // Case:  No explicit working directory defined.
-      $working_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $build_definition->getDCIVariable('DCI_BuildId');
+      $working_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $build_id;
     }
     else {
       // We force the working directory to always be under the system temp dir.
@@ -220,6 +226,6 @@ class CodeBase implements CodeBaseInterface, Injectable {
 
     // If we arrive here, we have a valid empty working directory.
     $this->setWorkingDir($working_dir);
-    $build_definition->setDCIVariable('DCI_WorkingDir', $working_dir);
+    return TRUE;
   }
 }
