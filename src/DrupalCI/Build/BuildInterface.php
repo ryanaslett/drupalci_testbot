@@ -38,14 +38,25 @@ interface BuildInterface {
   public function setBuildId($id);
 
   /**
-   * @return \DrupalCI\Build\Definition\BuildDefinition
+   * @return array
    */
   public function getBuildDefinition();
 
   /**
-   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
+   * @return string
+   *
+   * The filename that was originally used to define this build.
    */
-  public function setBuildDefinition(BuildDefinition $build_definition);
+  public function getBuildFile();
+
+  /**
+   * @param $buildfile
+   */
+  public function setBuildFile($buildfile);
+  /**
+   * @param string
+   */
+  public function generateBuild($arg);
 
   /**
    * @return \DrupalCI\Build\Codebase\CodeBase

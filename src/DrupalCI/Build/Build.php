@@ -36,6 +36,41 @@ class Build implements BuildInterface, Injectable {
   protected $container;
 
   /**
+   * @var string
+   *
+   * This is the file that contains the yaml that defines this build.
+   */
+  protected $buildFile;
+
+  /**
+   * @var array
+   *
+   *   Parsed Yaml of the build definition.
+   */
+  protected $buildDefinition;
+
+  /**
+   * @var array
+   *
+   *   Parsed Yaml of the build definition.
+   */
+  protected $initialBuildDefinition;
+
+  /**
+   * @var array
+   *
+   *   Hierarchical array representing order of plugin execution and
+   *   overridden configuration options.
+   */
+  protected $computedBuildDefinition;
+
+  /**
+   * The build task plugin manager.
+   *
+   * @var \DrupalCI\Plugin\PluginManagerInterface
+   */
+  protected $buildTaskPluginManager;
+
   /**
    * @var \Symfony\Component\Yaml\Parser
    *
@@ -65,6 +100,19 @@ class Build implements BuildInterface, Injectable {
     return $this->buildType;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getBuildFile() {
+    return $this->buildFile;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setBuildFile($buildFile) {
+    $this->buildFile = $buildFile;
+  }
 
   /**
    * Stores the calling command's output buffer
@@ -128,15 +176,193 @@ class Build implements BuildInterface, Injectable {
 
 
   /**
-   * Stores the build definition object for this build
-   *
-   * @var \DrupalCI\Build\Definition\BuildDefinition
+   * Stores the build definition array for this build
+   * @return array
    */
-  protected $buildDefinition = NULL;
-  public function getBuildDefinition() {  return $this->buildDefinition;  }
-  public function setBuildDefinition(BuildDefinition $build_definition) {
-    $build_definition->inject($this->container);
-    $this->buildDefinition = $build_definition;
+  public function getBuildDefinition() {
+    return $this->buildDefinition;
+  }
+
+
+  /**
+   * @param $arg
+   *
+   * Takes in either the full path to a build.yml file, or the name of one of
+   * the predefined build_definitions like simpletest or simpletest7, or if
+   * null, defaults to simpletest.  Once it loads the yaml definition, it
+   * recursively iterates over the definition creating and configuring the
+   * build plugins for this build.
+   */
+  public function generateBuild($arg) {
+
+
+    if (isset($_ENV['DCI_JobType'])) {
+      $arg = $_ENV['DCI_JobType'];
+    }
+    if ($arg) {
+      if (strtolower(substr(trim($arg), -4)) == ".yml") {
+        $this->buildFile = $arg;
+        $this->buildType = 'custom';
+      }
+      else {
+        $this->buildFile = $this->container['app.root'] . '/build_definitions/' . $arg . '.yml';
+        $this->buildType = $arg;
+      }
+    }
+    else {
+      // If no argument defined, then we assume the default of simpletest
+
+      $this->buildFile = $this->container['app.root'] . '/build_definitions/simpletest.yml';
+      $this->buildType = 'simpletest';
+    }
+
+    $this->initialBuildDefinition = $this->loadYaml($this->buildFile);
+    // After we load the config, we separate the workflow from the config:
+    $this->computedBuildDefinition = $this->processBuildConfig($this->initialBuildDefinition['build']);
+    $this->generateBuildId();
+
+  }
+
+
+  /**
+   * Recursive function that iterates over a build configuration and extracts
+   * The build workflow, and overridden configuration for each build task.
+   * If a key happens to be a build plugin key we go deeper to split out its
+   * configuration from its child BuildTasks
+   *
+   * // Rules for reading in the build.yml file
+   * Check to see if the key is a plugin:
+   * If the key is an array, OR the key is null, then we check to see if the
+   * key is a plugin.
+   * If the key is *not* a plugin, then it is assumed to be configuration data
+   * For the current level. (Build, BuildStage, BuildPhase, BuildTask)
+   *
+   * @TODO: this awful mess should be constructing a proper object that can
+   * be iterated over, using spl_object_hash to make keys for the objects
+   * RecursiveIteratorIterator would be handy too. But this proves it can work.
+   *
+   */
+  protected function processBuildConfig($config, &$transformed_config = [], $depth = 0) {
+    // $depth determines which type of plugin we're after.
+    // There is no BuildStepConfig, but if we're at depth 3, thats what we
+    // fake ourselves into believing, because everything at that level is
+    // configuration for the level above.
+    $task_type = ['BuildStage','BuildPhase','BuildStep','BuildStepConfig'];
+    foreach ($config as $config_key => $task_configurations) {
+
+      if ($this->buildTaskPluginManager->hasPlugin($task_type[$depth], $config_key)) {
+        // This $config_key is a BuildTask plugin, therefore it may have some
+        // configuration definedor may have child BuildTask plugins.
+        $transformed_config[$config_key] = [];
+        // If a task_configuration is null, that indicates that this BuildTask
+        // has no configuration overrides, or subordinate children.
+        if (!is_null($task_configurations)) {
+          if ($this->has_string_keys($task_configurations)) {
+            // Convert non-array configs into an array of config
+            $task_configurations = [0 => $task_configurations];
+          }
+          foreach ($task_configurations as $index => $configuration) {
+            $depth++;
+            $processed_config = $this->processBuildConfig($configuration, $transformed_config[$config_key][$index], $depth);
+            // Also, perhaps we check if $depth = 3 and go ahead and redo the else
+            // below?
+            $depth--;
+            // If it has configuration, lets remove it from the array and use it
+            // later to create our plugin.
+            if (isset($processed_config['#configuration'])) {
+              $overrides = $processed_config['#configuration'];
+              unset($transformed_config[$config_key][$index]['#configuration']);
+            }
+            else {
+              $overrides = [];
+            }
+            $children = $transformed_config[$config_key][$index];
+            unset($transformed_config[$config_key][$index]);
+            $transformed_config[$config_key][$index]['#children'] = $children;
+            /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
+            $plugin = $this->buildTaskPluginManager->getPlugin($task_type[$depth], $config_key, $overrides);
+            // TODO: setChildTasks should probably be set on the BuildTaskTrait.
+            // But lets wait until we're sure we need it for something.
+            // $plugin->setChildTasks($children);
+            $transformed_config[$config_key][$index]['#plugin'] = $plugin;
+          }
+        } else {
+          $transformed_config[$config_key][0]['#plugin'] = $this->buildTaskPluginManager->getPlugin($task_type[$depth],$config_key);
+        }
+      } else {
+        // The key is not a plugin, therefore it is a configuration directive for the plugin above it.
+        $transformed_config['#configuration'][$config_key] = $config[$config_key];
+      }
+    }
+    return $transformed_config;
+  }
+
+  /**
+   * Iterates over the configured hierarchy of configured BuildTasks and
+   * processes the build.
+   */
+  public function executeBuild() {
+    $something = $this->processTask($this->computedBuildDefinition);
+
+  }
+
+  protected function processTask($taskConfig) {
+    /*
+         * Foreach BuildTask, Do
+         * $build->processTask (recursive build processor)
+         *
+         * processTask:
+         * start() the buildtask, which starts the timer and then run() it
+         * Most of the work of a buildtask is going to happen here. For BuildStages
+         * and BuildPhases, there probably wont be too much to do besides set up
+         * some Build objects.
+         * $buildtask->start() [this implies run() ]
+         * Once we've run this tasks start()/run(), Then we'll recurse into the children
+         * foreach ($buildtask->getChildTasks()) {
+         *     $continue = $this->processTask($remainder_of_definition);
+         *     if ($continue = FALSE) {
+         *       stop processing tasks and return FALSE.
+         *     }
+         * }
+         * then we $buildtask->finish to post process child tasks as well as the
+         * current task.
+         *
+         * start->run->complete->getArtifacts->finish.
+         * A Task can fail the build. by returning False value from
+         * processTask indicates proceed, or abort.
+         *
+         * When we get artifacts from the task, that takes whatever build artifacts
+         * are defined by the task and relocates them to the build's main artifact
+         * directory.  The build is responsible for re-naming the artifacts - that
+         * way if there are two junit.xml outputs from subsequent runtests, the
+         * build can place them in the right place.
+         *
+         *
+         * $buildtask->
+         */
+
+    foreach ($taskConfig as $task) {
+      // Each task is an array, so that we can support running the same task
+      // multiple times.
+      foreach ($task as $iteration) {
+        // TODO: okay, this is already a hot mess. Interacting with an
+        // implied array strucuture is not what we want here: this needs to be
+        // an Object.
+        /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
+        $plugin = $iteration['#plugin'];
+        // start also implies run();
+        $plugin->start($this);
+        if (isset($iteration['#children'])) {
+          $this->processTask($iteration['#children']);
+        }
+        $plugin->finish();
+      }
+    }
+  }
+
+  protected function has_string_keys(array $array) {
+    return count(array_filter(array_keys($array), 'is_string')) > 0;
+  }
 
   /**
    * Given a file, returns an array containing the parsed YAML contents from that file
@@ -561,7 +787,10 @@ class Build implements BuildInterface, Injectable {
     // unique build tag based on timestamp.
     $build_id = getenv('BUILD_TAG');
     if (empty($build_id)) {
-      $build_id = $this->getBuildType() . '_' . time();
+      // TODO: potential collision if multiple invocations of drupalci are
+      // running on the same machine in parallel and they start up at the same
+      // time.
+      $build_id = $this->buildType . '_' . time();
     }
     $this->setBuildId($build_id);
     // OPUT
