@@ -27,7 +27,6 @@ build:
   codebase:
     assemble_codebase:
       checkout:
-      composer:
       # The default configuration for the patch plugin is to do nothing. But if we do not define it, it wont run at all
       # This allows us to optionally enable it with env variables, user config overrides, or command line overrides.
       fetch:
@@ -41,7 +40,7 @@ build:
       phplint:
   assessment:
     testing:
-      simpletest:
+      simpletest_d7:
 
 
 
