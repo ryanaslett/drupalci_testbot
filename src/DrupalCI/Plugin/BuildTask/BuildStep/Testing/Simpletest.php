@@ -19,7 +19,7 @@ use Pimple\Container;
 /**
  * @PluginID("simpletest")
  */
-class ExecuteSimpletest extends PluginBase implements BuildTaskInterface, Injectable {
+class Simpletest extends PluginBase implements BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
 

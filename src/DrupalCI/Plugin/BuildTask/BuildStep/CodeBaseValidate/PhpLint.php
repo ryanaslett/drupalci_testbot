@@ -15,7 +15,7 @@ use DrupalCI\Plugin\BuildSteps\generic\ContainerCommand;
 /**
  * @PluginID("syntaxcheck")
  */
-class SyntaxCheck extends SetupBase {
+class PhpLint extends SetupBase {
 
   /**
    * {@inheritdoc}
