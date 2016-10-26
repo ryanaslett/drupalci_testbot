@@ -11,6 +11,7 @@ use DrupalCI\Providers\DockerServiceProvider;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use DrupalCI\Providers\DatabaseServiceProvider;
+use DrupalCI\Providers\YamlServiceProvider;
 
 /**
  * Registers application-level services.
@@ -25,6 +26,8 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
   public function register(Container $container) {
     $container->register(new DockerServiceProvider());
     $container->register(new DatabaseServiceProvider());
+    $container->register(new YamlServiceProvider());
+    $container->register(new BuildServiceProvider());
     $container['console'] = function ($container) {
       return new DrupalCIConsoleApp('DrupalCI - CommandLine', '0.2', $container);
     };
@@ -39,6 +42,8 @@ class DrupalCIServiceProvider implements ServiceProviderInterface {
     $container['build.definition'] = function ($container) {
       return new BuildDefinition();
     };
-  }
+    // fugly.
+    $container['app.root'] = __DIR__ . "/../../..";
 
+  }
 }
