@@ -38,11 +38,6 @@ interface BuildInterface {
   public function setBuildId($id);
 
   /**
-   * @return array
-   */
-  public function getBuildDefinition();
-
-  /**
    * @return string
    *
    * The filename that was originally used to define this build.
@@ -71,50 +66,6 @@ interface BuildInterface {
   public function setCodebase(Codebase $codebase);
 
   /**
-   * @return \DrupalCI\Build\Results\BuildResults
-   */
-  public function getBuildResults();
-
-  /**
-   * @param \DrupalCI\Build\Results\BuildResults $build_results
-   */
-  public function setBuildResults(BuildResults $build_results);
-
-
-  /**
-   * Available arguments.
-   *
-   * @TODO: move to annotation
-   *
-   * @return array
-   *
-   * @see SimpletestBuild::$availableArguments
-   */
-  public function getAvailableArguments();
-
-  /**
-   * Default arguments.
-   *
-   * @TODO: move to annotation
-   *
-   * @return array
-   *
-   * @see SimpletestBuild::$defaultArguments
-   */
-  public function getDefaultArguments();
-
-  /**
-   * Required arguments.
-   *
-   * @TODO: move to annotation
-   *
-   * @return array
-   *
-   * @see SimpletestBuild::$requiredArguments
-   */
-  public function getRequiredArguments();
-
-  /**
    * @return \Docker\Docker
    */
   public function getDocker();
@@ -136,10 +87,6 @@ interface BuildInterface {
 
   public function startServiceContainerDaemons($type);
 
-  public function getErrorState();
-
-  public function getPlatformDefaults();
-
   public function getServiceContainers();
 
   public function setServiceContainers(array $service_containers);
@@ -147,8 +94,4 @@ interface BuildInterface {
   public function getDefaultDefinitionTemplate($build_type);
 
   public function generateBuildId();
-
-  public function error();
-
-  public function fail();
 }
