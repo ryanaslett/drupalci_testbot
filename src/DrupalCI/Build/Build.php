@@ -84,7 +84,6 @@ class Build implements BuildInterface, Injectable {
    */
   public function inject(Container $container) {
     $this->container = $container;
-    $this->buildVars = $container['build.vars'];
     $this->yamlparser = $container['yaml.parser'];
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
   }
@@ -460,29 +459,6 @@ class Build implements BuildInterface, Injectable {
 
   public function getPlatformDefaults() {
     return $this->platformDefaults;
-  }
-
-  /**
-   * The build variables service.
-   *
-   * @var \DrupalCI\Build\BuildVariablesInterface
-   */
-  protected $buildVars;
-
-  public function getBuildVars() {
-    return $this->buildVars->getAll();
-  }
-
-  public function setBuildVars(array $build_vars) {
-    return $this->buildVars->setAll($build_vars);
-  }
-
-  public function getBuildVar($build_var) {
-    return $this->buildVars->get($build_var, NULL);
-  }
-
-  public function setBuildVar($build_var, $value) {
-    return $this->buildVars->set($build_var, $value);
   }
 
   /**

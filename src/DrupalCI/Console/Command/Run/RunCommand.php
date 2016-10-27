@@ -109,17 +109,6 @@ class RunCommand extends DrupalCICommandBase  {
     $codebase = new Codebase();
     $codebase->inject($this->container);
     $this->build->setCodebase($codebase);
-
-    // Setup our project and version metadata
-    // CODEBASE
-    // We probably dont need this, as we probably dont
-    // want any decisions to be made in code based on
-    // Which git checkout we make. Lets make sure it's
-    // explictly defined/extracted from codebase assembly
-    // and not set here.
-    //$codebase->setupProject($build_definition);
-
-
     // OPUT
     Output::writeLn("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");
 

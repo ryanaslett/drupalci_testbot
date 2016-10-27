@@ -14,18 +14,7 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use Pimple\Container;
 // CODEBASE
-class Codebase implements CodebaseInterface, Injectable {
-
-  /**
-   * The build variables service.
-   *
-   * @var \DrupalCI\Build\BuildVariablesInterface
-   */
-  protected $buildVars;
-
-  public function inject(Container $container) {
-    $this->buildVars = $container['build.vars'];
-  }
+class Codebase implements CodebaseInterface {
 
   /**
    * The base working directory for this codebase build
@@ -91,58 +80,6 @@ class Codebase implements CodebaseInterface, Injectable {
     foreach ($files as $file) {
       $this->addModifiedFile($file);
     }
-  }
-
-  /**
-   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
-   */
-  public function setupProject(BuildDefinition $build_definition) {
-    // Core Project
-    // For future compatibility.  In the future, we could potentially add
-    // project specific plugins, in which case users should pass the project
-    // name in using DCI_CoreProject. This will allow plugins to reference
-    // the core project using $build->getCodebase()->getCoreProject().
-    $this->setCoreProject($this->buildVars->get('DCI_CoreProject', 'generic'));
-
-    // Core Version and Major Version
-    // The default build templates, run commands, and other script requirements
-    // may vary depending on core project version.  For example, the simpletest
-    // test execution script resides a different paths in Drupal 8 than Drupal7
-    $version = $this->determineVersion();
-    if (!empty($version)) {
-      $this->setCoreVersion($version);
-      $this->setCoreMajorVersion($this->determineMajorVersion($version));
-    }
-    else {
-      // Unable to determine core project version. We'll let this go for now,
-      // to allow other plugins to set this later down the line; but this
-      // means that any code operating on the core version needs to be able to
-      // accommodate the 'no version set' case on it's own.
-    }
-  }
-
-  protected function determineVersion() {
-    // It may not always be possible to determine the core project version, but
-    // we can make a reasonable guess.
-    // Option 1: Use the user-supplied core version, if one exists.
-    if ($version = $this->buildVars->get('DCI_CoreVersion', FALSE)) {
-      return $version;
-    }
-    // Option 2: Try to deduce it based on the supplied core branch
-    elseif ($version = $this->buildVars->get ('DCI_CoreBranch')) {
-      // Define our preg_match patterns
-      $drupal_pattern = "/^((\d+)\.(\d+|x)(?:\.(\d+|x))?(?:(?:\-)?(?:alpha|beta|rc|dev)(?:\.)?(\d+)?)?)$/";
-      $semantic_pattern = "/^((?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+))/";
-      // Check if the branch matches Drupal branch naming patterns
-      if (preg_match($drupal_pattern, $version, $matches) !== 0) {
-        return $matches[0];
-      }
-      // Check if the branch matches semantic versioning
-      elseif (preg_match($semantic_pattern, $version, $matches) !== 0) {
-        return $matches[0];
-      }
-    }
-    return NULL;
   }
 
   protected function determineMajorVersion($version) {

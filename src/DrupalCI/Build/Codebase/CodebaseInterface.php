@@ -36,11 +36,6 @@ interface CodebaseInterface {
   public function addModifiedFiles($files);
 
   /**
-   * @param \DrupalCI\Build\Definition\BuildDefinition $build_definition
-   */
-  public function setupProject(BuildDefinition $build_definition);
-
-  /**
    * Initialize Codebase
    *
    * @param $buildid

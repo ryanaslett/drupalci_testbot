@@ -29,13 +29,6 @@ class DrupalCICommandBase extends SymfonyCommand {
   protected $container;
 
   /**
-   * Build variables service.
-   *
-   * @var \DrupalCI\Build\BuildVariablesInterface
-   */
-  protected $buildVars;
-
-  /**
    * {@inheritdoc}
    */
   protected function initialize(InputInterface $input, OutputInterface $output) {
@@ -43,7 +36,6 @@ class DrupalCICommandBase extends SymfonyCommand {
     // Perform some container set-up before command execution.
     $this->container = $this->getApplication()->getContainer();
     $this->container->register(new ConsoleOutputServiceProvider($output));
-    $this->buildVars = $this->container['build.vars'];
   }
 
 
