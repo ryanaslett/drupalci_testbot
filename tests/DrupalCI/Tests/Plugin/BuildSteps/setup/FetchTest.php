@@ -11,11 +11,11 @@ use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Codebase\Codebase;
 use DrupalCI\Build\BuildInterface;
 
 /**
- * @coversDefaultClass DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch
+ * @coversDefaultClass DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch
  */
 class FetchTest extends DrupalCITestCase {
 
@@ -35,7 +35,7 @@ class FetchTest extends DrupalCITestCase {
       ->with($url, ['save_to' => "$dir/$file"])
       ->will($this->returnValue($request));
 
-    $codebase = $this->getMock(CodeBase::class);
+    $codebase = $this->getMock(Codebase::class);
     $build = $this->getMockBuilder(BuildInterface::class)
       ->setMethods(['getCodebase'])
       ->getMockForAbstractClass();

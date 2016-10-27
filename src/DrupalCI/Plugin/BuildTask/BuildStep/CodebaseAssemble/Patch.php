@@ -1,6 +1,6 @@
 <?php
 
-namespace DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble;
+namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;

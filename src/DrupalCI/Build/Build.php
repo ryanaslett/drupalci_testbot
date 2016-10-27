@@ -12,7 +12,7 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
-use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Codebase\Codebase;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\Results\BuildResults;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -384,17 +384,17 @@ class Build implements BuildInterface, Injectable {
   /**
    * Stores the codebase object for this build
    *
-   * @var \DrupalCI\Build\Codebase\CodeBase
+   * @var \DrupalCI\Build\Codebase\Codebase
    */
   // CODEBASE
-  protected $codeBase;
+  protected $codebase;
 
   public function getCodebase() {
-    return $this->codeBase;
+    return $this->codebase;
   }
 
-  public function setCodebase(CodeBase $codeBase) {
-    $this->codeBase = $codeBase;
+  public function setCodebase(Codebase $codebase) {
+    $this->codebase = $codebase;
   }
 
   /**

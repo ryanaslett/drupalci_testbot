@@ -11,7 +11,7 @@ use DrupalCI\Plugin\PluginBase;
 /**
  * @PluginID("assemble_codebase")
  */
-class CodeBaseAssembleBuildPhase extends PluginBase implements BuildPhaseInterface, BuildTaskInterface  {
+class CodebaseAssembleBuildPhase extends PluginBase implements BuildPhaseInterface, BuildTaskInterface  {
 
   use BuildTaskTrait;
 

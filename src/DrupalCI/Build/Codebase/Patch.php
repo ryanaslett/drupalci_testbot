@@ -8,13 +8,13 @@
 namespace DrupalCI\Build\Codebase;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Codebase\Codebase;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 
 /**
  * Class Patch
- * @package DrupalCI\Build\CodeBase
+ * @package DrupalCI\Build\Codebase
  */
 class Patch implements PatchInterface {
 
@@ -165,7 +165,7 @@ class Patch implements PatchInterface {
 
   /**
    * @param string[] $patch_details
-   * @param CodeBase $codebase
+   * @param Codebase $codebase
    */
   public function __construct($patch_details, $codebase)
   {

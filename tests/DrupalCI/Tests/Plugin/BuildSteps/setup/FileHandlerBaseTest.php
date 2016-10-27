@@ -11,7 +11,7 @@ use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch;
  * @group Plugin
  * @group DefinitionPreprocessor
  *
- * @coversDefaultClass \DrupalCI\Plugin\BuildSteps\setup\FileHandlerBase
+ * @coversDefaultClass \DrupalCI\Plugin\BuildTask\BuildStep\Fetch
  */
 
 class FileHandlerBaseTest extends \PHPUnit_Framework_TestCase {
@@ -21,7 +21,6 @@ class FileHandlerBaseTest extends \PHPUnit_Framework_TestCase {
    * @param array  $expected_result   Expected Result
    *
    * @dataProvider provideTestProcess
-   * @covers ::process
    */
   public function testProcess($file_definition, $expected_result) {
 

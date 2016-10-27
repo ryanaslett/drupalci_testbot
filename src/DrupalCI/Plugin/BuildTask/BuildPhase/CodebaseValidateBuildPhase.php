@@ -11,7 +11,7 @@ use DrupalCI\Plugin\PluginBase;
 /**
  * @PluginID("validate_codebase")
  */
-class CodeBaseValidateBuildPhase extends PluginBase implements BuildPhaseInterface, BuildTaskInterface  {
+class CodebaseValidateBuildPhase extends PluginBase implements BuildPhaseInterface, BuildTaskInterface  {
 
   use BuildTaskTrait;
 

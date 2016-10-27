@@ -1,6 +1,6 @@
 <?php
 
-namespace DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseValidate;
+namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseValidate;
 
 
 use DrupalCI\Build\BuildInterface;
@@ -61,7 +61,7 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
     // Make sure
     if (0 < filesize($workingdir . "/" . $lintable_files)) {
       // TODO: Remove hardcoded /var/www/html.
-      // This should be come CodeBase->getLocalDir() or similar
+      // This should be come Codebase->getLocalDir() or similar
       // Use xargs to concurrently run linting on file.
       $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
       $command = new ContainerCommand();

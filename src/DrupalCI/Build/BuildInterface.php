@@ -5,7 +5,7 @@
  */
 namespace DrupalCI\Build;
 
-use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Codebase\Codebase;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\Results\BuildResults;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,16 +59,16 @@ interface BuildInterface {
   public function generateBuild($arg);
 
   /**
-   * @return \DrupalCI\Build\Codebase\CodeBase
+   * @return \DrupalCI\Build\Codebase\Codebase
    */
   // CODEBASE
   public function getCodebase();
 
   /**
-   * @param \DrupalCI\Build\Codebase\CodeBase $codeBase
+   * @param \DrupalCI\Build\Codebase\Codebase $codebase
    */
   // CODEBASE
-  public function setCodebase(CodeBase $codeBase);
+  public function setCodebase(Codebase $codebase);
 
   /**
    * @return \DrupalCI\Build\Results\BuildResults

@@ -10,7 +10,7 @@ namespace DrupalCI\Console\Command\Run;
 use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Injectable;
 use DrupalCI\Console\Output;
-use DrupalCI\Build\Codebase\CodeBase;
+use DrupalCI\Build\Codebase\Codebase;
 use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\Results\BuildResults;
 use DrupalCI\Build\BuildInterface;
@@ -106,9 +106,9 @@ class RunCommand extends DrupalCICommandBase  {
 
     // Create our build Codebase object and attach it to the build.
     // CODEBASE
-    $codeBase = new CodeBase();
-    $codeBase->inject($this->container);
-    $this->build->setCodebase($codeBase);
+    $codebase = new Codebase();
+    $codebase->inject($this->container);
+    $this->build->setCodebase($codebase);
 
     // Setup our project and version metadata
     // CODEBASE
@@ -117,7 +117,7 @@ class RunCommand extends DrupalCICommandBase  {
     // Which git checkout we make. Lets make sure it's
     // explictly defined/extracted from codebase assembly
     // and not set here.
-    //$codeBase->setupProject($build_definition);
+    //$codebase->setupProject($build_definition);
 
 
     // OPUT
@@ -125,7 +125,7 @@ class RunCommand extends DrupalCICommandBase  {
 
     // Set up the local working directory
     // CODEBASE
-    $result = $codeBase->setupWorkingDirectory($this->build->getBuildId());
+    $result = $codebase->setupWorkingDirectory($this->build->getBuildId());
     if ($result === FALSE) {
       // Error encountered while setting up the working directory. Error output
       // has already been generated and displayed during execution of the

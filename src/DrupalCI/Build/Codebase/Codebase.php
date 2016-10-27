@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \DrupalCI\Build\CodeBase\Codebase
+ * Contains \DrupalCI\Build\Codebase\Codebase
  */
 
 namespace DrupalCI\Build\Codebase;
@@ -14,7 +14,7 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use Pimple\Container;
 // CODEBASE
-class CodeBase implements CodeBaseInterface, Injectable {
+class Codebase implements CodebaseInterface, Injectable {
 
   /**
    * The build variables service.

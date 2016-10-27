@@ -12,7 +12,7 @@ use DrupalCI\Plugin\PluginBase;
  * @PluginID("codebase")
  */
 
-class CodeBaseBuildStage extends PluginBase  implements BuildStageInterface, BuildTaskInterface  {
+class CodebaseBuildStage extends PluginBase  implements BuildStageInterface, BuildTaskInterface  {
 
   use BuildTaskTrait;
   // VARS DCI_WorkingDir
