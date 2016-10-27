@@ -5,7 +5,6 @@ namespace DrupalCI\Plugin\BuildTask;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTask;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
-use DrupalCI\Plugin\type;
 
 /**
  * Support cascading config resolution in plugins.
