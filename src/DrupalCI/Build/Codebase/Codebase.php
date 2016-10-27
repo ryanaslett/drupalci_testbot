@@ -13,6 +13,7 @@ use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use Pimple\Container;
+
 // CODEBASE
 class Codebase implements CodebaseInterface {
 
@@ -23,8 +24,14 @@ class Codebase implements CodebaseInterface {
    */
   // ENVIRONMENT - root directory of the codebase on the HOST
   protected $working_dir;
-  public function setWorkingDir($working_dir) {  $this->working_dir = $working_dir;  }
-  public function getWorkingDir() {  return $this->working_dir;  }
+
+  public function setWorkingDir($working_dir) {
+    $this->working_dir = $working_dir;
+  }
+
+  public function getWorkingDir() {
+    return $this->working_dir;
+  }
 
   /**
    * The core project for this build (e.g. Drupal)
@@ -32,8 +39,14 @@ class Codebase implements CodebaseInterface {
    * @var string
    */
   protected $core_project;
-  public function getCoreProject()  {  return $this->core_project;  }
-  public function setCoreProject($core_project) { $this->core_project = $core_project; }
+
+  public function getCoreProject() {
+    return $this->core_project;
+  }
+
+  public function setCoreProject($core_project) {
+    $this->core_project = $core_project;
+  }
 
   /**
    * The specific version of the core project (e.g. 8.0.x)
@@ -41,8 +54,14 @@ class Codebase implements CodebaseInterface {
    * @var string
    */
   protected $core_version;
-  public function getCoreVersion() {  return $this->core_version;  }
-  public function setCoreVersion($core_version) {  $this->core_version = $core_version;  }
+
+  public function getCoreVersion() {
+    return $this->core_version;
+  }
+
+  public function setCoreVersion($core_version) {
+    $this->core_version = $core_version;
+  }
 
   /**
    * The major version of the core project (e.g. 8)
@@ -50,8 +69,14 @@ class Codebase implements CodebaseInterface {
    * @var string
    */
   protected $core_major_version;
-  public function getCoreMajorVersion() {  return $this->core_major_version;  }
-  public function setCoreMajorVersion($core_major_version) {  $this->core_major_version = $core_major_version;  }
+
+  public function getCoreMajorVersion() {
+    return $this->core_major_version;
+  }
+
+  public function setCoreMajorVersion($core_major_version) {
+    $this->core_major_version = $core_major_version;
+  }
 
   /**
    * Any patches used to generate this codebase
@@ -59,8 +84,15 @@ class Codebase implements CodebaseInterface {
    * @var \DrupalCI\Build\Codebase\Patch[]
    */
   protected $patches;
-  public function getPatches() { return $this->patches;  }
-  public function setPatches($patches) {  $this->patches = $patches;  }
+
+  public function getPatches() {
+    return $this->patches;
+  }
+
+  public function setPatches($patches) {
+    $this->patches = $patches;
+  }
+
   public function addPatch(Patch $patch) {
     if (!empty($this->patches) && !in_array($patch, $this->patches)) {
       $this->patches[] = $patch;
@@ -71,11 +103,20 @@ class Codebase implements CodebaseInterface {
    * A storage variable for any modified files
    */
   protected $modified_files = [];
-  public function getModifiedFiles() {  return $this->modified_files;  }
-  public function addModifiedFile($filename) {
-    if (!is_array($this->modified_files)) { $this->modified_files = []; }
-    if (!in_array($filename, $this->modified_files)) { $this->modified_files[] = $filename;  }
+
+  public function getModifiedFiles() {
+    return $this->modified_files;
   }
+
+  public function addModifiedFile($filename) {
+    if (!is_array($this->modified_files)) {
+      $this->modified_files = [];
+    }
+    if (!in_array($filename, $this->modified_files)) {
+      $this->modified_files[] = $filename;
+    }
+  }
+
   public function addModifiedFiles($files) {
     foreach ($files as $file) {
       $this->addModifiedFile($file);
@@ -102,7 +143,7 @@ class Codebase implements CodebaseInterface {
   public function setupWorkingDirectory($build_id) {
     // BROKEN need to make setupWorkingDirectory not use getDCIVariable.
     // Check if the target working directory has been specified.
-   // $working_dir = $build_definition->getDCIVariable('DCI_WorkingDir');
+    // $working_dir = $build_definition->getDCIVariable('DCI_WorkingDir');
     $tmp_directory = sys_get_temp_dir();
 
     // Generate a default directory name if none specified
