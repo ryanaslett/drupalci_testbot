@@ -2,7 +2,7 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch;
+use DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch;
 
 /**
  * @file

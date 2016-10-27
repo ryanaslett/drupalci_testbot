@@ -7,7 +7,7 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Fetch;
+use DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\RequestInterface;

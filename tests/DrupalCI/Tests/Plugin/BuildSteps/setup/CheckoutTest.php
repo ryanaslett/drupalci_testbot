@@ -8,7 +8,7 @@
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
 
-use DrupalCI\Plugin\BuildTask\BuildStep\CodeBaseAssemble\Checkout;
+use DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Checkout;
 use DrupalCI\Tests\DrupalCITestCase;
 
 class CheckoutTest extends DrupalCITestCase {
