@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use Docker\Exception\ImageNotFoundException;
 use DrupalCI\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
 

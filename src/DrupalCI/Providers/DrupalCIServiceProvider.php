@@ -2,8 +2,6 @@
 
 namespace DrupalCI\Providers;
 
-
-use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Console\DrupalCIConsoleApp;
 use DrupalCI\Plugin\PluginManagerFactory;
 use DrupalCI\Providers\DockerServiceProvider;

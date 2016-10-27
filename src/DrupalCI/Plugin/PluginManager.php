@@ -6,8 +6,6 @@
 
 namespace DrupalCI\Plugin;
 
-use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
 use Pimple\Container;

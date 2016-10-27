@@ -2,8 +2,6 @@
 
 namespace DrupalCI\Build\Codebase;
 
-use DrupalCI\Build\Definition\BuildDefinition;
-
 interface CodebaseInterface {
   // ENVIRONMENT - Host working dir
   public function setWorkingDir($working_dir);

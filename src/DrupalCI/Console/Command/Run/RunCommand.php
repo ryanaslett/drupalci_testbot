@@ -11,8 +11,6 @@ use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use DrupalCI\Injectable;
 use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\Codebase;
-use DrupalCI\Build\Definition\BuildDefinition;
-use DrupalCI\Build\Results\BuildResults;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\PluginManager;
 use Pimple\Container;

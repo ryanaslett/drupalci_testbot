@@ -9,7 +9,6 @@ namespace DrupalCI\Build\Codebase;
 
 use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\Patch;
-use DrupalCI\Build\Definition\BuildDefinition;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use Pimple\Container;

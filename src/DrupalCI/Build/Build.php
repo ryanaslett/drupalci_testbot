@@ -13,8 +13,6 @@ use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
 use DrupalCI\Build\Codebase\Codebase;
-use DrupalCI\Build\Definition\BuildDefinition;
-use DrupalCI\Build\Results\BuildResults;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
