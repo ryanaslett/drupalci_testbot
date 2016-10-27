@@ -90,7 +90,7 @@ class InitAllCommand extends DrupalCICommandBase {
 
     $cmdinput = new ArrayInput($arguments + $options + $options_force);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
+
 
   }
 }
