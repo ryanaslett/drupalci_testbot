@@ -19,7 +19,7 @@ use Pimple\Container;
  */
 class SimpletestD7 extends Simpletest {
 
-  public function setupSimpletestDB(BuildInterface $build) {
+  protected function setupSimpletestDB(BuildInterface $build) {
 
     $this->results_database = $this->system_database;
     $dburl = $this->system_database->getUrl();
