@@ -74,7 +74,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
 
         // Set up output directory (inside working directory)
-        $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . $build->getBuildVar('DCI_JunitXml');
+        $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . 'xml';
 
         if (!is_dir($output_directory)) {
           mkdir($output_directory, 0777, TRUE);
