@@ -2,7 +2,7 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch;
+use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
 
 /**
  * @file
@@ -11,22 +11,20 @@ use DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch;
  * @group Plugin
  * @group DefinitionPreprocessor
  *
- * @coversDefaultClass \DrupalCI\Plugin\BuildTask\BuildStep\Fetch
+ * @coversDefaultClass \DrupalCI\Plugin\BuildTask\FileHandlerTrait
  */
 
-class FileHandlerBaseTest extends \PHPUnit_Framework_TestCase {
+class FileHandlerTraitTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @param string $file_definition      The value passed into the patch command
    * @param array  $expected_result   Expected Result
    *
    * @dataProvider provideTestProcess
+   * @covers ::process
    */
   public function testProcess($file_definition, $expected_result) {
-
-    // @TODO: probably need to use phpunit's built in trait testing
-    // vs a real class like fetch, but this works for now.
-    $handler = $this->getMockForAbstractClass(Fetch::class);
+    $handler = $this->getMockForTrait(FileHandlerTrait::class);
 
     $ref_process = new \ReflectionMethod($handler, 'process');
     $ref_process->setAccessible(TRUE);

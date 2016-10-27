@@ -197,7 +197,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     return $testgroups;
   }
 
-  public function setupSimpletestDB(BuildInterface $build) {
+  protected function setupSimpletestDB(BuildInterface $build) {
 
     $source_dir = $build->getCodebase()->getWorkingDir();
     $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($this->configuration['sqlite']);
