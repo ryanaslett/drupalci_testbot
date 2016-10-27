@@ -115,37 +115,6 @@ interface BuildInterface {
   public function getRequiredArguments();
 
   /**
-   * An array of build variables.
-   *
-   * @return array
-   *
-   * @see SimpletestBuild::$availableArguments
-   */
-  public function getBuildVars();
-
-  /**
-   * @param array $build_vars
-   *
-   * @see BuildInterface::getBuildvars
-   */
-  public function setBuildVars(array $build_vars);
-
-  /**
-   * @param string $build_var
-   *
-   * @return mixed
-   *
-   * @see BuildInterface::getBuildvars
-   */
-  public function getBuildVar($build_var);
-
-  /**
-   * @param $build_var
-   * @param $value
-   */
-  public function setBuildVar($build_var, $value);
-
-  /**
    * @return \Docker\Docker
    */
   public function getDocker();
