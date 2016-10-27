@@ -173,16 +173,6 @@ class Build implements BuildInterface, Injectable {
     $this->jenkinsBuildId = $jenkinsBuildId;
   }
 
-
-  /**
-   * Stores the build definition array for this build
-   * @return array
-   */
-  public function getBuildDefinition() {
-    return $this->buildDefinition;
-  }
-
-
   /**
    * @param $arg
    *
@@ -397,71 +387,6 @@ class Build implements BuildInterface, Injectable {
   }
 
   /**
-   * Stores the results object for this build
-   *
-   * @var \DrupalCI\Build\Results\BuildResults
-   */
-  protected $buildResults;
-
-  public function getBuildResults() {
-    return $this->buildResults;
-  }
-
-  public function setBuildResults(BuildResults $build_results) {
-    $this->buildResults = $build_results;
-  }
-
-  /**
-   * Defines argument variable names which are valid for this build type
-   *
-   * @var array
-   */
-  protected $availableArguments = [];
-
-  public function getAvailableArguments() {
-    return $this->availableArguments;
-  }
-
-  /**
-   * Defines the default arguments which are valid for this build type
-   *
-   * @var array
-   */
-  protected $defaultArguments = [];
-
-  public function getDefaultArguments() {
-    return $this->defaultArguments;
-  }
-
-  /**
-   * Defines the required arguments which are necessary for this build type
-   *
-   * Format:  array('ENV_VARIABLE_NAME' => 'CONFIG_FILE_LOCATION'), where
-   * CONFIG_FILE_LOCATION is a colon-separated nested location for the
-   * equivalent variable in a build definition file.
-   *
-   * @var array
-   */
-  protected $requiredArguments = [];
-
-  public function getRequiredArguments() {
-    return $this->requiredArguments;
-  }
-
-  /**
-   * Defines initial platform defaults for all builds (if not overridden).
-   *
-   * @var array
-   */
-  protected $platformDefaults = [
-    "DCI_CoreProject" => "Drupal",
-  ];
-
-  public function getPlatformDefaults() {
-    return $this->platformDefaults;
-  }
-
-  /**
    * Stores our Docker Container manager
    *
    * @var \Docker\Docker
@@ -480,16 +405,6 @@ class Build implements BuildInterface, Injectable {
     return $this->docker;
   }
 
-  /**
-   * @var array
-   */
-  protected $pluginDefinitions;
-
-  /**
-   * @var array
-   */
-  protected $plugins;
-
   // Holds the name and Docker IDs of our service containers.
   public $serviceContainers;
 
@@ -504,22 +419,6 @@ class Build implements BuildInterface, Injectable {
   public function setServiceContainers(array $service_containers) {
     // DOCKER
     $this->serviceContainers = $service_containers;
-  }
-
-  public function error() {
-    $results = $this->getBuildResults();
-    $stage = $results->getCurrentStage();
-    $step = $results->getCurrentStep();
-    $results->setResultByStage($stage, 'Error');
-    $results->setResultByStep($stage, $step, 'Error');
-  }
-
-  public function fail() {
-    $results = $this->getBuildResults();
-    $stage = $results->getCurrentStage();
-    $step = $results->getCurrentStep();
-    $results->setResultByStage($stage, 'Fail');
-    $results->setResultByStep($stage, $step, 'Fail');
   }
 
   public function getExecContainers() {
@@ -733,10 +632,6 @@ class Build implements BuildInterface, Injectable {
 
   }
 
-  public function getErrorState() {
-    $results = $this->getBuildResults();
-    return ($results->getResultByStep($results->getCurrentStage(), $results->getCurrentStep()) === "Error");
-  }
 
   /**
    * Returns the default build definition template for this build type
