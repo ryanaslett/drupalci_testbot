@@ -49,19 +49,19 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // OPUT
         Output::error("Patch error", "No valid patch file provided for the patch command.");
 
-        return;
+        return 2;
       }
       // Create a new patch object
       $patch = new PatchFile($details, $codebase);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
 
-        return;
+        return 2;
       }
 
       // Apply the patch
-      if (!$patch->apply()) {
-
+      $result = $patch->apply();
+      if ($result !== 0) {
 
         // Hack to create a xml file for processing by Jenkins.
         // TODO: Remove once proper build failure processing is in place
@@ -93,7 +93,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // ENVIRONMENT - junit xml output directory
         file_put_contents($output_directory . "/patchfailure.xml", $xml_error);
 
-        return;
+        return $result;
       };
       // Update our list of modified files
       $codebase->addModifiedFiles($patch->getModifiedFiles());

@@ -295,12 +295,12 @@ class Patch implements PatchInterface {
       // OPUT
       Output::error("Patch Error", "The patch attempt returned an error.  Error code: $result");
       // TODO: Pass on the actual return value for the patch attempt
-      return FALSE;
+      return $result;
     }
     // OPUT
     Output::writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
     $this->applied = TRUE;
-    return TRUE;
+    return $result;
   }
 
   /**
