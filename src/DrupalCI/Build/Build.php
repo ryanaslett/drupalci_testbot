@@ -78,10 +78,18 @@ class Build implements BuildInterface, Injectable {
 
 
   /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  /**
    * {@inheritdoc}
    */
   public function inject(Container $container) {
     $this->container = $container;
+    $this->io = $container['console.io'];
     $this->yamlparser = $container['yaml.parser'];
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
   }
@@ -109,21 +117,6 @@ class Build implements BuildInterface, Injectable {
    */
   public function setBuildFile($buildFile) {
     $this->buildFile = $buildFile;
-  }
-
-  /**
-   * Stores the calling command's output buffer
-   *
-   * @var \Symfony\Component\Console\Output\OutputInterface
-   */
-  public $output;
-
-  public function setOutput(OutputInterface $output) {
-    $this->output = $output;
-  }
-
-  public function getOutput() {
-    return $this->output;
   }
 
   /**
@@ -488,7 +481,7 @@ class Build implements BuildInterface, Injectable {
     $container['created'] = TRUE;
     $short_id = substr($container['id'], 0, 8);
     // OPUT
-    Output::writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
+    $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
   }
 
   protected function setDefaultCommand(&$config) {
@@ -568,7 +561,7 @@ class Build implements BuildInterface, Injectable {
       if (in_array($image['image'], array_keys($instances))) {
         // TODO: Determine service container ports, id, etc, and save it to the build.
         // OPUT
-        Output::writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
+        $this->io->writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
         // TODO: Load up container parameters
         $container = $manager->find($instances[$image['image']]);
         $container_id = $container->getID();
@@ -581,7 +574,7 @@ class Build implements BuildInterface, Injectable {
       }
       // Container not running, so we'll need to create it.
       // OPUT
-      Output::writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
+      $this->io->writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
 
       // Get container configuration, which defines parameters such as exposed ports, etc.
       $configs = $this->getContainerConfiguration($image['image']);
@@ -619,7 +612,7 @@ class Build implements BuildInterface, Injectable {
       $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
       $short_id = substr($container_id, 0, 8);
       // OPUT
-      Output::writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
+      $this->io->writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
     }
     /* @var $database \DrupalCI\Build\Environment\Database */
     $database = $this->container['db.system'];
@@ -663,7 +656,7 @@ class Build implements BuildInterface, Injectable {
     }
     $this->setBuildId($build_id);
     // OPUT
-    Output::writeLn("<info>Executing build with build ID: <options=bold>$build_id</options=bold></info>");
+    $this->io->writeLn("<info>Executing build with build ID: <options=bold>$build_id</options=bold></info>");
   }
 
 }

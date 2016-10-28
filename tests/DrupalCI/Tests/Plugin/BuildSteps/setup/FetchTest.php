@@ -47,6 +47,7 @@ class FetchTest extends DrupalCITestCase {
       'files' => [['from' => "$url",'to' => "."]]
     ];
     $fetch = new TestFetch($data);
+    $fetch->inject($this->getContainer());
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
 

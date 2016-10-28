@@ -3,10 +3,25 @@
 namespace DrupalCI\Plugin\BuildTask;
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
+use DrupalCI\Plugin\PluginBase;
+use Pimple\Container;
 
 trait FileHandlerTrait {
 
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+// XXXMERGE Figure out how to do this
+  /**
+   * {@inheritdoc}
+   */
+  public function inject(Container $container) {
+    $this->io = $container['console.io'];
+  }
   /**
    * Process the DCI_Fetch/DCI_Patch variables.
    *
@@ -43,6 +58,7 @@ trait FileHandlerTrait {
     return $data;
   }
 
+
   protected function validateDirectory(BuildInterface $build, $dir) {
     // Validate target directory.  Must be within workingdir.
     $working_dir = $build->getCodebase()->getWorkingDir();
@@ -74,8 +90,7 @@ trait FileHandlerTrait {
     if (!strpos(realpath($directory), realpath($working_dir)) === 0) {
       // Invalid checkout directory
       // OPUT
-      Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
-
+      $this->io->drupalCIError("Directory error", "The checkout directory <info>$directory</info> is invalid.");
       return FALSE;
     }
 

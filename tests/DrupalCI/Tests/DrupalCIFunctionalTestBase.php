@@ -3,7 +3,6 @@
 namespace DrupalCI\Tests;
 
 use DrupalCI\Providers\DrupalCIServiceProvider;
-use DrupalCI\Tests\DrupalCITestCase;
 use Pimple\Container;
 use Symfony\Component\Console\Tester\CommandTester;
 

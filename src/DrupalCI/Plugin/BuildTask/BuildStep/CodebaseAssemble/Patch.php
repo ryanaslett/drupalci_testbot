@@ -5,6 +5,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
@@ -12,15 +13,28 @@ use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use DrupalCI\Build\Codebase\PatchInterface;
 use DrupalCI\Build\Codebase\Patch as PatchFile;
+use Pimple\Container;
 
 /**
  * @PluginID("patch")
  */
-class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface {
+class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable  {
 
   use BuildTaskTrait;
   use FileHandlerTrait;
+  /**
+   * The container.
+   *
+   * We need this to inject into Patch objects.
+   *
+   * @var \Pimple\Container
+   */
+  protected $container;
 
+  public function inject(Container $container) {
+    parent::inject($container);
+    $this->container = $container;
+  }
   /**
    * @inheritDoc
    */
@@ -42,17 +56,18 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
     $codebase = $build->getCodebase();
     if (empty($files)) {
       // OPUT
-      Output::writeLn('No patches to apply.');
+      $this->io->writeLn('No patches to apply.');
     }
     foreach ($files as $key => $details) {
       if (empty($details['from'])) {
         // OPUT
-        Output::error("Patch error", "No valid patch file provided for the patch command.");
+        $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
 
         return 2;
       }
       // Create a new patch object
       $patch = new PatchFile($details, $codebase);
+      $patch->inject($this->container);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
 

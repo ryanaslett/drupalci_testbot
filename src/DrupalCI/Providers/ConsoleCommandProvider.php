@@ -16,6 +16,12 @@ use DrupalCI\Console\Command\Status\StatusCommand;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+/**
+ * Command service provider for all our CLI commands.
+ *
+ * Note that this provider requires the existence of console.input and
+ * console.output, so it must be registered after those services are available.
+ */
 class ConsoleCommandProvider implements ServiceProviderInterface {
 
   /**
