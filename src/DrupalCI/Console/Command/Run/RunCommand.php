@@ -84,12 +84,10 @@ class RunCommand extends DrupalCICommandBase  {
   public function execute(InputInterface $input, OutputInterface $output) {
 
     $arg = $input->getArgument('definition');
-    $this->build->inject($this->container);
     $this->build->generateBuild($arg);
 
     // Create our build Codebase object and attach it to the build.
     // CODEBASE - inject and create codebase object.
-    $this->codebase->inject($this->container);
     $this->build->setCodebase($codebase);
     $this->io->writeln("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");
 
