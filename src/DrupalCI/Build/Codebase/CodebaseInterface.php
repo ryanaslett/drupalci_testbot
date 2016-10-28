@@ -4,10 +4,10 @@ namespace DrupalCI\Build\Codebase;
 
 interface CodebaseInterface {
   // ENVIRONMENT - Host working dir
-  public function setWorkingDir($working_dir);
+  public function setSourceDir($source_dir);
 
   // ENVIRONMENT - Host working dir
-  public function getWorkingDir();
+  public function getSourceDir();
 
   public function getCoreProject();
 
@@ -33,14 +33,4 @@ interface CodebaseInterface {
 
   public function addModifiedFiles($files);
 
-  /**
-   * Initialize Codebase
-   *
-   * @param $buildid
-   *
-   * Takes in the build_id and creates the working directory.
-   *
-   */
-  // ENVIRONMENT - Host working dir
-  public function setupWorkingDirectory($buildid);
 }

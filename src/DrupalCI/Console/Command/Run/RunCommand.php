@@ -91,16 +91,6 @@ class RunCommand extends DrupalCICommandBase  {
     $this->build->setCodebase($codebase);
     $this->io->writeln("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");
 
-    // Set up the local working directory
-    // CODEBASE - create Source Direcotry
-    $result = $this->codebase->setupWorkingDirectory($this->build->getBuildId());
-    if ($result === FALSE) {
-      // Error encountered while setting up the working directory. Error output
-      // has already been generated and displayed during execution of the
-      // setupWorkingDirectory method.
-      return;
-    }
-
     // Execute the build.
     $this->build->executeBuild();
 

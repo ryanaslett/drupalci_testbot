@@ -33,10 +33,6 @@ interface BuildInterface {
   public function getBuildFile();
 
   /**
-   * @param $buildfile
-   */
-  public function setBuildFile($buildfile);
-  /**
    * @param string
    */
   public function generateBuild($arg);
@@ -55,11 +51,6 @@ interface BuildInterface {
    * @return mixed
    */
   public function getBuildDirectory();
-
-  /**
-   * @param mixed $buildDirectory
-   */
-  public function setBuildDirectory($buildDirectory);
 
   public function generateBuildId();
 }

@@ -106,7 +106,7 @@ class Build implements BuildInterface, Injectable {
    *
    * @var string
    */
-  protected $buildType = 'base';
+  protected $buildType;
 
   public function getBuildType() {
     return $this->buildType;
@@ -117,13 +117,6 @@ class Build implements BuildInterface, Injectable {
    */
   public function getBuildFile() {
     return $this->buildFile;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setBuildFile($buildFile) {
-    $this->buildFile = $buildFile;
   }
 
   /**
@@ -207,6 +200,7 @@ class Build implements BuildInterface, Injectable {
     // After we load the config, we separate the workflow from the config:
     $this->computedBuildDefinition = $this->processBuildConfig($this->initialBuildDefinition['build']);
     $this->generateBuildId();
+    $this->setupWorkingDirectory();
 
   }
 
@@ -384,13 +378,6 @@ class Build implements BuildInterface, Injectable {
     return $this->buildDirectory;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setBuildDirectory($buildDirectory) {
-    $this->buildDirectory = $buildDirectory;
-  }
-
 
   /**
    * Generate a Build ID for this build
@@ -409,4 +396,69 @@ class Build implements BuildInterface, Injectable {
     $this->io->writeLn("<info>Executing build with build ID: <options=bold>$build_id</options=bold></info>");
   }
 
+  /**
+   * @return bool
+   */
+  protected function setupWorkingDirectory() {
+    // Check if the target working directory has been specified in the env.
+    if (false !== (getenv('DCI_WorkingDir'))) {
+      $build_directory = getenv('DCI_WorkingDir');
+    }
+    $tmp_directory = sys_get_temp_dir();
+
+    // Generate a default directory name if none specified
+    if (empty($build_directory)) {
+      // Case:  No explicit working directory defined.
+      $build_directory = $tmp_directory . DIRECTORY_SEPARATOR . $this->buildId;
+    }
+    else {
+      // We force the working directory to always be under the system temp dir.
+      if (strpos($build_directory, realpath($tmp_directory)) !== 0) {
+        if (substr($build_directory, 0, 1) == DIRECTORY_SEPARATOR) {
+          $build_directory = $tmp_directory . $build_directory;
+        }
+        else {
+          $build_directory = $tmp_directory . DIRECTORY_SEPARATOR . $build_directory;
+        }
+      }
+    }
+    // Create directory if it doesn't already exist
+    if (!is_dir($build_directory)) {
+      $result = mkdir($build_directory, 0777, TRUE);
+      if (!$result) {
+        // Error creating checkout directory
+        $this->io->drupalCIError('Directory Creation Error', 'Error encountered while attempting to create local working directory');
+        return FALSE;
+      }
+      $this->io->writeLn("<info>Build workspace directory created at <options=bold>$build_directory</options=bold></info>");
+    }
+
+    // Validate that the working directory is empty.  If the directory contains
+    // an existing git repository, for example, our checkout attempts will fail
+    // TODO: Prompt the user to ask if they'd like to overwrite
+    $iterator = new \FilesystemIterator($build_directory);
+    if ($iterator->valid()) {
+      // Existing files found in directory.
+      $this->io->drupalCIError('Directory not empty', 'Unable to use a non-empty working directory.');
+      return FALSE;
+    };
+
+    // Convert to the full path and ensure our directory is still valid
+    $build_directory = realpath($build_directory);
+    if (!$build_directory) {
+      // Directory not found after conversion to canonicalized absolute path
+      $this->io->drupalCIError('Directory not found', 'Unable to determine working directory absolute path.');
+      return FALSE;
+    }
+
+    // Ensure we're still within the system temp directory
+    if (strpos(realpath($build_directory), realpath($tmp_directory)) !== 0) {
+      $this->io->drupalCIError('Directory error', 'Detected attempt to traverse out of the system temp directory.');
+      return FALSE;
+    }
+
+    // If we arrive here, we have a valid empty working directory.
+    $this->buildDirectory = $build_directory;
+    return TRUE;
+  }
 }
