@@ -78,17 +78,39 @@ abstract class DrupalCIFunctionalTestBase extends \PHPUnit_Framework_TestCase {
    */
   public function setUp() {
     parent::setUp();
+    // Keep local environment from leaking into tests. JIC.
+    foreach ($_ENV as $env_var => $value) {
+      if (strpos($env_var,'DCI_') === 0){
+        putenv($env_var);
+      }
+    }
     // Complain if there is no config.
     if (empty($this->dciConfig)) {
       throw new \PHPUnit_Framework_Exception('You must provide ' . get_class($this) . '::$dciConfig.');
     }
     foreach ($this->dciConfig as $variable) {
-      list($env_var,$value) = explode('=',$variable);
-      $_ENV[$env_var]=$value;
+      putenv($variable);
     }
 
     $app = $this->getConsoleApp();
     $app->setAutoExit(FALSE);
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function tearDown() {
+    parent::tearDown();
+    // Complain if there is no config.
+    if (empty($this->dciConfig)) {
+      throw new \PHPUnit_Framework_Exception('You must provide ' . get_class($this) . '::$dciConfig.');
+    }
+    // Ensure anything set by this test doesnt leak into the next.
+    foreach ($this->dciConfig as $variable) {
+      list($env_var,$value) = explode('=',$variable);
+      putenv($env_var);
+    }
   }
 
 }
