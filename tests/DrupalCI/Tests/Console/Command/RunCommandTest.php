@@ -11,7 +11,7 @@ class RunCommandTest extends DrupalCIFunctionalTestBase {
    * {@inheritdoc}
    */
   protected $dciConfig = [
-    'DCI_CoreRepository=file:///tmp/drupal',
+    'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
     'DCI_JobType=simpletest',
     'DCI_TestGroups=ban',
   ];
@@ -22,8 +22,7 @@ class RunCommandTest extends DrupalCIFunctionalTestBase {
     $commandTester = new CommandTester($command);
     $commandTester->execute(['command' => $command->getName()]);
     $display = $commandTester->getDisplay(TRUE);
-    $this->assertRegExp('`Executing job with build ID:`', $display);
-    $this->assertRegExp('`Loading DrupalCI platform default arguments:`', $display);
+    $this->assertRegExp('`Executing build with build ID:`', $display);
   }
 
 }

@@ -21,11 +21,11 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
    */
   protected $dciConfig = [
     'DCI_CoreBranch=8.1.x',
-    'DCI_CoreRepository=file:///tmp/drupal',
-    'DCI_DBVersion=mysql-5.5',
+    'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
+    'DCI_DBType=mysql',
+    'DCI_DBVersion=5.5',
     'DCI_Fetch=http://drupal.org/files/issues/does_not_apply.patch',
     'DCI_JobType=simpletest',
-    'DCI_JunitXml=xml',
     'DCI_PHPVersion=7',
     'DCI_Patch=does_not_apply.patch',
     'DCI_TestGroups=ban',
@@ -48,7 +48,9 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
 
     // Currently the result code of the failed patch does not bubble up to the exit code of the
     // drupalci run command.
-    //$this->assertNotEquals(0, $app_tester->getStatusCode());
+    $this->markTestIncomplete('Currently the result code of the failed patch does not bubble up to the exit code of the run command.');
+
+    $this->assertNotEquals(0, $app_tester->getStatusCode());
   }
 
 }

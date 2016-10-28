@@ -25,8 +25,9 @@ class CoreNoGroupTest extends DrupalCIFunctionalTestBase {
   protected $dciConfig = [
     'DCI_ComposerInstall=true',
     'DCI_CoreBranch=8.1.x',
-    'DCI_CoreRepository=file:///tmp/drupal',
-    'DCI_DBVersion=mysql-5.5',
+    'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
+    'DCI_DBType=mysql',
+    'DCI_DBVersion=5.5',
     'DCI_Fetch=https://www.drupal.org/files/issues/2675066-12.patch,.',
     'DCI_GitCommitHash=04038f4',
     'DCI_JobType=simpletest',
@@ -44,5 +45,6 @@ class CoreNoGroupTest extends DrupalCIFunctionalTestBase {
     ], $options);
     $this->assertRegExp('/.*Error.*/', $app_tester->getDisplay());
     $this->assertRegExp('/.*Return status: 2*/', $app_tester->getDisplay());
+    $this->assertEquals(0, $app_tester->getStatusCode());
   }
 }
