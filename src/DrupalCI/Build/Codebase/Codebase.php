@@ -48,51 +48,6 @@ class Codebase implements CodebaseInterface, Injectable {
   }
 
   /**
-   * The core project for this build (e.g. Drupal)
-   *
-   * @var string
-   */
-  protected $core_project;
-
-  public function getCoreProject() {
-    return $this->core_project;
-  }
-
-  public function setCoreProject($core_project) {
-    $this->core_project = $core_project;
-  }
-
-  /**
-   * The specific version of the core project (e.g. 8.0.x)
-   *
-   * @var string
-   */
-  protected $core_version;
-
-  public function getCoreVersion() {
-    return $this->core_version;
-  }
-
-  public function setCoreVersion($core_version) {
-    $this->core_version = $core_version;
-  }
-
-  /**
-   * The major version of the core project (e.g. 8)
-   *
-   * @var string
-   */
-  protected $core_major_version;
-
-  public function getCoreMajorVersion() {
-    return $this->core_major_version;
-  }
-
-  public function setCoreMajorVersion($core_major_version) {
-    $this->core_major_version = $core_major_version;
-  }
-
-  /**
    * Any patches used to generate this codebase
    *
    * @var \DrupalCI\Build\Codebase\Patch[]
