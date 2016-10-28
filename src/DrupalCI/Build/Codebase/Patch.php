@@ -163,13 +163,6 @@ class Patch implements PatchInterface, Injectable {
    */
   protected $patch_apply_results;
 
-  /**
-   * @param string $working_dir
-   */
-  protected function setWorkingDir($working_dir)
-  {
-    $this->working_dir = $working_dir;
-  }
 
   /**
    * @var \GuzzleHttp\ClientInterface
@@ -184,8 +177,7 @@ class Patch implements PatchInterface, Injectable {
   {
     // Copy working directory from the initial codebase
     // ENVIRONMENT - Host working dir not sure why copy?
-    $working_dir = $codebase->getWorkingDir();
-    $this->setWorkingDir($working_dir);
+    $this->working_dir = $codebase->getWorkingDir();
 
     // Set source and apply_dir properties
     $this->setSource($patch_details['from']);
