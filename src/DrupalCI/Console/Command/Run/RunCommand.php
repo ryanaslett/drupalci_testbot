@@ -105,6 +105,7 @@ class RunCommand extends DrupalCICommandBase  {
     // Create our build Codebase object and attach it to the build.
     // CODEBASE
     $codebase = new Codebase();
+    $codebase->inject($this->container);
     $this->build->setCodebase($codebase);
     // OPUT
     $this->io->writeln("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");

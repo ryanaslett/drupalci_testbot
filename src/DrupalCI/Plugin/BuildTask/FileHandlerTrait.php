@@ -10,19 +10,6 @@ use Pimple\Container;
 trait FileHandlerTrait {
 
   /**
-   * Style object.
-   *
-   * @var \DrupalCI\Console\DrupalCIStyle
-   */
-  protected $io;
-// XXXMERGE Figure out how to do this
-  /**
-   * {@inheritdoc}
-   */
-  public function inject(Container $container) {
-    $this->io = $container['console.io'];
-  }
-  /**
    * Process the DCI_Fetch/DCI_Patch variables.
    *
    * Takes a string defining files to be fetched or applied, and converts this
@@ -89,8 +76,8 @@ trait FileHandlerTrait {
     // Validate that resulting directory is still within the working directory path.
     if (!strpos(realpath($directory), realpath($working_dir)) === 0) {
       // Invalid checkout directory
-      // OPUT
-      $this->io->drupalCIError("Directory error", "The checkout directory <info>$directory</info> is invalid.");
+      // TODO Fix This for reals
+     // $this->io->drupalCIError("Directory error", "The checkout directory <info>$directory</info> is invalid.");
       return FALSE;
     }
 

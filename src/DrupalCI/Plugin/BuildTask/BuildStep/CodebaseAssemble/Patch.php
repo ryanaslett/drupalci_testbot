@@ -22,19 +22,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
 
   use BuildTaskTrait;
   use FileHandlerTrait;
-  /**
-   * The container.
-   *
-   * We need this to inject into Patch objects.
-   *
-   * @var \Pimple\Container
-   */
-  protected $container;
 
-  public function inject(Container $container) {
-    parent::inject($container);
-    $this->container = $container;
-  }
   /**
    * @inheritDoc
    */
@@ -56,7 +44,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
     $codebase = $build->getCodebase();
     if (empty($files)) {
       // OPUT
-      $this->io->writeLn('No patches to apply.');
+      $this->io->writeln('No patches to apply.');
     }
     foreach ($files as $key => $details) {
       if (empty($details['from'])) {

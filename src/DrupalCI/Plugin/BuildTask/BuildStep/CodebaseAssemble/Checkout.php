@@ -46,7 +46,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
         // Ensure we have at least 3 components
         if (count($components) < 4) {
           // OPUT
-          Output::writeLn("<error>Unable to parse repository information for value <options=bold>$entry</options=bold>.</error>");
+          $this->io->writeln("<error>Unable to parse repository information for value <options=bold>$entry</options=bold>.</error>");
           // TODO: Bail out of processing.  For now, we'll just keep going with the next entry.
           continue;
         }
@@ -71,7 +71,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
   public function run(BuildInterface $build) {
     // TODO: Implement run() method.
     // OPUT
-    Output::writeLn("<info>Populating container codebase data volume.</info>");
+    $this->io->writeln("<info>Populating container codebase data volume.</info>");
     foreach ($this->configuration['repositories'] as $repository ) {
       switch ($repository['protocol']) {
         case 'local':
@@ -160,7 +160,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     // Validate source directory
     if (!is_dir($source_dir)) {
       // OPUT
-      Output::error("Directory error", "The source directory <info>$source_dir</info> does not exist.");
+      $this->io->drupalCIError("Directory error", "The source directory <info>$source_dir</info> does not exist.");
 
       return;
     }
@@ -168,29 +168,29 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     if (!($directory = $this->validateDirectory($build, $checkout_dir))) {
       // Invalidate checkout directory
       // OPUT
-      Output::error("Directory error", "The checkout directory <info>$directory</info> is invalid.");
+      $this->io->drupalCIError("Directory error", "The checkout directory <info>$directory</info> is invalid.");
 
       return;
     }
     // OPUT
-    Output::writeln("<comment>Copying files from <options=bold>$source_dir</options=bold> to the local checkout directory <options=bold>$directory</options=bold> ... </comment>");
+    $this->io->writeln("<comment>Copying files from <options=bold>$source_dir</options=bold> to the local checkout directory <options=bold>$directory</options=bold> ... </comment>");
     // TODO: Make sure target directory is empty
     #  $this->exec("cp -r $source_dir/. $directory", $cmdoutput, $result);
     $exclude_var = isset($repository['DCI_EXCLUDE']) ? '--exclude="' . $repository['DCI_EXCLUDE'] . '"' : "";
     $this->exec("rsync -a $exclude_var  $source_dir/. $directory", $cmdoutput, $result);
     if ($result !== 0) {
       // OPUT
-      Output::error("Copy error", "Error encountered while attempting to copy code to the local checkout directory.");
+      $this->io->drupalCIError("Copy error", "Error encountered while attempting to copy code to the local checkout directory.");
 
       return;
     }
     // OPUT
-    Output::writeLn("<comment>DONE</comment>");
+    $this->io->writeln("<comment>DONE</comment>");
   }
 
   protected function setupCheckoutGit(BuildInterface $build, $repository) {
     // OPUT
-    Output::writeLn("<info>Entering setup_checkout_git().</info>");
+    $this->io->writeln("<info>Entering setup_checkout_git().</info>");
     // @TODO: these should always have a default. no sense in setting them here.
     $repo = isset($repository['repo']) ? $repository['repo'] : 'git://drupalcode.org/project/drupal.git';
 
@@ -201,7 +201,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     if (!($directory = $this->validateDirectory($build, $checkout_directory))) {
       // Invalid checkout directory
       // OPUT
-      Output::error("Directory Error", "The checkout directory <info>$directory</info> is invalid.");
+      $this->io->drupalCIError("Directory Error", "The checkout directory <info>$directory</info> is invalid.");
       return;
     }
     if (substr($repository['repo'],0,4) == 'file') {
@@ -211,14 +211,14 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
       $source_dir = substr($repository['repo'],7);
       $cmd = "rsync -a $exclude_var  $source_dir/. $directory";
       // OPUT
-      Output::writeLn("<comment>Performing rsync of git checkout of $repo $git_branch branch to $directory.</comment>");
-      Output::writeLn("Rsync Command: $cmd");
+      $this->io->writeln("<comment>Performing rsync of git checkout of $repo $git_branch branch to $directory.</comment>");
+      $this->io->writeln("Rsync Command: $cmd");
       $this->exec($cmd, $cmdoutput, $result);
 
       if ($result !== 0) {
         // Git threw an error.
         // OPUT
-        Output::error("Checkout Error", "The rsync returned an error.  Error Code: $result");
+        $this->io->drupalCIError("Checkout Error", "The rsync returned an error.  Error Code: $result");
 
         return;
       }
@@ -229,12 +229,12 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
       if ($result !== 0) {
         // Git threw an error.
         // OPUT
-        Output::error("Checkout Error", "Unable to change branch.  Error Code: $result");
+        $this->io->drupalCIError("Checkout Error", "Unable to change branch.  Error Code: $result");
         return;
       }
     } else {
       // OPUT
-      Output::writeLn("<comment>Performing git checkout of $repo $git_branch branch to $directory.</comment>");
+      $this->io->writeln("<comment>Performing git checkout of $repo $git_branch branch to $directory.</comment>");
       // TODO: Make sure target directory is empty
       $git_depth = '';
       if (isset($repository['depth']) && empty($repository['commit_hash'])) {
@@ -242,13 +242,13 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
       }
       $cmd = "git clone -b $git_branch $git_depth $repo '$directory'";
       // OPUT
-      Output::writeLn("Git Command: $cmd");
+      $this->io->writeln("Git Command: $cmd");
       $this->exec($cmd, $cmdoutput, $result);
 
       if ($result !== 0) {
         // Git threw an error.
         // OPUT
-        Output::error("Checkout Error", "The git checkout returned an error.  Error Code: $result");
+        $this->io->drupalCIError("Checkout Error", "The git checkout returned an error.  Error Code: $result");
         return;
       }
     }
@@ -256,7 +256,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     if (!empty($repository['commit_hash'])) {
       $cmd =  "cd " . $directory . " && git reset -q --hard " . $repository['commit_hash'] . " ";
       // OPUT
-      Output::writeLn("Git Command: $cmd");
+      $this->io->writeln("Git Command: $cmd");
       $this->exec($cmd, $cmdoutput, $result);
     }
     if ($result !==0) {
@@ -269,10 +269,10 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     $cmd = "cd '$directory' && git log --oneline -n 1 --decorate";
     $this->exec($cmd, $cmdoutput, $result);
     // OPUT
-    Output::writeLn("<comment>Git commit info:</comment>");
-    Output::writeLn("<comment>\t" . implode($cmdoutput));
+    $this->io->writeln("<comment>Git commit info:</comment>");
+    $this->io->writeln("<comment>\t" . implode($cmdoutput));
 
-    Output::writeLn("<comment>Checkout complete.</comment>");
+    $this->io->writeln("<comment>Checkout complete.</comment>");
   }
 
 

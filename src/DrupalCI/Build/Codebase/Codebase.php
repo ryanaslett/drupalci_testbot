@@ -31,7 +31,6 @@ class Codebase implements CodebaseInterface, Injectable {
   protected $io;
 
   public function inject(Container $container) {
-    $this->buildVars = $container['build.vars'];
     $this->io = $container['console.io'];
   }
 

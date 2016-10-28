@@ -41,7 +41,6 @@ class DrupalCICommandBase extends Command {
     $this->container = $this->getApplication()->getContainer();
     $this->container->register(new ConsoleIOServiceProvider($input, $output));
     $this->io = $this->container['console.io'];
-    $this->buildVars = $this->container['build.vars'];
   }
 
   // Defaults for the underlying commands i.e. when commands run with --no-interaction or

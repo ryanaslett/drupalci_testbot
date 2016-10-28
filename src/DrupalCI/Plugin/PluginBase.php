@@ -7,12 +7,14 @@
 namespace DrupalCI\Plugin;
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
+use Pimple\Container;
 
 /**
  * Base class for plugins.
  */
-abstract class PluginBase {
+abstract class PluginBase implements Injectable {
 
   // TODO: Perhaps this isnt BuildTaskTrait, but a PluginTrait that figures out
   // configuration?
@@ -30,6 +32,22 @@ abstract class PluginBase {
    * @var array
    */
   protected $pluginDefinition;
+
+  /**
+   * Style object.
+   *
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  /**
+   * The container.
+   *
+   * We need this to inject into other objects.
+   *
+   * @var \Pimple\Container
+   */
+  protected $container;
 
   /**
    * Constructs a Drupal\Component\Plugin\PluginBase object.
@@ -53,6 +71,11 @@ abstract class PluginBase {
 
   protected function exec($command, &$output, &$return_var) {
     exec($command, $output, $return_var);
+  }
+
+  public function inject(Container $container) {
+    $this->io = $container['console.io'];
+    $this->container = $container;
   }
 
 }

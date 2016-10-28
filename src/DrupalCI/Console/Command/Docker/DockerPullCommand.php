@@ -38,14 +38,14 @@ class DockerPullCommand extends DrupalCICommandBase {
   public function execute(InputInterface $input, OutputInterface $output) {
     // OPUT
     Output::setOutput($output);
-    $output->writeln("<info>Executing pull ...</info>");
+    $this->io->writeln("<info>Executing pull ...</info>");
     $images = $input->getArgument('container_name');
     // TODO: Validate passed arguments
     foreach ($images as $image) {
         $name = explode (':',$image);
         $container = $name[0];
       // OPUT
-        Output::writeln("<comment>Pulling <options=bold>$container</options=bold> container</comment>");
+        $this->io->writeln("<comment>Pulling <options=bold>$container</options=bold> container</comment>");
         $this->pull($container, $input);
     }
   }
@@ -70,12 +70,12 @@ class DockerPullCommand extends DrupalCICommandBase {
           $progressbar->advance($status['current']);
         } else {
           // OPUT
-          Output::writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
+          $this->io->writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
         }
     });
     $response->wait();
 
     // OPUT
-    Output::writeln("");
+    $this->io->writeln("");
   }
 }

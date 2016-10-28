@@ -29,10 +29,12 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
   // Results database goes here.
   public function inject(Container $container) {
+    parent::inject($container);
     $this->system_database = $container['db.system'];
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
+
   }
 
   /**
@@ -103,6 +105,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     $command_line = implode(' ', $command);
 
     $runner = new ContainerTestingCommand();
+    $runner->inject($this->container);
     $result = $runner->run($build,$command_line);
 
     $this->generateJunitXml($build);
@@ -211,6 +214,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   protected function generateTestGroups(BuildInterface $build) {
     $cmd = "php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
     $command = new ContainerCommand();
+    $command->inject($this->container);
     $status = $command->run($build, $cmd);
     return $status;
   }
@@ -468,7 +472,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
     file_put_contents($output_dir . '/testresults.xml', $doc->saveXML());
     // OPUT
-    Output::writeln("<info>Reformatted test results written to <options=bold>" . $output_dir . '/testresults.xml</options=bold></info>');
+    $this->io->writeln("<info>Reformatted test results written to <options=bold>" . $output_dir . '/testresults.xml</options=bold></info>');
   }
 
   /**

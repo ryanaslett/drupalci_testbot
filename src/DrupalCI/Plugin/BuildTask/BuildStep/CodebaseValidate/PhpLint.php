@@ -31,7 +31,7 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
    * @inheritDoc
    */
   public function run(BuildInterface $build) {
-    Output::writeLn('<info>SyntaxCheck checking for php syntax errors.</info>');
+    $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
     // CODEBASE
     $codebase = $build->getCodebase();
@@ -56,7 +56,7 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
     // ENVIRONMENT - artifact directory.
     $lintable_files = 'artifacts/lintable_files.txt';
     // OPUT
-    Output::writeLn("<info>" . $workingdir . "/" . $lintable_files . "</info>");
+    $this->io->writeln("<info>" . $workingdir . "/" . $lintable_files . "</info>");
     file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
     // Make sure
     if (0 < filesize($workingdir . "/" . $lintable_files)) {
@@ -65,6 +65,7 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
       // Use xargs to concurrently run linting on file.
       $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
       $command = new ContainerCommand();
+      $command->inject($this->container);
       $command->run($build, $cmd);
     }
   }

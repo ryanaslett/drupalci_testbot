@@ -25,6 +25,7 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   protected $database;
 
   public function inject(Container $container) {
+    parent::inject($container);
     $this->database = $container['db.system'];
   }
 
@@ -45,7 +46,7 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   public function run(BuildInterface $build, &$config = []) {
 
     // OPUT
-    Output::writeLn("<info>Parsing required Web container image names ...</info>");
+    $this->io->writeln("<info>Parsing required Web container image names ...</info>");
     $containers = $build->getExecContainers();
     $containers['web'] = $this->buildWebImageNames($this->configuration['phpversion']);
     $valid = $this->validateImageNames($containers['web'], $build);
@@ -60,7 +61,7 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
       return;
     }
     // OPUT
-    Output::writeLn("<info>Parsing required database container image names ...</info>");
+    $this->io->writeln("<info>Parsing required database container image names ...</info>");
     $containers = $this->buildImageNames();
     if ($valid = $this->validateImageNames($containers, $build)) {
       // @todo Move the housekeeping to the build instead of doing it here.
@@ -75,21 +76,21 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
     $db_version = $this->database->getDbType() . '-' . $this->database->getVersion();
     $images["$db_version"]['image'] = "drupalci/$db_version";
     // OPUT
-    Output::writeLn("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
+    $this->io->writeln("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     return $images;
   }
 
   protected function buildWebImageNames($php_version) {
     $images["web-$php_version"]['image'] = "drupalci/web-$php_version";
     // OPUT
-    Output::writeLn("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
+    $this->io->writeln("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
     return $images;
   }
 
   public function validateImageNames($containers, BuildInterface $build) {
     // Verify that the appropriate container images exist
     // OPUT
-    Output::writeLn("<comment>Validating container images exist</comment>");
+    $this->io->writeln("<comment>Validating container images exist</comment>");
     // DOCKER
     $docker = $build->getDocker();
     $manager = $docker->getImageManager();
@@ -102,12 +103,12 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
       }
       catch (ClientErrorException $e) {
         // OPUT
-        Output::error("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
+        $this->io->drupalCIError("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
         return FALSE;
       }
-      $id = substr($image->getID(), 0, 8);
+      $id = substr($image->getID (), 0, 8);
       // OPUT
-      Output::writeLn("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
+      $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
     }
     return TRUE;
   }

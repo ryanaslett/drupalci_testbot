@@ -40,14 +40,14 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
 
     if (empty($files)) {
       // OPUT
-      Output::writeLn('No files to fetch.');
+      $this->io->writeln('No files to fetch.');
     }
     foreach ($files as $details) {
       // URL and target directory
       // TODO: Ensure $details contains all required parameters
       if (empty($details['from'])) {
         // OPUT
-        Output::error("Fetch error", "No valid target file provided for fetch command.");
+        $this->io->drupalCIError("Fetch error", "No valid target file provided for fetch command.");
 
         return;
       }
@@ -56,7 +56,7 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
       $fetchdir = (!empty($details['to'])) ? $details['to'] : $workingdir;
       if (!($directory = $this->validateDirectory($build, $fetchdir))) {
         // Invalid checkout directory
-        Output::error("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
+        $this->io->drupalCIError("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
 
         return;
       }
@@ -68,12 +68,12 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
       }
       catch (\Exception $e) {
         // OPUT
-        Output::error("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$destination_file</info>");
+        $this->io->drupalCIError("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$destination_file</info>");
 
         return;
       }
       // OPUT
-      Output::writeLn("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
+      $this->io->writeln("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
     }
   }
 

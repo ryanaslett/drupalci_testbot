@@ -27,6 +27,7 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
   protected $database;
 
   public function inject(Container $container) {
+    parent::inject($container);
     $this->database = $container['db.system'];
   }
   /**

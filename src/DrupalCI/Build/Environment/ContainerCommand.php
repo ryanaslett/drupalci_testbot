@@ -25,6 +25,7 @@ class ContainerCommand implements Injectable {
   protected $io;
 
   public function inject(Container $container) {
+
     $this->io = $container['console.io'];
   }
 

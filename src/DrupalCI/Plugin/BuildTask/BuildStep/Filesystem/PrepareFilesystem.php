@@ -32,6 +32,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
 
   // Results database goes here.
   public function inject(Container $container) {
+    parent::inject($container);
     $this->system_database = $container['db.system'];
   }
 
@@ -64,6 +65,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
       'sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c \'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini\' || echo -n"',
     ];
     $command = new ContainerCommand();
+    $command->inject($this->container);
     $command->run($build, $setup_commands);
 
   }
