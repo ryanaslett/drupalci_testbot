@@ -55,12 +55,10 @@ class DockerRemoveCommand extends DrupalCICommandBase {
    * (@inheritdoc)
    */
   protected function listContainers($type) {
-    // OPUT
 
     $helper = new ContainerHelper();
     $containers = $helper->getAllContainers();
     foreach ($containers as $containerLabel => $containerName) {
-      // OPUT
       $this->io->writeln("<comment>$containerLabel, $containerName</comment>");
     }
   }
@@ -106,7 +104,6 @@ class DockerRemoveCommand extends DrupalCICommandBase {
     exec($cmd_docker_psa, $createdContainers);
 
     if($createdContainers) {
-      // OPUT
       $this->io->writeln('<comment>Removing containers.</comment>');
       exec($cmd_docker_ps, $runningContainers);
       if(!empty($runningContainers)){
@@ -120,7 +117,6 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec( $cmd_docker_rm, $rmContainers);
 
       // list removed containers
-      // OPUT
       $this->io->writeln('Removed Containers:');
       $this->io->writeln($rmContainers);
 
@@ -131,18 +127,15 @@ class DockerRemoveCommand extends DrupalCICommandBase {
       exec($cmd_docker_psa, $remove_check);
 
       if (!empty($remove_check)) {
-        // OPUT
         $this->io->writeln('<error>Error:</error>');
         $this->io->writeln($remove_check);
       }
       else {
-        // OPUT
         $this->io->writeln('<comment>Remove complete.</comment>');
       }
     }
     else {
       // nothing to remove
-      // OPUT
       $this->io->writeln('<comment>Nothing to Remove</comment> ');
     }
 

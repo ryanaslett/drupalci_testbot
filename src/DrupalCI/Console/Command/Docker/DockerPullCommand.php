@@ -44,7 +44,6 @@ class DockerPullCommand extends DrupalCICommandBase {
     foreach ($images as $image) {
         $name = explode (':',$image);
         $container = $name[0];
-      // OPUT
         $this->io->writeln("<comment>Pulling <options=bold>$container</options=bold> container</comment>");
         $this->pull($container, $input);
     }
@@ -69,13 +68,11 @@ class DockerPullCommand extends DrupalCICommandBase {
           $progressbar->start();
           $progressbar->advance($status['current']);
         } else {
-          // OPUT
           $this->io->writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
         }
     });
     $response->wait();
 
-    // OPUT
     $this->io->writeln("");
   }
 }

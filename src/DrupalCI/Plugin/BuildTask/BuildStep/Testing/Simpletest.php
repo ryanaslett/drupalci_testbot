@@ -471,7 +471,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     // ENVIRONMENT - junit xml output artifact
 
     file_put_contents($output_dir . '/testresults.xml', $doc->saveXML());
-    // OPUT
     $this->io->writeln("<info>Reformatted test results written to <options=bold>" . $output_dir . '/testresults.xml</options=bold></info>');
   }
 

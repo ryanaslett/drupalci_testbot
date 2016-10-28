@@ -45,7 +45,6 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
    */
   public function run(BuildInterface $build, &$config = []) {
 
-    // OPUT
     $this->io->writeln("<info>Parsing required Web container image names ...</info>");
     $containers = $build->getExecContainers();
     $containers['web'] = $this->buildWebImageNames($this->configuration['phpversion']);
@@ -60,7 +59,6 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
     if (strpos($this->database->getDbType(), 'sqlite') === 0) {
       return;
     }
-    // OPUT
     $this->io->writeln("<info>Parsing required database container image names ...</info>");
     $containers = $this->buildImageNames();
     if ($valid = $this->validateImageNames($containers, $build)) {
@@ -75,21 +73,18 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   public function buildImageNames() {
     $db_version = $this->database->getDbType() . '-' . $this->database->getVersion();
     $images["$db_version"]['image'] = "drupalci/$db_version";
-    // OPUT
     $this->io->writeln("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     return $images;
   }
 
   protected function buildWebImageNames($php_version) {
     $images["web-$php_version"]['image'] = "drupalci/web-$php_version";
-    // OPUT
     $this->io->writeln("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
     return $images;
   }
 
   public function validateImageNames($containers, BuildInterface $build) {
     // Verify that the appropriate container images exist
-    // OPUT
     $this->io->writeln("<comment>Validating container images exist</comment>");
     // DOCKER
     $docker = $build->getDocker();
@@ -102,12 +97,10 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
         $image = $manager->find($name);
       }
       catch (ClientErrorException $e) {
-        // OPUT
         $this->io->drupalCIError("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
         return FALSE;
       }
       $id = substr($image->getID (), 0, 8);
-      // OPUT
       $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
     }
     return TRUE;

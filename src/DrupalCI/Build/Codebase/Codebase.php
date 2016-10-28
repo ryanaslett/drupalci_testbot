@@ -185,11 +185,9 @@ class Codebase implements CodebaseInterface, Injectable {
       $result = mkdir($working_dir, 0777, TRUE);
       if (!$result) {
         // Error creating checkout directory
-        // OPUT
         $this->io->drupalCIError('Directory Creation Error', 'Error encountered while attempting to create local working directory');
         return FALSE;
       }
-      // OPUT
       $this->io->writeLn("<info>Checkout directory created at <options=bold>$working_dir</options=bold></info>");
     }
 
@@ -199,7 +197,6 @@ class Codebase implements CodebaseInterface, Injectable {
     $iterator = new \FilesystemIterator($working_dir);
     if ($iterator->valid()) {
       // Existing files found in directory.
-      // OPUT
       $this->io->drupalCIError('Directory not empty', 'Unable to use a non-empty working directory.');
       return FALSE;
     };
@@ -208,14 +205,12 @@ class Codebase implements CodebaseInterface, Injectable {
     $working_dir = realpath($working_dir);
     if (!$working_dir) {
       // Directory not found after conversion to canonicalized absolute path
-      // OPUT
       $this->io->drupalCIError('Directory not found', 'Unable to determine working directory absolute path.');
       return FALSE;
     }
 
     // Ensure we're still within the system temp directory
     if (strpos(realpath($working_dir), realpath($tmp_directory)) !== 0) {
-      // OPUT
       $this->io->drupalCIError('Directory error', 'Detected attempt to traverse out of the system temp directory.');
       return FALSE;
     }

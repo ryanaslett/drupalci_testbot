@@ -39,14 +39,12 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
     $files = $this->configuration['files'];
 
     if (empty($files)) {
-      // OPUT
       $this->io->writeln('No files to fetch.');
     }
     foreach ($files as $details) {
       // URL and target directory
       // TODO: Ensure $details contains all required parameters
       if (empty($details['from'])) {
-        // OPUT
         $this->io->drupalCIError("Fetch error", "No valid target file provided for fetch command.");
 
         return;
@@ -67,12 +65,10 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
           ->get($url, ['save_to' => $destination_file]);
       }
       catch (\Exception $e) {
-        // OPUT
         $this->io->drupalCIError("Write error", "An error was encountered while attempting to write <info>$url</info> to <info>$destination_file</info>");
 
         return;
       }
-      // OPUT
       $this->io->writeln("<comment>Fetch of <options=bold>$url</options=bold> to <options=bold>$destination_file</options=bold> complete.</comment>");
     }
   }

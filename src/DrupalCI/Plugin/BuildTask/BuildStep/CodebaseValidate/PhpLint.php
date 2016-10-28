@@ -55,7 +55,6 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
 
     // ENVIRONMENT - artifact directory.
     $lintable_files = 'artifacts/lintable_files.txt';
-    // OPUT
     $this->io->writeln("<info>" . $workingdir . "/" . $lintable_files . "</info>");
     file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
     // Make sure

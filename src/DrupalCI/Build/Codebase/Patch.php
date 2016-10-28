@@ -230,7 +230,6 @@ class Patch implements PatchInterface, Injectable {
     $destination_file = $directory . DIRECTORY_SEPARATOR . $file_info['basename'];
     $this->httpClient()
       ->get($url, ['save_to' => "$destination_file"]);
-    // OPUT
     $this->io->writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
     return $destination_file;
   }
@@ -259,7 +258,6 @@ class Patch implements PatchInterface, Injectable {
     $real_file = realpath($source);
     if ($real_file === FALSE) {
       // Invalid patch file
-      // OPUT
       $this->io->drupalCIError("Patch Error", "The patch file <info>$source</info> is invalid.");
       return FALSE;
     }
@@ -278,7 +276,6 @@ class Patch implements PatchInterface, Injectable {
     $real_directory = realpath($apply_dir);
     if ($real_directory === FALSE) {
       // Invalid target directory
-      // OPUT
       $this->io->drupalCIError("Patch Error", "The target patch directory <info>$apply_dir</info> is invalid.");
       return FALSE;
     }
@@ -303,14 +300,11 @@ class Patch implements PatchInterface, Injectable {
     $this->setPatchApplyResults($cmdoutput);
     if ($result !== 0) {
       // The command threw an error.
-      // OPUT
       $this->io->writeLn($cmdoutput);
-      // OPUT
       $this->io->drupalCIError("Patch Error", "The patch attempt returned an error.  Error code: $result");
       // TODO: Pass on the actual return value for the patch attempt
       return $result;
     }
-    // OPUT
     $this->io->writeLn("<comment>Patch <options=bold>$source</options=bold> applied to directory <options=bold>$target</options=bold></comment>");
     $this->applied = TRUE;
     return $result;
@@ -336,7 +330,6 @@ class Patch implements PatchInterface, Injectable {
       exec($cmd, $cmdoutput, $return);
       if ($return !== 0) {
         // git diff returned a non-zero error code
-        // OPUT
         $this->io->writeln("<error>Git diff command returned a non-zero code while attempting to parse modified files. (Return Code: $return)</error>");
         return FALSE;
       }

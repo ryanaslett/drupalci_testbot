@@ -265,7 +265,6 @@ class Database implements DatabaseInterface, Injectable {
     try {
       $this->connection->exec('CREATE DATABASE ' . $this->dbname);
     } catch (\PDOException $e) {
-      // OPUT
       $this->io->writeln("<comment>Could not create database $this->dbname.</comment>");
       return FALSE;
     }
@@ -305,16 +304,13 @@ class Database implements DatabaseInterface, Injectable {
       // @TODO explore using PDO:ATTR_TIMEOUT to see if that works instead of polling in php.
       while($counter < $max_sleep ){
         if ($this->establishDBConnection($database)){
-          // OPUT
           $this->io->writeln("<comment>Database is active.</comment>");
           break;
         }
         if ($counter >= $max_sleep){
-          // OPUT
           $this->io->writeln("<error>Max retries reached, exiting promgram.</error>");
           exit(1);
         }
-        // OPUT
         $this->io->writeln("<comment>Sleeping " . $increment . " seconds to allow service to start.</comment>");
         sleep($increment);
         $counter += $increment;
@@ -328,12 +324,10 @@ class Database implements DatabaseInterface, Injectable {
   {
     try {
       $conn_string = $this->getPDODsn($database);
-      // OPUT
       $this->io->writeln("<comment>Attempting to connect to database server.</comment>");
       // @TODO: This shouldnt happen here, but lets just do it like this for now.
       $conn = new \PDO($conn_string, $this->username, $this->password);
     } catch (\PDOException $e) {
-      // OPUT
       $this->io->writeln("<comment>Could not connect to database server.</comment>");
       return FALSE;
     }

@@ -94,9 +94,6 @@ class RunCommand extends DrupalCICommandBase  {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    // Link our $output variable to the build.
-    // OPUT
-//    Output::setOutput($output);
 
     $arg = $input->getArgument('definition');
     $this->build->inject($this->container);
@@ -107,7 +104,6 @@ class RunCommand extends DrupalCICommandBase  {
     $codebase = new Codebase();
     $codebase->inject($this->container);
     $this->build->setCodebase($codebase);
-    // OPUT
     $this->io->writeln("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");
 
     // Set up the local working directory

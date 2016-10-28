@@ -43,12 +43,10 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
 
     $codebase = $build->getCodebase();
     if (empty($files)) {
-      // OPUT
       $this->io->writeln('No patches to apply.');
     }
     foreach ($files as $key => $details) {
       if (empty($details['from'])) {
-        // OPUT
         $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
 
         return 2;
