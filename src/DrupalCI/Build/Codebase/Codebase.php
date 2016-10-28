@@ -13,15 +13,7 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use Pimple\Container;
 
-// CODEBASE
 class Codebase implements CodebaseInterface, Injectable {
-
-  /**
-   * The build variables service.
-   *
-   * @var \DrupalCI\Build\BuildVariablesInterface
-   */
-  protected $buildVars;
 
   /**
    * Style object.
