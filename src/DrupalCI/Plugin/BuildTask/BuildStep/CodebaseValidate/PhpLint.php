@@ -4,12 +4,13 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseValidate;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
+use DrupalCI\Build\Environment\EnvironmentInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
+use Pimple\Container;
 
 /**
  * @PluginID("phplint")
@@ -17,6 +18,19 @@ use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterface {
 
   use BuildTaskTrait;
+
+  /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
+  protected $environment;
+
+  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
+  protected $codebase;
+
+
+  public function inject(Container $container) {
+    parent::inject($container);
+    $this->environment = $container['environment'];
+    $this->codebase = $container['codebase'];
+  }
 
   /**
    * @inheritDoc
@@ -33,15 +47,14 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   public function run(BuildInterface $build) {
     $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
-    // CODEBASE
-    $codebase = $build->getCodebase();
-    $modified_files = $codebase->getModifiedFiles();
+    // CODEBASE - modified files
+    $modified_files = $this->codebase->getModifiedFiles();
 
     if (empty($modified_files)) {
       return;
     }
 
-    // ENVIRONMENT - codebase working dir
+    // Codebase - source dir
     $workingdir = $codebase->getWorkingDir();
     $concurrency = $this->configuration['concurrency'];
     $bash_array = "";
@@ -63,9 +76,8 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
       // This should be come Codebase->getLocalDir() or similar
       // Use xargs to concurrently run linting on file.
       $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
-      $command = new ContainerCommand();
-      $command->inject($this->container);
-      $command->run($build, $cmd);
+      // DOCKER - execute Commands
+      $this->environment->executeCommands($cmd);
     }
   }
 

@@ -41,6 +41,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
 
     $files = $this->configuration['patches'];
 
+    // CODEBASE - adding patchfiles
     $codebase = $build->getCodebase();
     if (empty($files)) {
       $this->io->writeln('No patches to apply.');
@@ -70,7 +71,8 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-        $source_dir = $build->getCodebase()->getWorkingDir();
+        // CODEBASE - JunitXML artifact Directory
+        $source_dir = $codebase->getWorkingDir();
         // TODO: Temporary hack.  Strip /checkout off the directory
         $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
 
@@ -97,6 +99,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return $result;
       };
       // Update our list of modified files
+      // CODEBASE - Modified Files
       $codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }

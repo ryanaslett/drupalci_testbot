@@ -4,7 +4,7 @@ namespace DrupalCI\Build\Environment;
 
 use DrupalCI\Console\Output;
 
-class ContainerTestingCommand extends ContainerCommand {
+class TestingEnvironment extends Environment implements EnvironmentInterface {
 
   /*
    * Overrides ContainerCommands check with a specific signal check.

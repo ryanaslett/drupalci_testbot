@@ -22,8 +22,12 @@ class Codebase implements CodebaseInterface, Injectable {
    */
   protected $io;
 
+  /* @var \DrupalCI\Build\BuildInterface */
+  protected $build;
+
   public function inject(Container $container) {
     $this->io = $container['console.io'];
+    $this->build = $container['build'];
   }
 
 

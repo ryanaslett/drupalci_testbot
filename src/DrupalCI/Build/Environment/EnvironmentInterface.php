@@ -1,26 +1,19 @@
 <?php
 namespace DrupalCI\Build\Environment;
 
+use Pimple\Container;
+
 interface EnvironmentInterface {
   public function inject(Container $container);
 
   /**
    * {@inheritdoc}
    */
-  public function executeCommands($data);
-
-  /**
-   * @return \Docker\Docker
-   */
-  public function getDocker();
+  public function executeCommands($commands);
 
   public function getExecContainers();
 
   public function setExecContainers(array $containers);
-
-  public function startContainer(&$container);
-
-  public function getContainerConfiguration($image = NULL);
 
   public function getServiceContainers();
 

@@ -9,7 +9,7 @@ use Docker\Docker;
 use Docker\Manager\ExecManager;
 use Docker\Stream\DockerRawStream;
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
+use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Tests\DrupalCITestCase;
 
 /**
@@ -73,9 +73,10 @@ class ContainerCommandTest extends DrupalCITestCase {
       ->method('find')
       ->will($this->returnValue($exec_command));
 
-    $command = new ContainerCommand();
+    //DOCKER
+    $command = new Environment();
     $command->inject($this->getContainer());
-    $command->run($build, $cmd);
+    $command->executeCommands($build, $cmd);
   }
 
 }

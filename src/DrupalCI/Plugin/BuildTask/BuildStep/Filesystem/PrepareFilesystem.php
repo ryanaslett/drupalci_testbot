@@ -4,7 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\Filesystem;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
+use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
@@ -30,10 +30,14 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
   /* @var \DrupalCI\Build\Environment\DatabaseInterface */
   protected $system_database;
 
-  // Results database goes here.
+  /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
+  protected $environment;
+
   public function inject(Container $container) {
     parent::inject($container);
     $this->system_database = $container['db.system'];
+    $this->environment = $container['environment'];
+
   }
 
   /**
@@ -64,9 +68,8 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
       # TODO: figure out what to do with this.
       'sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c \'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini\' || echo -n"',
     ];
-    $command = new ContainerCommand();
-    $command->inject($this->container);
-    $command->run($build, $setup_commands);
+    // DOCKER
+    $this->environment->executeCommands($setup_commands);
 
   }
 

@@ -3,17 +3,18 @@
 namespace DrupalCI\Providers;
 
 use DrupalCI\Build\Build;
+use DrupalCI\Build\Codebase\Codebase;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Symfony\Component\Yaml\Parser;
 
-class BuildServiceProvider implements ServiceProviderInterface {
+class CodebaseServiceProvider implements ServiceProviderInterface {
   /**
    * @inheritDoc
    */
   public function register(Container $container) {
-    $container['build'] = function ($container) {
-      return new Build();
+    $container['codebase'] = function ($container) {
+      return new Codebase();
     };
   }
 

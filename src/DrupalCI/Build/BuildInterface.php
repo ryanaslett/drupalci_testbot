@@ -44,42 +44,22 @@ interface BuildInterface {
   /**
    * @return \DrupalCI\Build\Codebase\Codebase
    */
-  // CODEBASE
   public function getCodebase();
 
   /**
    * @param \DrupalCI\Build\Codebase\Codebase $codebase
    */
-  // CODEBASE
   public function setCodebase(Codebase $codebase);
 
   /**
-   * @return \Docker\Docker
+   * @return mixed
    */
-  public function getDocker();
+  public function getBuildDirectory();
 
   /**
-   * Get a list of containers to run Docker exec in.
-   *
-   * @return array
-   *  An array of container IDs. The first key is the type, can be 'php' or
-   *  'web'. Web has everything php plus Apache.
+   * @param mixed $buildDirectory
    */
-  public function getExecContainers();
-
-  public function setExecContainers(array $containers);
-
-  public function startContainer(&$container);
-
-  public function getContainerConfiguration($image = NULL);
-
-  public function startServiceContainerDaemons($type);
-
-  public function getServiceContainers();
-
-  public function setServiceContainers(array $service_containers);
-
-  public function getDefaultDefinitionTemplate($build_type);
+  public function setBuildDirectory($buildDirectory);
 
   public function generateBuildId();
 }

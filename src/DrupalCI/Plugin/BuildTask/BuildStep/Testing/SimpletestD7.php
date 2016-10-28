@@ -4,8 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\Testing;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
-use DrupalCI\Build\Environment\ContainerTestingCommand;
+use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
@@ -30,9 +29,8 @@ class SimpletestD7 extends Simpletest {
       'cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html vset simpletest_verbose \'0\' 2>&1',
       'cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html en -y simpletest 2>&1',
     ];
-    $command = new ContainerCommand();
-    $command->inject($this->container);
-    $command->run($build, $setup_commands);
+    // DOCKER
+    $this->environment->executeCommands($setup_commands);
   }
 
 

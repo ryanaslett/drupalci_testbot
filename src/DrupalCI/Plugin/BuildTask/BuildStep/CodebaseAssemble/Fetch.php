@@ -50,6 +50,7 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return;
       }
       $url = $details['from'];
+      // CODEBASE - Source Directory
       $workingdir = $build->getCodebase()->getWorkingDir();
       $fetchdir = (!empty($details['to'])) ? $details['to'] : $workingdir;
       if (!($directory = $this->validateDirectory($build, $fetchdir))) {

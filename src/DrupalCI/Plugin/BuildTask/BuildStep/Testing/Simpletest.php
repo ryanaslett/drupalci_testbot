@@ -4,8 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\Testing;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
-use DrupalCI\Build\Environment\ContainerTestingCommand;
+use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
@@ -27,6 +26,9 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /* @var  \DrupalCI\Build\Environment\DatabaseInterface */
   protected $results_database;
 
+  /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
+  protected $environment;
+
   // Results database goes here.
   public function inject(Container $container) {
     parent::inject($container);
@@ -34,6 +36,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
+    $this->environment = $container['environment'];
 
   }
 
@@ -92,7 +95,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   public function run(BuildInterface $build) {
 
     $this->setupSimpletestDB($build);
-    $status = $this->generateTestGroups($build);
+    $status = $this->generateTestGroups();
     if ($status > 0) {
       return $status;
     }
@@ -104,9 +107,8 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
     $command_line = implode(' ', $command);
 
-    $runner = new ContainerTestingCommand();
-    $runner->inject($this->container);
-    $result = $runner->run($build,$command_line);
+    // DOCKER
+    $result = $this->environment->executeCommands($command_line);
 
     $this->generateJunitXml($build);
     // Last thing. JunitFormat the output.
@@ -202,6 +204,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
   protected function setupSimpletestDB(BuildInterface $build) {
 
+    // CODEBASE - sqlite artifact directory
     $source_dir = $build->getCodebase()->getWorkingDir();
     $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($this->configuration['sqlite']);
     $this->results_database->setDBFile($dbfile);
@@ -211,11 +214,10 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /**
    * @param \DrupalCI\Build\BuildInterface $build
    */
-  protected function generateTestGroups(BuildInterface $build) {
+  protected function generateTestGroups() {
     $cmd = "php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
-    $command = new ContainerCommand();
-    $command->inject($this->container);
-    $status = $command->run($build, $cmd);
+    // DOCKER
+    $status = $this->environment->executeCommands($cmd);
     return $status;
   }
 
@@ -284,6 +286,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
+    // CODEBASE - sourceDirectory
     $source_dir = $build->getCodebase()->getWorkingDir();
     // TODO: Temporary hack.  Strip /checkout off the directory
     $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
