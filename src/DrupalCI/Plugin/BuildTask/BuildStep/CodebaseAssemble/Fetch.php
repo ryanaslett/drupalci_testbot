@@ -11,6 +11,7 @@ use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use GuzzleHttp\Client;
+use Pimple\Container;
 
 /**
  * @PluginID("fetch")
@@ -19,6 +20,15 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
 
   use BuildTaskTrait;
   use FileHandlerTrait;
+
+  /* @var \DrupalCI\Build\BuildInterface */
+  protected $build;
+
+
+  public function inject(Container $container) {
+    parent::inject($container);
+    $this->build = $container['build'];
+  }
 
   /**
    * @inheritDoc
@@ -50,10 +60,10 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return;
       }
       $url = $details['from'];
-      // CODEBASE - Source Directory
-      $workingdir = $build->getCodebase()->getWorkingDir();
-      $fetchdir = (!empty($details['to'])) ? $details['to'] : $workingdir;
-      if (!($directory = $this->validateDirectory($build, $fetchdir))) {
+      // ENVIRONMENT - Source Directory
+      $source_dir = $this->build->getSourceDirectory();
+      $fetchdir = (!empty($details['to'])) ? $details['to'] : $source_dir;
+      if (!($directory = $this->validateDirectory($source_dir, $fetchdir))) {
         // Invalid checkout directory
         $this->io->drupalCIError("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
 

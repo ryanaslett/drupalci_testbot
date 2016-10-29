@@ -83,9 +83,6 @@ class Build implements BuildInterface, Injectable {
    */
   protected $io;
 
-  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
-  protected $codebase;
-
   protected $buildDirectory;
 
 
@@ -97,7 +94,6 @@ class Build implements BuildInterface, Injectable {
     $this->container = $container;
     $this->io = $container['console.io'];
     $this->yamlparser = $container['yaml.parser'];
-    $this->codebase = $container['codebase'];
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
   }
 
@@ -200,7 +196,7 @@ class Build implements BuildInterface, Injectable {
     // After we load the config, we separate the workflow from the config:
     $this->computedBuildDefinition = $this->processBuildConfig($this->initialBuildDefinition['build']);
     $this->generateBuildId();
-    $this->setupWorkingDirectory();
+    $this->setupWorkSpace();
 
   }
 
@@ -363,20 +359,33 @@ class Build implements BuildInterface, Injectable {
   }
 
 
-  public function getCodebase() {
-    return $this->codebase;
-  }
-
-  public function setCodebase(Codebase $codebase) {
-    $this->codebase = $codebase;
-  }
-
   /**
    * {@inheritdoc}
    */
   public function getBuildDirectory() {
     return $this->buildDirectory;
   }
+
+  /**
+   * @inheritDoc
+   */
+  public function getArtifactDirectory() {
+    return $this->buildDirectory . '/artifacts';
+  }
+  /**
+   * @inheritDoc
+   */
+  public function getXMLDirectory() {
+    return $this->getArtifactDirectory() . '/xml';
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getSourceDirectory() {
+    return $this->buildDirectory . '/source';
+  }
+
 
 
   /**
@@ -399,39 +408,34 @@ class Build implements BuildInterface, Injectable {
   /**
    * @return bool
    */
-  protected function setupWorkingDirectory() {
+  protected function setupWorkSpace() {
     // Check if the target working directory has been specified in the env.
     if (false !== (getenv('DCI_WorkingDir'))) {
       $build_directory = getenv('DCI_WorkingDir');
     }
+    // Both the AMI and Vagrant box defines this as /var/lib/drupalci/web
     $tmp_directory = sys_get_temp_dir();
-
     // Generate a default directory name if none specified
     if (empty($build_directory)) {
       // Case:  No explicit working directory defined.
-      $build_directory = $tmp_directory . DIRECTORY_SEPARATOR . $this->buildId;
+      $build_directory = $tmp_directory . '/' . $this->buildId;
     }
     else {
       // We force the working directory to always be under the system temp dir.
       if (strpos($build_directory, realpath($tmp_directory)) !== 0) {
-        if (substr($build_directory, 0, 1) == DIRECTORY_SEPARATOR) {
+        if (substr($build_directory, 0, 1) == '/') {
           $build_directory = $tmp_directory . $build_directory;
         }
         else {
-          $build_directory = $tmp_directory . DIRECTORY_SEPARATOR . $build_directory;
+          $build_directory = $tmp_directory . '/' . $build_directory;
         }
       }
     }
-    // Create directory if it doesn't already exist
-    if (!is_dir($build_directory)) {
-      $result = mkdir($build_directory, 0777, TRUE);
-      if (!$result) {
-        // Error creating checkout directory
-        $this->io->drupalCIError('Directory Creation Error', 'Error encountered while attempting to create local working directory');
-        return FALSE;
-      }
-      $this->io->writeLn("<info>Build workspace directory created at <options=bold>$build_directory</options=bold></info>");
+    $result = $this->setupDirectory($build_directory);
+    if (!$result) {
+      return FALSE;
     }
+
 
     // Validate that the working directory is empty.  If the directory contains
     // an existing git repository, for example, our checkout attempts will fail
@@ -459,6 +463,43 @@ class Build implements BuildInterface, Injectable {
 
     // If we arrive here, we have a valid empty working directory.
     $this->buildDirectory = $build_directory;
+
+
+
+    $result =  $this->setupDirectory($this->getArtifactDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+    $result =  $this->setupDirectory($this->getSourceDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+    $result =  $this->setupDirectory($this->getXMLDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * @param $directory
+   *
+   * @return bool
+   */
+  protected function setupDirectory($directory): bool {
+    if (!is_dir($directory)) {
+      $result = mkdir($directory, 0777, TRUE);
+      if (!$result) {
+        // Error creating checkout directory
+        $this->io->drupalCIError('Directory Creation Error', 'Error encountered while attempting to create  directory');
+        return FALSE;
+      }
+      else {
+        $this->io->writeLn("<info>Directory created at <options=bold>$directory</options=bold></info>");
+        return TRUE;
+      }
+    }
     return TRUE;
   }
 }

@@ -46,8 +46,7 @@ class CoreD7PassingTest extends DrupalCIFunctionalTestBase {
     $this->assertRegExp('/.*simpletestlegacy7*/', $app_tester->getDisplay());
     $this->assertRegExp('/.*Syslog functionality 17 passes, 0 fails, and 0 exceptions*/', $app_tester->getDisplay());
     // Look for junit xml results file
-    $output_file = $build->getCodebase()
-        ->getWorkingDir() . "/artifacts/xml/testresults.xml";
+    $output_file = $build->getXmlDirectory() . "/testresults.xml";
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.
     $this->assertXmlFileEqualsXmlFile(__DIR__ . '/Fixtures/CoreD7PassingTest_testresults.xml', $output_file);

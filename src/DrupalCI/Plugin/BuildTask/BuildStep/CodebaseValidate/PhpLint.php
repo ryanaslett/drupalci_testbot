@@ -25,11 +25,15 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
   protected $codebase;
 
+  /* @var \DrupalCI\Build\BuildInterface */
+  protected $build;
+
 
   public function inject(Container $container) {
     parent::inject($container);
     $this->environment = $container['environment'];
     $this->codebase = $container['codebase'];
+    $this->build = $container['build'];
   }
 
   /**
@@ -54,24 +58,24 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
       return;
     }
 
-    // Codebase - source dir
-    $workingdir = $codebase->getWorkingDir();
+    // ENVIRONMENT - FIX-ArtifactDir
+    $workingdir = $this->build->getSourceDirectory();
     $concurrency = $this->configuration['concurrency'];
     $bash_array = "";
     foreach ($modified_files as $file) {
       $file_path = $workingdir . "/" . $file;
-      // Checking for: if in a vendor dir, if the file still exists, or if the first 32 (length - 1) bytes of the file contain <?php
+      // Checking for: if not in a vendor dir, if the file still exists, and if the first 32 (length - 1) bytes of the file contain <?php
       if ((strpos($file, '/vendor/') === FALSE) && file_exists($file_path) && (strpos(fgets(fopen($file_path, 'r'), 33), '<?php') !== FALSE)) {
         $bash_array .= "$file\n";
       }
     }
 
     // ENVIRONMENT - artifact directory.
-    $lintable_files = 'artifacts/lintable_files.txt';
-    $this->io->writeln("<info>" . $workingdir . "/" . $lintable_files . "</info>");
-    file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
+    $lintable_files = $this->build->getArtifactDirectory() .'/lintable_files.txt';
+    $this->io->writeln("<info>" . $lintable_files . "</info>");
+    file_put_contents($lintable_files, $bash_array);
     // Make sure
-    if (0 < filesize($workingdir . "/" . $lintable_files)) {
+    if (0 < filesize($lintable_files)) {
       // TODO: Remove hardcoded /var/www/html.
       // This should be come Codebase->getLocalDir() or similar
       // Use xargs to concurrently run linting on file.

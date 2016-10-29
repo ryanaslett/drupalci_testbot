@@ -44,7 +44,7 @@ class Codebase implements CodebaseInterface, Injectable {
   }
 
   public function getSourceDir() {
-    return $this->source_dir;
+    return $this->build->getBuildDirectory() . '/source';
   }
 
   /**
@@ -99,10 +99,4 @@ class Codebase implements CodebaseInterface, Injectable {
     }
     return NULL;
   }
-
-  /**
-   * Initialize Codebase
-   */
-  // ENVIRONMENT - Working Directory
-
 }

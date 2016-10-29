@@ -29,6 +29,9 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
   protected $environment;
 
+  /* @var \DrupalCI\Build\BuildInterface */
+  protected $build;
+
   // Results database goes here.
   public function inject(Container $container) {
     parent::inject($container);
@@ -37,6 +40,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
     $this->environment = $container['environment'];
+    $this->build = $container['build'];
 
   }
 
@@ -204,9 +208,10 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
   protected function setupSimpletestDB(BuildInterface $build) {
 
-    // CODEBASE - sqlite artifact directory
-    $source_dir = $build->getCodebase()->getWorkingDir();
-    $dbfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . basename($this->configuration['sqlite']);
+    // ENVIRONMENT
+    // TODO: this shouldnt be in artifacts under the source dir.
+    $source_dir = $this->build->getSourceDirectory();
+    $dbfile = $source_dir . '/artifacts/' . basename($this->configuration['sqlite']);
     $this->results_database->setDBFile($dbfile);
     $this->results_database->setDbType('sqlite');
   }
@@ -286,17 +291,17 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
-    // CODEBASE - sourceDirectory
-    $source_dir = $build->getCodebase()->getWorkingDir();
-    // TODO: Temporary hack.  Strip /checkout off the directory
-    $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
-    $test_listfile = $source_dir . DIRECTORY_SEPARATOR . 'artifacts/testgroups.txt';
+    // ENVIRONMENT
+    // TODO: This gets generated in the containers, into a subdir of the source
+    // directory, and we need to have it generated in the artifacts by default.
+    $source_dir = $this->build->getSourceDirectory();
+    $test_listfile = $source_dir . '/artifacts/testgroups.txt';
     $test_list = file($test_listfile, FILE_IGNORE_NEW_LINES);
     $test_list = array_slice($test_list, 4);
 
     // Set up output directory (inside working directory)
-    $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . 'xml';
-    mkdir($output_directory, 0777, TRUE);
+    $xml_output_dir = $source_dir = $this->build->getXmlDirectory();
+
     $test_groups = $this->parseGroups($test_list);
 
     // @TODO fix this api. This seems a little obtuse.
@@ -343,10 +348,10 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
         );
       }
     }
-    $this->_build_xml($classes, $output_directory);
+    $this->_build_xml($classes, $xml_output_dir);
   }
 
-  private function _build_xml($test_result_data, $output_dir) {
+  private function _build_xml($test_result_data, $xml_output_dir) {
     // Maps statuses to their xml element for each testcase.
     $element_map = array(
       'pass' => 'system-out',
@@ -471,10 +476,10 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     // $test_suites->setAttribute('disabled', "TODO SET");
     $test_suites->setAttribute('errors', $total_exceptions);
     $doc->appendChild($test_suites);
-    // ENVIRONMENT - junit xml output artifact
 
-    file_put_contents($output_dir . '/testresults.xml', $doc->saveXML());
-    $this->io->writeln("<info>Reformatted test results written to <options=bold>" . $output_dir . '/testresults.xml</options=bold></info>');
+    // ENVIRONMENT
+    file_put_contents($xml_output_dir . '/testresults.xml', $doc->saveXML());
+    $this->io->writeln("<info>Reformatted test results written to <options=bold>" . $xml_output_dir . '/testresults.xml</options=bold></info>');
   }
 
   /**

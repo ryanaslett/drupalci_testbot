@@ -10,6 +10,7 @@ use Docker\Manager\ExecManager;
 use Docker\Stream\DockerRawStream;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Environment\Environment;
+use DrupalCI\Build\Environment\EnvironmentInterface;
 use DrupalCI\Tests\DrupalCITestCase;
 
 /**
@@ -32,6 +33,13 @@ class ContainerCommandTest extends DrupalCITestCase {
       ->method('getDocker')
       ->will($this->returnValue($docker));
     $build->expects($this->once())
+      ->method('getExecContainers')
+      ->will($this->returnValue(['php' => [['id' => 'drupalci/php-5.4']]]));
+
+    $environment = $this->getMockBuilder(EnvironmentInterface::class)
+      ->getMockForAbstractClass();
+
+    $environment->expects($this->once())
       ->method('getExecContainers')
       ->will($this->returnValue(['php' => [['id' => 'drupalci/php-5.4']]]));
 
@@ -76,7 +84,7 @@ class ContainerCommandTest extends DrupalCITestCase {
     //DOCKER
     $command = new Environment();
     $command->inject($this->getContainer());
-    $command->executeCommands($build, $cmd);
+    $command->executeCommands($cmd);
   }
 
 }

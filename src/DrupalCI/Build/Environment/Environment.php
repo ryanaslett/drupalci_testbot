@@ -8,8 +8,10 @@
 
 namespace DrupalCI\Build\Environment;
 
+use Docker\API\Model\ContainerConfig;
 use Docker\API\Model\ExecConfig;
 use Docker\API\Model\ExecStartConfig;
+use Docker\API\Model\HostConfig;
 use Docker\Manager\ExecManager;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
@@ -48,8 +50,8 @@ class Environment implements Injectable, EnvironmentInterface {
    */
   protected $yamlparser;
 
-  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
-  protected $codebase;
+  /* @var \DrupalCI\Build\BuildInterface */
+  protected $build;
 
 
 
@@ -59,7 +61,7 @@ class Environment implements Injectable, EnvironmentInterface {
     $this->docker = $container['docker'];
     $this->database = $container['db.system'];
     $this->yamlparser = $container['yaml.parser'];
-    $this->codebase = $container['codebase'];
+    $this->build = $container['build'];
 
   }
 
@@ -232,9 +234,10 @@ class Environment implements Injectable, EnvironmentInterface {
     // DOCKER
     $volumes = [];
     // Map working directory
-    // CODEBASE - Source Dir
-    $working = $this->codebase->getWorkingDir();
+    // ENVIRONMENT - Source Dir
+    $working = $this->build->getSourceDirectory();
     // ENVIRONMENT - Volume mount for docker
+    // CREATE One for the artifacts directory as well.
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
     $config['HostConfig']['Binds'][] = "$working:$mount_point";
   }

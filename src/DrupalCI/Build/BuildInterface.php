@@ -38,19 +38,45 @@ interface BuildInterface {
   public function generateBuild($arg);
 
   /**
-   * @return \DrupalCI\Build\Codebase\Codebase
+   * Executes a configured build.
+   *
+   * @return mixed
    */
-  public function getCodebase();
+  public function executeBuild();
 
   /**
-   * @param \DrupalCI\Build\Codebase\Codebase $codebase
-   */
-  public function setCodebase(Codebase $codebase);
-
-  /**
+   * This is the directory where we place everything specific to this build
+   * The primary exception of something that is needed that does not live
+   * under the build directory is the Database.
+   *
    * @return mixed
    */
   public function getBuildDirectory();
+
+  /**
+   * This is the directory where we place all of our artifacts.
+   *
+   * @return mixed
+   */
+  public function getArtifactDirectory();
+
+  /**
+   * This is the directory where we place artifacts that can be parsed
+   * by jenkins xml parsing. It is usually located *under* the artifacts
+   * directory
+   *
+   * @return mixed
+   */
+  public function getXmlDirectory();
+
+  /**
+   * This is where we checkout the code to. It should be volume mounted over
+   * to /var/www/html inside the docker containers.
+   *
+   * @return mixed
+   */
+  public function getSourceDirectory();
+
 
   public function generateBuildId();
 }

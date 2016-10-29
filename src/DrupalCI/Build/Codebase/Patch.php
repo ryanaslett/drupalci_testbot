@@ -177,7 +177,7 @@ class Patch implements PatchInterface, Injectable {
   {
     // Copy working directory from the initial codebase
     // ENVIRONMENT - Host working dir not sure why copy?
-    $this->working_dir = $codebase->getWorkingDir();
+    $this->working_dir = $codebase->getSourceDir();
 
     // Set source and apply_dir properties
     $this->setSource($patch_details['from']);
@@ -195,7 +195,7 @@ class Patch implements PatchInterface, Injectable {
       $local_source = $this->download();
     } else {
       // If a local file, we already know the local source location
-      $local_source = $this->working_dir . DIRECTORY_SEPARATOR . $patch_details['to'] . DIRECTORY_SEPARATOR . $patch_details['from'];
+      $local_source = $this->working_dir . '/' . $patch_details['to'] . '/' . $patch_details['from'];
     }
     $this->setLocalSource($local_source);
 
@@ -219,7 +219,7 @@ class Patch implements PatchInterface, Injectable {
 
     // ENVIRONMENT - Host working dir
 
-    $destination_file = $directory . DIRECTORY_SEPARATOR . $file_info['basename'];
+    $destination_file = $directory . '/' . $file_info['basename'];
     $this->httpClient()
       ->get($url, ['save_to' => "$destination_file"]);
     $this->io->writeln("<info>Patch downloaded to <options=bold>$destination_file</options=bold></info>");
@@ -264,7 +264,7 @@ class Patch implements PatchInterface, Injectable {
   public function validate_target()
   {
     // ENVIRONMENT -codebase working directory
-    $apply_dir = $this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir();
+    $apply_dir = $this->working_dir . '/' . $this->getApplyDir();
     $real_directory = realpath($apply_dir);
     if ($real_directory === FALSE) {
       // Invalid target directory
@@ -284,7 +284,7 @@ class Patch implements PatchInterface, Injectable {
     // ENVIRONMENT - Host working dir
 
     $source = realpath($this->getLocalSource());
-    $target = realpath($this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir());
+    $target = realpath($this->working_dir . '/' . $this->getApplyDir());
 
     $cmd = "cd $target && git apply -p1 $source 2>&1";
 
@@ -317,7 +317,7 @@ class Patch implements PatchInterface, Injectable {
       // Calculate modified files
       // ENVIRONMENT - Host working dir
 
-      $apply_dir = $this->working_dir . DIRECTORY_SEPARATOR . $this->getApplyDir();
+      $apply_dir = $this->working_dir . '/' . $this->getApplyDir();
       $cmd = "cd $apply_dir && git diff --name-only";
       exec($cmd, $cmdoutput, $return);
       if ($return !== 0) {
@@ -330,7 +330,7 @@ class Patch implements PatchInterface, Injectable {
 
       $this->modified_files = array();
       foreach ($files as $file) {
-        $this->modified_files[] = $this->getApplyDir(). DIRECTORY_SEPARATOR . $file;
+        $this->modified_files[] = $this->getApplyDir(). '/' . $file;
       }
     }
     return $this->modified_files;

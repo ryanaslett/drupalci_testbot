@@ -56,11 +56,10 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
    */
   public function run(BuildInterface $build) {
    $setup_commands = [
-      'mkdir -p /var/www/html/results',
       'mkdir -p /var/www/html/artifacts',
       'mkdir -p /var/www/html/sites/simpletest/xml',
       'ln -s /var/www/html /var/www/html/checkout',
-      'chown -fR www-data:www-data /var/www/html/sites /var/www/html/results',
+      'chown -fR www-data:www-data /var/www/html/sites',
       'chmod 0777 /var/www/html/artifacts',
       'chmod 0777 /tmp',
       'supervisorctl start phantomjs',
@@ -68,7 +67,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
       # TODO: figure out what to do with this.
       'sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c \'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini\' || echo -n"',
     ];
-    // DOCKER
+    // DOCKER - executing commands
     $this->environment->executeCommands($setup_commands);
 
   }
