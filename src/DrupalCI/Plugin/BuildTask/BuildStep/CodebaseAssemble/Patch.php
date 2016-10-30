@@ -66,9 +66,9 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return 2;
       }
       // Create a new patch object
-      // CODEBASE - adding patchfiles
-      $patch = new PatchFile($details, $this->codebase);
+      $patch = new PatchFile($details, $this->build->getSourceDirectory());
       $patch->inject($this->container);
+      $this->codebase->addPatch($patch);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
 
