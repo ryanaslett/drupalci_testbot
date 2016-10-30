@@ -27,9 +27,6 @@ class Patch implements PatchInterface, Injectable {
    */
   protected $io;
 
-  /* @var \DrupalCI\Build\BuildInterface */
-  protected $build;
-
   /**
    * Local or Remote Patch File
    *
@@ -39,7 +36,6 @@ class Patch implements PatchInterface, Injectable {
 
   public function inject(Container $container) {
     $this->io = $container['console.io'];
-    $this->build = $container['build'];
   }
 
   /**
@@ -181,7 +177,7 @@ class Patch implements PatchInterface, Injectable {
   {
     // Copy working directory from the initial codebase
     // ENVIRONMENT - Host working dir not sure why copy?
-    $this->working_dir = $this->build->getSourceDirectory();
+    $this->working_dir = $codebase->getSourceDir();
 
     // Set source and apply_dir properties
     $this->setSource($patch_details['from']);

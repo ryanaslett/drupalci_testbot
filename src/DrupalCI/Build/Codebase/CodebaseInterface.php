@@ -3,6 +3,11 @@
 namespace DrupalCI\Build\Codebase;
 
 interface CodebaseInterface {
+  // ENVIRONMENT - Host working dir
+  public function setSourceDir($source_dir);
+
+  // ENVIRONMENT - Host working dir
+  public function getSourceDir();
 
   public function getPatches();
 

@@ -30,6 +30,23 @@ class Codebase implements CodebaseInterface, Injectable {
     $this->build = $container['build'];
   }
 
+
+  /**
+   * The base working directory for this codebase build
+   *
+   * @var string
+   */
+  // ENVIRONMENT - root directory of the codebase on the HOST
+  protected $source_dir;
+
+  public function setSourceDir($source_dir) {
+    $this->source_dir = $source_dir;
+  }
+
+  public function getSourceDir() {
+    return $this->build->getBuildDirectory() . '/source';
+  }
+
   /**
    * Any patches used to generate this codebase
    *

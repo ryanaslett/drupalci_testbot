@@ -13,9 +13,11 @@ use Docker\API\Model\ExecConfig;
 use Docker\API\Model\ExecStartConfig;
 use Docker\API\Model\HostConfig;
 use Docker\Manager\ExecManager;
+use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
-use Http\Client\Common\Exception\ClientErrorException;
+use DrupalCI\Plugin\PluginBase;
 use Pimple\Container;
+use Symfony\Component\Yaml\Yaml;
 
 
 class Environment implements Injectable, EnvironmentInterface {
@@ -73,6 +75,8 @@ class Environment implements Injectable, EnvironmentInterface {
     $commands = is_array($commands) ? $commands : [$commands];
     // DOCKER
 
+    $manager = $this->docker->getContainerManager();
+
     if (!empty($commands)) {
       // Check that we have a container to execute on
       $configs = $this->getExecContainers();
@@ -126,7 +130,6 @@ class Environment implements Injectable, EnvironmentInterface {
       }
     }
   }
-
 
   protected function checkCommandStatus($signal) {
     if ($signal !==0) {
