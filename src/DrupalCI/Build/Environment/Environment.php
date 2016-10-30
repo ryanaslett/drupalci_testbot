@@ -167,7 +167,6 @@ class Environment implements Injectable, EnvironmentInterface {
     // Get container configuration, which defines parameters such as exposed ports, etc.
     $configs = $this->getContainerConfiguration($container['image']);
     $config = $configs[$container['image']];
-    // TODO: Allow classes to modify the default configuration before processing
     // Add service container links
     $this->createContainerLinks($config);
     // Add volumes
@@ -178,7 +177,6 @@ class Environment implements Injectable, EnvironmentInterface {
     }
 
     // Instantiate container
-    // TODO: Use a normalizer
     $container_config = new ContainerConfig();
     $container_config->setImage($config['Image']);
     $container_config->setCmd($config['Cmd']);

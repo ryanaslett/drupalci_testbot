@@ -396,9 +396,6 @@ class Build implements BuildInterface, Injectable {
     // unique build tag based on timestamp.
     $build_id = getenv('BUILD_TAG');
     if (empty($build_id)) {
-      // TODO: potential collision if multiple invocations of drupalci are
-      // running on the same machine in parallel and they start up at the same
-      // time.
       $build_id = $this->buildType . '_' . time();
     }
     $this->setBuildId($build_id);

@@ -99,7 +99,7 @@ class SimpletestLegacy7Build extends Build {
     'DCI_ResultsServerConfig' => 'Specifies the location of a configuration file on the test runner containg a DrupalCI Results Server configuration to use in publishing results.',
     'DCI_BuildId' => 'Specifies a unique build ID assigned to this build from an upstream server',
     'DCI_JobType' => 'Specifies a default build type to assume for a "drupalci run" command',
-    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',  //TODO: Check logic, may be reversed.
+    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',
 
      // ***** Default Variables defined for every simpletest build *****
     'DCI_DBVersion' => 'Defines the database version for this particular simpletest run. May map to a required service container. Default: mysql-5.5',
