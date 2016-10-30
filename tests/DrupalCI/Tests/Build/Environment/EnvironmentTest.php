@@ -67,7 +67,6 @@ class EnvironmentTest extends DrupalCITestCase {
       ->method('find')
       ->will($this->returnValue($exec_command));
 
-    //DOCKER
     $environment = $this->getMockBuilder(Environment::class)
       ->setMethods(['getExecContainers'])
       ->getMockForAbstractClass();

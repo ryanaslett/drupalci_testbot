@@ -66,12 +66,12 @@ class DrupalCICommandBase extends Command {
     }
   }
 
-  // DOCKER
+
   public function getDocker() {
     return $this->container['docker'];
   }
 
-  // DOCKER
+
   public function getManager() {
     return $this->container['docker.image.manager'];
   }

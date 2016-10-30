@@ -67,7 +67,6 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
       # TODO: figure out what to do with this.
       'sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c \'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini\' || echo -n"',
     ];
-    // DOCKER - executing commands
     $this->environment->executeCommands($setup_commands);
 
   }

@@ -50,7 +50,6 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
    * {@inheritdoc}
    */
   public function run(BuildInterface $build, &$config = []) {
-    // DOCKER
     $this->io->writeln("<info>Parsing required Web container image names ...</info>");
     // 2. generates a container image name from the php version -
     //  drupalci/web-<phpversion>

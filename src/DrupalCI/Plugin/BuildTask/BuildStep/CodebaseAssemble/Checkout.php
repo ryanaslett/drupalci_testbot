@@ -167,7 +167,6 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
 
   protected function setupCheckoutLocal(BuildInterface $build, $repository) {
     $source_dir = isset($repository['source_dir']) ? $repository['source_dir'] : './';
-    // ENVIRONMENT - Source DIrectory
     $checkout_dir = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $this->build->getSourceDirectory();
     // TODO: Ensure we don't end up with double slashes
     // Validate source directory
@@ -205,7 +204,6 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     $checkout_directory = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $this->build->getSourceDirectory();
     // TODO: Ensure we don't end up with double slashes
     // Validate target directory.  Must be within workingdir.
-    // ENVIRONMENT - Source DIrectory
     if (!($directory = $this->validateDirectory($this->build->getSourceDirectory(), $checkout_directory))) {
       // Invalid checkout directory
       $this->io->drupalCIError("Directory Error", "The checkout directory <info>$directory</info> is invalid.");

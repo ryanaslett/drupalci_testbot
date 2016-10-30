@@ -38,7 +38,6 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
    */
   public function run(BuildInterface $build) {
 
-    // ENVIRONMENT - Source Directory
     $source_dir = $this->build->getSourceDirectory();
 
     $cmd = "./bin/composer " . $this->configuration['options'] . " " . $source_dir;

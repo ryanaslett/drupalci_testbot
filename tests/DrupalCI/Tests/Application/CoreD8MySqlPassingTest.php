@@ -47,7 +47,6 @@ class CoreD8MySqlPassingTest extends DrupalCIFunctionalTestBase {
     $this->assertNotRegExp('/.*simpletestlegacy7*/', $app_tester->getDisplay());
     $this->assertRegExp('/.*Drupal\\\\KernelTests\\\\Core\\\\Routing\\\\UrlIntegrationTest*/', $app_tester->getDisplay());
     // Look for junit xml results file
-    // ENVIRONMENT -Artifacts
     $output_file = $build->getXmlDirectory() . "/testresults.xml";
     $this->assertFileExists($output_file);
     // create a test fixture that contains the xml output results.

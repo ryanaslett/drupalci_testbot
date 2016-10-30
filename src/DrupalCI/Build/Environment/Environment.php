@@ -74,7 +74,7 @@ class Environment implements Injectable, EnvironmentInterface {
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
     $commands = is_array($commands) ? $commands : [$commands];
-    // DOCKER
+
 
     if (!empty($commands)) {
       // Check that we have a container to execute on
@@ -142,7 +142,7 @@ class Environment implements Injectable, EnvironmentInterface {
 
 
   public function getExecContainers() {
-    // DOCKER
+
     $configs = $this->executableContainers;
     foreach ($configs as $type => $containers) {
       foreach ($containers as $key => $container) {
@@ -159,12 +159,10 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
   public function setExecContainers(array $containers) {
-    // DOCKER
     $this->executableContainers = $containers;
   }
 
   protected function startContainer(&$container) {
-    // DOCKER
     $manager = $this->docker->getContainerManager();
     // Get container configuration, which defines parameters such as exposed ports, etc.
     $configs = $this->getContainerConfiguration($container['image']);
@@ -216,7 +214,6 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
   protected function createContainerLinks(&$config) {
-    // DOCKER
     $links = [];
     if (empty($this->serviceContainers)) {
       return;
@@ -230,20 +227,18 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
   protected function createContainerVolumes(&$config) {
-    // DOCKER
     $volumes = [];
     // Map working directory
-    // ENVIRONMENT - Source Dir
     $working = $this->build->getSourceDirectory();
-    // ENVIRONMENT - Volume mount for docker
+    // TODO: Change this into defaults, and remove the configuration
+    // options.
     // CREATE One for the artifacts directory as well.
     $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
     $config['HostConfig']['Binds'][] = "$working:$mount_point";
   }
 
   protected function getContainerConfiguration($image = NULL) {
-    // DOCKER
-    // ENVIRONMENT - container config directory
+    // TODO Remove the need for this entirely
     $path = __DIR__ . '/../../Containers';
     // RecursiveDirectoryIterator recurses into directories and returns an
     // iterator for each directory. RecursiveIteratorIterator then iterates over
@@ -272,19 +267,16 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
   public function getServiceContainers() {
-    // DOCKER
     return $this->serviceContainers;
   }
 
   public function setServiceContainers(array $service_containers) {
-    // DOCKER
     $this->serviceContainers = $service_containers;
   }
 
   public function startServiceContainerDaemons($container_type) {
     // $container_type is *always* 'db'
     $needs_sleep = FALSE;
-    // DOCKER
 
     $manager = $this->docker->getContainerManager();
     $instances = [];
@@ -362,7 +354,7 @@ class Environment implements Injectable, EnvironmentInterface {
   public function validateImageNames($containers) {
     // Verify that the appropriate container images exist
     $this->io->writeln("<comment>Validating container images exist</comment>");
-    // DOCKER
+
     $manager = $this->docker->getImageManager();
     foreach ($containers as $key => $image_name) {
       $container_string = explode(':', $image_name['image']);

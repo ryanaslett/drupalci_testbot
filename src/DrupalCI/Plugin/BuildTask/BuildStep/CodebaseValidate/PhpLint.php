@@ -51,14 +51,12 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   public function run(BuildInterface $build) {
     $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
-    // CODEBASE - modified files
     $modified_files = $this->codebase->getModifiedFiles();
 
     if (empty($modified_files)) {
       return;
     }
 
-    // ENVIRONMENT - FIX-ArtifactDir
     $workingdir = $this->build->getSourceDirectory();
     $concurrency = $this->configuration['concurrency'];
     $bash_array = "";
@@ -70,7 +68,6 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
       }
     }
 
-    // ENVIRONMENT - artifact directory.
     $lintable_files = $this->build->getArtifactDirectory() .'/lintable_files.txt';
     $this->io->writeln("<info>" . $lintable_files . "</info>");
     file_put_contents($lintable_files, $bash_array);
@@ -80,7 +77,6 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
       // This should be come Codebase->getLocalDir() or similar
       // Use xargs to concurrently run linting on file.
       $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
-      // DOCKER - execute Commands
       $this->environment->executeCommands($cmd);
     }
   }

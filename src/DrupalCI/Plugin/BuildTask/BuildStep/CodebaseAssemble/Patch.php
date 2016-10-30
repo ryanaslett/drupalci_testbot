@@ -85,7 +85,6 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-        // ENVIRONMENT - JunitXML artifact Directory
         $output_directory = $this->build->getXmlDirectory();
 
         if (!is_dir($output_directory)) {
@@ -107,7 +106,6 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return $result;
       };
       // Update our list of modified files
-      // CODEBASE - Modified Files
       $this->codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }

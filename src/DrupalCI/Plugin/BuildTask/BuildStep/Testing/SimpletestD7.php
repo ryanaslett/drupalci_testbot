@@ -29,7 +29,6 @@ class SimpletestD7 extends Simpletest {
       'cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html vset simpletest_verbose \'0\' 2>&1',
       'cd /var/www/html && sudo -u www-data DRUSH_NO_MIN_PHP=1 /.composer/vendor/drush/drush/drush -r /var/www/html en -y simpletest 2>&1',
     ];
-    // DOCKER
     $this->environment->executeCommands($setup_commands);
   }
 

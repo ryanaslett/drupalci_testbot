@@ -60,7 +60,6 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return;
       }
       $url = $details['from'];
-      // ENVIRONMENT - Source Directory
       $source_dir = $this->build->getSourceDirectory();
       $fetchdir = (!empty($details['to'])) ? $details['to'] : $source_dir;
       if (!($directory = $this->validateDirectory($source_dir, $fetchdir))) {

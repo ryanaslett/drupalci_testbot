@@ -111,7 +111,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
     $command_line = implode(' ', $command);
 
-    // DOCKER
     $result = $this->environment->executeCommands($command_line);
 
     $this->generateJunitXml($build);
@@ -208,7 +207,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
   protected function setupSimpletestDB(BuildInterface $build) {
 
-    // ENVIRONMENT
     // TODO: this shouldnt be in artifacts under the source dir.
     $source_dir = $this->build->getSourceDirectory();
     $dbfile = $source_dir . '/artifacts/' . basename($this->configuration['sqlite']);
@@ -221,7 +219,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
    */
   protected function generateTestGroups() {
     $cmd = "php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
-    // DOCKER
     $status = $this->environment->executeCommands($cmd);
     return $status;
   }
@@ -291,7 +288,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     // Load the list of tests from the testgroups.txt build artifact
     // Assumes that gatherArtifacts plugin has run.
     // TODO: Verify that gatherArtifacts has ran.
-    // ENVIRONMENT
     // TODO: This gets generated in the containers, into a subdir of the source
     // directory, and we need to have it generated in the artifacts by default.
     $source_dir = $this->build->getSourceDirectory();
@@ -477,7 +473,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     $test_suites->setAttribute('errors', $total_exceptions);
     $doc->appendChild($test_suites);
 
-    // ENVIRONMENT
     file_put_contents($xml_output_dir . '/testresults.xml', $doc->saveXML());
     $this->io->writeln("<info>Reformatted test results written to <options=bold>" . $xml_output_dir . '/testresults.xml</options=bold></info>');
   }

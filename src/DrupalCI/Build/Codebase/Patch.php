@@ -176,7 +176,7 @@ class Patch implements PatchInterface, Injectable {
   public function __construct($patch_details, $source_dir)
   {
     // Copy working directory from the initial codebase
-    // ENVIRONMENT - Host working dir not sure why copy?
+
     $this->working_dir = $source_dir;
 
     // Set source and apply_dir properties
@@ -214,8 +214,6 @@ class Patch implements PatchInterface, Injectable {
     $url = $this->getSource();
     $file_info = pathinfo($url);
     $directory = $this->working_dir;
-
-    // ENVIRONMENT - Host working dir
 
     $destination_file = $directory . '/' . $file_info['basename'];
     $this->httpClient()
@@ -261,7 +259,6 @@ class Patch implements PatchInterface, Injectable {
    */
   public function validate_target()
   {
-    // ENVIRONMENT -codebase working directory
     $apply_dir = $this->working_dir . '/' . $this->getApplyDir();
     $real_directory = realpath($apply_dir);
     if ($real_directory === FALSE) {
@@ -279,7 +276,6 @@ class Patch implements PatchInterface, Injectable {
    */
   public function apply()
   {
-    // ENVIRONMENT - Host working dir
 
     $source = realpath($this->getLocalSource());
     $target = realpath($this->working_dir . '/' . $this->getApplyDir());
@@ -313,9 +309,9 @@ class Patch implements PatchInterface, Injectable {
     }
     if (empty($this->modified_files)) {
       // Calculate modified files
-      // ENVIRONMENT - Host working dir
 
       $apply_dir = $this->working_dir . '/' . $this->getApplyDir();
+      // TODO: refactor this exec out of here.
       $cmd = "cd $apply_dir && git diff --name-only";
       exec($cmd, $cmdoutput, $return);
       if ($return !== 0) {
@@ -324,7 +320,6 @@ class Patch implements PatchInterface, Injectable {
         return FALSE;
       }
       $files = $cmdoutput;
-      // ENVIRONMENT - Host working dir
 
       $this->modified_files = array();
       foreach ($files as $file) {
