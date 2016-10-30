@@ -16,6 +16,7 @@ use Docker\Manager\ExecManager;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
+use Http\Client\Common\Exception\ClientErrorException;
 use Pimple\Container;
 use Symfony\Component\Yaml\Yaml;
 
