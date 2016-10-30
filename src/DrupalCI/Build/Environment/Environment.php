@@ -75,8 +75,6 @@ class Environment implements Injectable, EnvironmentInterface {
     $commands = is_array($commands) ? $commands : [$commands];
     // DOCKER
 
-    $manager = $this->docker->getContainerManager();
-
     if (!empty($commands)) {
       // Check that we have a container to execute on
       $configs = $this->getExecContainers();

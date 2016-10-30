@@ -37,11 +37,7 @@ class FetchTest extends DrupalCITestCase {
 
     $codebase = $this->getMock(Codebase::class);
     $build = $this->getMockBuilder(BuildInterface::class)
-      ->setMethods(['getCodebase'])
       ->getMockForAbstractClass();
-    $build->expects($this->once())
-      ->method('getCodebase')
-      ->will($this->returnValue($codebase));
 
     $data = [
       'files' => [['from' => "$url",'to' => "."]]
