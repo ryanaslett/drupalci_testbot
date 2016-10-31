@@ -4,20 +4,38 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
+use Pimple\Container;
 
 /**
  * @PluginID("checkout")
  */
-class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterface {
+class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
   use FileHandlerTrait;
+
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
+  /**
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  public function inject(Container $container) {
+    $this->build = $container['build'];
+    $this->io = $container['console.io'];
+  }
 
   /**
    * @inheritDoc
@@ -67,16 +85,15 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
-    // TODO: Implement run() method.
+  public function run() {
     $this->io->writeln("<info>Populating container codebase data volume.</info>");
     foreach ($this->configuration['repositories'] as $repository ) {
       switch ($repository['protocol']) {
         case 'local':
-          $this->setupCheckoutLocal($build, $repository);
+          $this->setupCheckoutLocal($this->build, $repository);
           break;
         case 'git':
-          $this->setupCheckoutGit($build, $repository);
+          $this->setupCheckoutGit($this->build, $repository);
           break;
       }
     }

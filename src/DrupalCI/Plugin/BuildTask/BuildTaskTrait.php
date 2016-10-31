@@ -54,7 +54,7 @@ trait BuildTaskTrait {
    */
   public function start(BuildInterface $build) {
     $this->startTime = microtime(true);
-    $this->run($build);
+    $this->run();
   }
 
   /**

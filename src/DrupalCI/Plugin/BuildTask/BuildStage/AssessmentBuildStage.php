@@ -25,7 +25,7 @@ class AssessmentBuildStage extends PluginBase  implements BuildStageInterface, B
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

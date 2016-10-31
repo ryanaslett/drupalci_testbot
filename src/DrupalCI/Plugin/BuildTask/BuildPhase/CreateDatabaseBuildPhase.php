@@ -25,7 +25,7 @@ class CreateDatabaseBuildPhase extends PluginBase implements BuildPhaseInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

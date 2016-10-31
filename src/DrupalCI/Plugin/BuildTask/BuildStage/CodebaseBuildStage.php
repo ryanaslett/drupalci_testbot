@@ -30,7 +30,7 @@ class CodebaseBuildStage extends PluginBase  implements BuildStageInterface, Bui
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

@@ -25,7 +25,7 @@ class MetricsBuildPhase extends PluginBase implements BuildPhaseInterface, Build
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

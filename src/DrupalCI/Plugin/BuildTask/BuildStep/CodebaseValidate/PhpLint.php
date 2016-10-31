@@ -6,10 +6,12 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseValidate;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Environment\ContainerCommand;
 use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
+use Pimple\Container;
 
 /**
  * @PluginID("phplint")
@@ -17,6 +19,29 @@ use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterface {
 
   use BuildTaskTrait;
+
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
+  /**
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  /**
+   * @var \Pimple\Container
+   */
+  protected $container;
+
+  public function inject(Container $container) {
+    $this->container = $container;
+    $this->build = $container['build'];
+    $this->io = $container['console.io'];
+  }
 
   /**
    * @inheritDoc
@@ -30,11 +55,11 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
     // CODEBASE
-    $codebase = $build->getCodebase();
+    $codebase = $this->build->getCodebase();
     $modified_files = $codebase->getModifiedFiles();
 
     if (empty($modified_files)) {
@@ -65,7 +90,7 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
       $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
       $command = new ContainerCommand();
       $command->inject($this->container);
-      $command->run($build, $cmd);
+      $command->run($this->build, $cmd);
     }
   }
 

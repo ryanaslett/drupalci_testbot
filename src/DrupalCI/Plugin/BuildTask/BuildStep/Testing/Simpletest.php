@@ -27,6 +27,13 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /* @var  \DrupalCI\Build\Environment\DatabaseInterface */
   protected $results_database;
 
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
   // Results database goes here.
   public function inject(Container $container) {
     parent::inject($container);
@@ -34,7 +41,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     /* @var \DrupalCI\Build\Environment\DatabaseInterface */
     // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
-
+    $this->build = $container['build'];
   }
 
   /**
@@ -89,10 +96,10 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
-    $this->setupSimpletestDB($build);
-    $status = $this->generateTestGroups($build);
+    $this->setupSimpletestDB($this->build);
+    $status = $this->generateTestGroups($this->build);
     if ($status > 0) {
       return $status;
     }
@@ -106,9 +113,9 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
     $runner = new ContainerTestingCommand();
     $runner->inject($this->container);
-    $result = $runner->run($build,$command_line);
+    $result = $runner->run($this->build,$command_line);
 
-    $this->generateJunitXml($build);
+    $this->generateJunitXml($this->build);
     // Last thing. JunitFormat the output.
 
   }

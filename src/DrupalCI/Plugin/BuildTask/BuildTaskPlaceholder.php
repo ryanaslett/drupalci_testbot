@@ -1,18 +1,18 @@
 <?php
 
-namespace DrupalCI\Plugin\BuildTask\BuildPhase;
+namespace DrupalCI\Plugin\BuildTask;
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
-use DrupalCI\Plugin\BuildTask\BuildPhase\BuildPhaseInterface;
+use DrupalCI\Plugin\BuildTask\BuildStage\BuildStageInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 
 /**
- * @PluginID("startcontainers")
+ * Base class for no-op tasks.
+ *
+ * Sublcass this class to get stub implementations of all the interface methods.
  */
-
-class StartContainersBuildPhase extends PluginBase implements BuildPhaseInterface, BuildTaskInterface  {
+class BuildTaskPlaceholder extends PluginBase  implements BuildStageInterface, BuildTaskInterface  {
 
   use BuildTaskTrait;
 
@@ -20,70 +20,61 @@ class StartContainersBuildPhase extends PluginBase implements BuildPhaseInterfac
    * @inheritDoc
    */
   public function configure() {
-    // TODO: Implement configure() method.
   }
 
   /**
    * @inheritDoc
    */
   public function run() {
-    // TODO: Implement run() method.
   }
 
   /**
    * @inheritDoc
    */
   public function complete() {
-    // TODO: Implement complete() method.
   }
 
   /**
    * @inheritDoc
    */
   public function getDefaultConfiguration() {
-    // TODO: Implement getDefaultConfiguration() method.
   }
 
   /**
    * @inheritDoc
    */
   public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
   }
 
   /**
    * @inheritDoc
    */
   public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
   }
 
   /**
    * @inheritDoc
    */
   public function getShortError() {
-    // TODO: Implement getShortError() method.
   }
 
   /**
    * @inheritDoc
    */
   public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
   }
 
   /**
    * @inheritDoc
    */
   public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**
    * @inheritDoc
    */
   public function getArtifacts() {
-    // TODO: Implement getArtifacts() method.
   }
 
 }
+

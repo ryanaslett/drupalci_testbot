@@ -24,9 +24,17 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   /* @var DatabaseInterface */
   protected $database;
 
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
   public function inject(Container $container) {
     parent::inject($container);
     $this->database = $container['db.system'];
+    $this->build = $container['build'];
   }
 
   /**
@@ -43,14 +51,14 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, &$config = []) {
+  public function run() {
 
     $this->io->writeln("<info>Parsing required Web container image names ...</info>");
-    $containers = $build->getExecContainers();
+    $containers = $this->build->getExecContainers();
     $containers['web'] = $this->buildWebImageNames($this->configuration['phpversion']);
-    $valid = $this->validateImageNames($containers['web'], $build);
+    $valid = $this->validateImageNames($containers['web'], $this->build);
     if (!empty($valid)) {
-      $build->setExecContainers($containers);
+      $this->build->setExecContainers($containers);
       // Actual creation and configuration of the executable containers occurs
       // during the 'getExecContainers()' method call.
     }
@@ -61,12 +69,12 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
     }
     $this->io->writeln("<info>Parsing required database container image names ...</info>");
     $containers = $this->buildImageNames();
-    if ($valid = $this->validateImageNames($containers, $build)) {
+    if ($valid = $this->validateImageNames($containers, $this->build)) {
       // @todo Move the housekeeping to the build instead of doing it here.
-      $service_containers = $build->getServiceContainers();
+      $service_containers = $this->build->getServiceContainers();
       $service_containers['db'] = $containers;
-      $build->setServiceContainers($service_containers);
-      $build->startServiceContainerDaemons('db');
+      $this->build->setServiceContainers($service_containers);
+      $this->build->startServiceContainerDaemons('db');
     }
   }
 

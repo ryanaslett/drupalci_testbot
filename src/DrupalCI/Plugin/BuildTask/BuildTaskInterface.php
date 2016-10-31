@@ -34,7 +34,7 @@ interface BuildTaskInterface {
    *
    * @return mixed
    */
-  public function run(BuildInterface $build);
+  public function run();
 
   /**
    * Decorator for complete functions to stop their timer.

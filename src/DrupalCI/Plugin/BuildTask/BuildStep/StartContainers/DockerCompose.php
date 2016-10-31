@@ -26,7 +26,7 @@ class DockerCompose extends PluginBase implements BuildStepInterface, BuildTaskI
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

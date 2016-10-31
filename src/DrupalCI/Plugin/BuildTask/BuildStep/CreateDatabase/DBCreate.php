@@ -37,7 +37,7 @@ class DBCreate extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     if ($this->database->getDbType() !== 'sqlite') {
       $this->database->createDB();

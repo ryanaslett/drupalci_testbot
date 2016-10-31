@@ -24,6 +24,29 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   use FileHandlerTrait;
 
   /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
+  /**
+   * @var \Pimple\Container
+   */
+  protected $container;
+
+  /**
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  public function inject(Container $container) {
+    $this->container = $container;
+    $this->build = $container['build'];
+    $this->io = $container['console.io'];
+  }
+
+  /**
    * @inheritDoc
    */
   public function configure() {
@@ -37,11 +60,11 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $files = $this->configuration['patches'];
 
-    $codebase = $build->getCodebase();
+    $codebase = $this->build->getCodebase();
     if (empty($files)) {
       $this->io->writeln('No patches to apply.');
     }
@@ -70,7 +93,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-        $source_dir = $build->getCodebase()->getWorkingDir();
+        $source_dir = $this->build->getCodebase()->getWorkingDir();
         // TODO: Temporary hack.  Strip /checkout off the directory
         $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
 

@@ -4,21 +4,39 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use GuzzleHttp\Client;
+use Pimple\Container;
 
 /**
  * @PluginID("fetch")
  */
-class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface {
+class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
   use FileHandlerTrait;
+
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
+  /**
+   * @var \DrupalCI\Console\DrupalCIStyle
+   */
+  protected $io;
+
+  public function inject(Container $container) {
+    $this->build = $container['build'];
+    $this->io = $container['console.io'];
+  }
 
   /**
    * @inheritDoc
@@ -34,7 +52,7 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $files = $this->configuration['files'];
 
@@ -50,9 +68,9 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return;
       }
       $url = $details['from'];
-      $workingdir = $build->getCodebase()->getWorkingDir();
+      $workingdir = $this->build->getCodebase()->getWorkingDir();
       $fetchdir = (!empty($details['to'])) ? $details['to'] : $workingdir;
-      if (!($directory = $this->validateDirectory($build, $fetchdir))) {
+      if (!($directory = $this->validateDirectory($this->build, $fetchdir))) {
         // Invalid checkout directory
         $this->io->drupalCIError("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
 

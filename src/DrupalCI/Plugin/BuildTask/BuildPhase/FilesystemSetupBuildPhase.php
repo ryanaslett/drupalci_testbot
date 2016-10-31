@@ -25,7 +25,7 @@ class FilesystemSetupBuildPhase extends PluginBase implements BuildPhaseInterfac
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

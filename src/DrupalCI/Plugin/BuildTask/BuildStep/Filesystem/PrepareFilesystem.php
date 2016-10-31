@@ -27,6 +27,13 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
   use BuildTaskTrait;
   use FileHandlerTrait;
 
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
   /* @var \DrupalCI\Build\Environment\DatabaseInterface */
   protected $system_database;
 
@@ -34,6 +41,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
   public function inject(Container $container) {
     parent::inject($container);
     $this->system_database = $container['db.system'];
+    $this->build = $container['build'];
   }
 
   /**
@@ -50,7 +58,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
    $setup_commands = [
       'mkdir -p /var/www/html/results',
       'mkdir -p /var/www/html/artifacts',
@@ -66,7 +74,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
     ];
     $command = new ContainerCommand();
     $command->inject($this->container);
-    $command->run($build, $setup_commands);
+    $command->run($this->build, $setup_commands);
 
   }
 

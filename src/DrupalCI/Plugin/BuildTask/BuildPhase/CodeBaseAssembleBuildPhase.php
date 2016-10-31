@@ -25,7 +25,7 @@ class CodebaseAssembleBuildPhase extends PluginBase implements BuildPhaseInterfa
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 
