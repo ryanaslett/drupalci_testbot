@@ -4,10 +4,12 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
+use Pimple\Container;
 
 /**
  * @PluginID("composer")
@@ -15,6 +17,19 @@ use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterface {
 
   use BuildTaskTrait;
+
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
+
+  public function inject(Container $container) {
+    parent::inject($container);
+    $this->build = $container['build'];
+  }
 
   /**
    * @inheritDoc
@@ -26,11 +41,11 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
-    $workingdir = $build->getCodebase()->getWorkingDir();
+    $source_dir = $this->build->getSourceDirectory();
 
-    $cmd = "./bin/composer " . $this->configuration['options'] . " " . $workingdir;
+    $cmd = "./bin/composer " . $this->configuration['options'] . " " . $source_dir;
     $this->exec($cmd, $cmdoutput, $result);
 
   }

@@ -13,6 +13,7 @@ use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
 use DrupalCI\Build\Codebase\Codebase;
+use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
@@ -76,13 +77,16 @@ class Build implements BuildInterface, Injectable {
    */
   protected $yamlparser;
 
-
   /**
    * Style object.
    *
    * @var \DrupalCI\Console\DrupalCIStyle
    */
   protected $io;
+
+  protected $buildDirectory;
+
+
 
   /**
    * {@inheritdoc}
@@ -99,7 +103,7 @@ class Build implements BuildInterface, Injectable {
    *
    * @var string
    */
-  protected $buildType = 'base';
+  protected $buildType;
 
   public function getBuildType() {
     return $this->buildType;
@@ -110,13 +114,6 @@ class Build implements BuildInterface, Injectable {
    */
   public function getBuildFile() {
     return $this->buildFile;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setBuildFile($buildFile) {
-    $this->buildFile = $buildFile;
   }
 
   /**
@@ -200,6 +197,7 @@ class Build implements BuildInterface, Injectable {
     // After we load the config, we separate the workflow from the config:
     $this->computedBuildDefinition = $this->processBuildConfig($this->initialBuildDefinition['build']);
     $this->generateBuildId();
+    $this->setupWorkSpace();
 
   }
 
@@ -282,7 +280,13 @@ class Build implements BuildInterface, Injectable {
    * processes the build.
    */
   public function executeBuild() {
-    $something = $this->processTask($this->computedBuildDefinition);
+    try {
+      $statuscode = $this->processTask($this->computedBuildDefinition);
+      return $statuscode;
+    }
+    catch (BuildTaskException $e) {
+      return 2;
+    }
 
   }
 
@@ -330,14 +334,17 @@ class Build implements BuildInterface, Injectable {
         // an Object.
         /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
         $plugin = $iteration['#plugin'];
+        $child_status = 0;
         // start also implies run();
-        $plugin->start($this);
+        $task_status = $plugin->start($this);
         if (isset($iteration['#children'])) {
-          $this->processTask($iteration['#children']);
+          $child_status = $this->processTask($iteration['#children']);
         }
         $plugin->finish();
+        $total_status = max($task_status, $child_status);
       }
     }
+    return $total_status;
   }
 
   protected function has_string_keys(array $array) {
@@ -361,281 +368,35 @@ class Build implements BuildInterface, Injectable {
     throw new ParseException("Unable to parse build definition file at $source.");
   }
 
+
   /**
-   * Stores the codebase object for this build
-   *
-   * @var \DrupalCI\Build\Codebase\Codebase
+   * {@inheritdoc}
    */
-  // CODEBASE
-  protected $codebase;
-
-  public function getCodebase() {
-    return $this->codebase;
-  }
-
-  public function setCodebase(Codebase $codebase) {
-    $this->codebase = $codebase;
+  public function getBuildDirectory() {
+    return $this->buildDirectory;
   }
 
   /**
-   * Stores our Docker Container manager
-   *
-   * @var \Docker\Docker
+   * @inheritDoc
    */
-  protected $docker;
+  public function getArtifactDirectory() {
+    return $this->buildDirectory . '/artifacts';
+  }
+  /**
+   * @inheritDoc
+   */
+  public function getXMLDirectory() {
+    return $this->getArtifactDirectory() . '/xml';
+  }
 
   /**
-   * @return \Docker\Docker
+   * @inheritDoc
    */
-  // DOCKER
-  public function getDocker() {
-    $client = Client::createFromEnv();
-    if (NULL === $this->docker) {
-      $this->docker = new Docker($client);
-    }
-    return $this->docker;
-  }
-
-  // Holds the name and Docker IDs of our service containers.
-  public $serviceContainers;
-
-  // Holds the name and Docker IDs of our executable containers.
-  public $executableContainers = [];
-
-  public function getServiceContainers() {
-    // DOCKER
-    return $this->serviceContainers;
-  }
-
-  public function setServiceContainers(array $service_containers) {
-    // DOCKER
-    $this->serviceContainers = $service_containers;
-  }
-
-  public function getExecContainers() {
-    // DOCKER
-    $configs = $this->executableContainers;
-    foreach ($configs as $type => $containers) {
-      foreach ($containers as $key => $container) {
-        // Check if container is created.  If not, create it
-        if (empty($container['created'])) {
-          // TODO: This may be causing duplicate containers to be created
-          // due to a race condition during short-running exec calls.
-          $this->startContainer($container);
-          $this->executableContainers[$type][$key] = $container;
-        }
-      }
-    }
-    return $this->executableContainers;
-  }
-
-  public function setExecContainers(array $containers) {
-    // DOCKER
-    $this->executableContainers = $containers;
-  }
-
-  public function startContainer(&$container) {
-    // DOCKER
-    $docker = $this->getDocker();
-    $manager = $docker->getContainerManager();
-    // Get container configuration, which defines parameters such as exposed ports, etc.
-    $configs = $this->getContainerConfiguration($container['image']);
-    $config = $configs[$container['image']];
-    // TODO: Allow classes to modify the default configuration before processing
-    // Add service container links
-    $this->createContainerLinks($config);
-    // Add volumes
-    $this->createContainerVolumes($config);
-    // Set a default CMD in case the container config does not set one.
-    if (empty($config['Cmd'])) {
-      $this->setDefaultCommand($config);
-    }
-
-    // Instantiate container
-    // TODO: Use a normalizer
-    $container_config = new ContainerConfig();
-    $container_config->setImage($config['Image']);
-    $container_config->setCmd($config['Cmd']);
-    $host_config = new HostConfig();
-    $host_config->setBinds($config['HostConfig']['Binds']);
-    if (!empty($config['HostConfig']['Links'])) {
-      $host_config->setLinks($config['HostConfig']['Links']);
-    }
-    $container_config->setHostConfig($host_config);
-    $parameters = [];
-    if (!empty($config['name'])) {
-      $parameters = ['name' => $config['name']];
-    }
-
-    $create_result = $manager->create($container_config, $parameters);
-    $container_id = $create_result->getId();
-
-    // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
-    $response = $manager->start($container_id);
-    // TODO: Catch and exception if doesn't return 204.
-
-    $service_container = $manager->find($container_id);
-    $container['id'] = $service_container->getID();
-    $container['name'] = $service_container->getName();
-    $container['ip'] = $service_container->getNetworkSettings()->getIPAddress();
-    $container['created'] = TRUE;
-    $short_id = substr($container['id'], 0, 8);
-    $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
-  }
-
-  protected function setDefaultCommand(&$config) {
-    $config['Cmd'] = ['/bin/bash', '-c', '/daemon.sh'];
-  }
-
-  protected function createContainerLinks(&$config) {
-    // DOCKER
-    $links = [];
-    if (empty($this->serviceContainers)) {
-      return;
-    }
-    $targets = $this->serviceContainers;
-    foreach ($targets as $type => $containers) {
-      foreach ($containers as $key => $container) {
-        $config['HostConfig']['Links'][] = "${container['name']}:${container['name']}";
-      }
-    }
-  }
-
-  protected function createContainerVolumes(&$config) {
-    // DOCKER
-    $volumes = [];
-    // Map working directory
-    // CODEBASE
-    $working = $this->getCodebase()->getWorkingDir();
-    // ENVIRONMENT - Volume mount for docker
-    $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
-    $config['HostConfig']['Binds'][] = "$working:$mount_point";
-  }
-
-  public function getContainerConfiguration($image = NULL) {
-    // DOCKER
-    // ENVIRONMENT - container config directory
-    $path = __DIR__ . '/../Containers';
-    // RecursiveDirectoryIterator recurses into directories and returns an
-    // iterator for each directory. RecursiveIteratorIterator then iterates over
-    // each of the directory iterators, which consecutively return the files in
-    // each directory.
-    $directory = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS));
-    $configs = [];
-    foreach ($directory as $file) {
-      if (!$file->isDir() && $file->isReadable() && $file->getExtension() === 'yml') {
-        $container_name = $file->getBasename('.yml');
-        $dev_suffix = '-dev';
-        $isdev = strpos($container_name, $dev_suffix);
-        if (!$isdev == 0) {
-          $container_name = str_replace('-dev', ':dev', $container_name);
-        }
-        $image_name = 'drupalci/' . $container_name;
-        if (!empty($image) && $image_name != $image) {
-          continue;
-        }
-        // Get the default configuration.
-        $container_config = Yaml::parse(file_get_contents($file->getPathname()));
-        $configs[$image_name] = $container_config;
-      }
-    }
-    return $configs;
-  }
-
-  public function startServiceContainerDaemons($container_type) {
-    $needs_sleep = FALSE;
-    // DOCKER
-    $docker = $this->getDocker();
-    $manager = $docker->getContainerManager();
-    $instances = [];
-
-    $images = $manager->findAll();
-
-    foreach ($manager->findAll() as $running) {
-      $running_container_name = explode(':', $running->getImage());
-      $id = substr($running->getID(), 0, 8);
-      $instances[$running_container_name[0]] = $id;
-    };
-    foreach ($this->serviceContainers[$container_type] as $key => $image) {
-      if (in_array($image['image'], array_keys($instances))) {
-        // TODO: Determine service container ports, id, etc, and save it to the build.
-        $this->io->writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
-        // TODO: Load up container parameters
-        $container = $manager->find($instances[$image['image']]);
-        $container_id = $container->getID();
-        $container_name = $container->getName();
-        $container_ip = $container->getNetworkSettings()->getIPAddress();
-        $this->serviceContainers[$container_type][$key]['id'] = $container_id;
-        $this->serviceContainers[$container_type][$key]['name'] = $container_name;
-        $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
-        continue;
-      }
-      // Container not running, so we'll need to create it.
-      $this->io->writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
-
-      // Get container configuration, which defines parameters such as exposed ports, etc.
-      $configs = $this->getContainerConfiguration($image['image']);
-      $config = $configs[$image['image']];
-      // TODO: Allow classes to modify the default configuration before processing
-      // Instantiate container
-
-      // TODO: Use a normalizer
-      $container_config = new ContainerConfig();
-      $container_config->setImage($config['Image']);
-      $host_config = new HostConfig();
-      $host_config->setBinds($config['HostConfig']['Binds']);
-      $container_config->setHostConfig($host_config);
-      $parameters = [];
-      if (!empty($config['name'])) {
-        $parameters = ['name' => $config['name']];
-      }
-
-      $create_result = $manager->create($container_config, $parameters);
-      $container_id = $create_result->getId();
-
-      // Create the docker container instance, running as a daemon.
-      // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
-      $response = $manager->start($container_id);
-      // TODO: Catch and exception if doesn't return 204.
-
-      $container = $manager->find($container_id);
-
-      $container_id = $container->getID();
-      $container_name = $container->getName();
-      $container_ip = $container->getNetworkSettings()->getIPAddress();
-
-      $this->serviceContainers[$container_type][$key]['id'] = $container_id;
-      $this->serviceContainers[$container_type][$key]['name'] = $container_name;
-      $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
-      $short_id = substr($container_id, 0, 8);
-      $this->io->writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
-    }
-    /* @var $database \DrupalCI\Build\Environment\Database */
-    $database = $this->container['db.system'];
-    // @TODO: should probably add the container environment as a service
-    $database->setHost($container_ip);
-    // @TODO: all of this should probably live inside of the database
-    $database->connect();
-
+  public function getSourceDirectory() {
+    return $this->buildDirectory . '/source';
   }
 
 
-  /**
-   * Returns the default build definition template for this build type
-   *
-   * This method may be overridden by a specific build class to add template
-   * selection logic, if desired.
-   *
-   * @param $build_type
-   *   The name of the build type, used to select the appropriate subdirectory
-   *
-   * @return string
-   *   The location of the default build definition template
-   */
-  public function getDefaultDefinitionTemplate($build_type) {
-    // ENVIRONMENT - Build definition template"
-    return __DIR__ . "/../../../build_templates/$build_type/drupalci.yml";
-  }
 
   /**
    * Generate a Build ID for this build
@@ -645,13 +406,107 @@ class Build implements BuildInterface, Injectable {
     // unique build tag based on timestamp.
     $build_id = getenv('BUILD_TAG');
     if (empty($build_id)) {
-      // TODO: potential collision if multiple invocations of drupalci are
-      // running on the same machine in parallel and they start up at the same
-      // time.
       $build_id = $this->buildType . '_' . time();
     }
     $this->setBuildId($build_id);
     $this->io->writeLn("<info>Executing build with build ID: <options=bold>$build_id</options=bold></info>");
   }
 
+  /**
+   * @return bool
+   */
+  protected function setupWorkSpace() {
+    // Check if the target working directory has been specified in the env.
+    if (false !== (getenv('DCI_WorkingDir'))) {
+      $build_directory = getenv('DCI_WorkingDir');
+    }
+    // Both the AMI and Vagrant box defines this as /var/lib/drupalci/web
+    $tmp_directory = sys_get_temp_dir();
+    // Generate a default directory name if none specified
+    if (empty($build_directory)) {
+      // Case:  No explicit working directory defined.
+      $build_directory = $tmp_directory . '/' . $this->buildId;
+    }
+    else {
+      // We force the working directory to always be under the system temp dir.
+      if (strpos($build_directory, realpath($tmp_directory)) !== 0) {
+        if (substr($build_directory, 0, 1) == '/') {
+          $build_directory = $tmp_directory . $build_directory;
+        }
+        else {
+          $build_directory = $tmp_directory . '/' . $build_directory;
+        }
+      }
+    }
+    $result = $this->setupDirectory($build_directory);
+    if (!$result) {
+      return FALSE;
+    }
+
+
+    // Validate that the working directory is empty.  If the directory contains
+    // an existing git repository, for example, our checkout attempts will fail
+    // TODO: Prompt the user to ask if they'd like to overwrite
+    $iterator = new \FilesystemIterator($build_directory);
+    if ($iterator->valid()) {
+      // Existing files found in directory.
+      $this->io->drupalCIError('Directory not empty', 'Unable to use a non-empty working directory.');
+      return FALSE;
+    };
+
+    // Convert to the full path and ensure our directory is still valid
+    $build_directory = realpath($build_directory);
+    if (!$build_directory) {
+      // Directory not found after conversion to canonicalized absolute path
+      $this->io->drupalCIError('Directory not found', 'Unable to determine working directory absolute path.');
+      return FALSE;
+    }
+
+    // Ensure we're still within the system temp directory
+    if (strpos(realpath($build_directory), realpath($tmp_directory)) !== 0) {
+      $this->io->drupalCIError('Directory error', 'Detected attempt to traverse out of the system temp directory.');
+      return FALSE;
+    }
+
+    // If we arrive here, we have a valid empty working directory.
+    $this->buildDirectory = $build_directory;
+
+
+
+    $result =  $this->setupDirectory($this->getArtifactDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+    $result =  $this->setupDirectory($this->getSourceDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+    $result =  $this->setupDirectory($this->getXMLDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
+   * @param $directory
+   *
+   * @return bool
+   */
+  protected function setupDirectory($directory): bool {
+    if (!is_dir($directory)) {
+      $result = mkdir($directory, 0777, TRUE);
+      if (!$result) {
+        // Error creating checkout directory
+        $this->io->drupalCIError('Directory Creation Error', 'Error encountered while attempting to create  directory');
+        return FALSE;
+      }
+      else {
+        $this->io->writeLn("<info>Directory created at <options=bold>$directory</options=bold></info>");
+        return TRUE;
+      }
+    }
+    return TRUE;
+  }
 }

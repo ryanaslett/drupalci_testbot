@@ -7,8 +7,6 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Build\BuildInterface;
-
 trait TestSetupBaseTrait {
 
   protected $validate;
@@ -17,7 +15,7 @@ trait TestSetupBaseTrait {
 
   protected $execResult;
 
-  function validateDirectory(BuildInterface $build, $dir) {
+  function validateDirectory($firstdir, $dir) {
     return $this->validate;
   }
 

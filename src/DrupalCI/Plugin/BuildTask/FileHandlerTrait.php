@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Plugin\BuildTask;
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\PluginBase;
 use Pimple\Container;
@@ -46,9 +45,8 @@ trait FileHandlerTrait {
   }
 
 
-  protected function validateDirectory(BuildInterface $build, $dir) {
+  protected function validateDirectory($working_dir, $dir) {
     // Validate target directory.  Must be within workingdir.
-    $working_dir = $build->getCodebase()->getWorkingDir();
     $true_dir = realpath($dir);
     if (!empty($true_dir)) {
       if ($true_dir == realpath($working_dir)) {

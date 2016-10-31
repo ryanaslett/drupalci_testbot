@@ -1,6 +1,6 @@
 <?php
 
-namespace DrupalCI\Tests\Plugin\BuildSteps\generic;
+namespace DrupalCI\Tests\Build\Environment;
 
 use Docker\API\Model\ExecCreateResult;
 use Docker\API\Model\ExecStartConfig;
@@ -9,31 +9,25 @@ use Docker\Docker;
 use Docker\Manager\ExecManager;
 use Docker\Stream\DockerRawStream;
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
+use DrupalCI\Build\Environment\Environment;
+use DrupalCI\Build\Environment\EnvironmentInterface;
 use DrupalCI\Tests\DrupalCITestCase;
 
 /**
- * @coversDefaultClass DrupalCI\Build\Environment\ContainerCommand
+ * @coversDefaultClass DrupalCI\Build\Environment\Environment
  */
-class ContainerCommandTest extends DrupalCITestCase {
+class EnvironmentTest extends DrupalCITestCase {
 
   /**
-   * @covers ::run
+   * @covers ::executeCommands
    */
-  public function testRun() {
+  public function testExecuteCommands() {
     $manager_id = 'abcdef';
     $cmd = 'test_command test_argument';
 
-    $docker = $this->getMock(Docker::class);
-
-    $build = $this->getMockBuilder(BuildInterface::class)
-      ->getMockForAbstractClass();
-    $build->expects($this->once())
-      ->method('getDocker')
-      ->will($this->returnValue($docker));
-    $build->expects($this->once())
-      ->method('getExecContainers')
-      ->will($this->returnValue(['php' => [['id' => 'drupalci/php-5.4']]]));
+    $docker = $this->getMockBuilder(Docker::class)
+      ->setMethods(['getExecManager'])
+      ->getMock();
 
     $exec_manager = $this->getMockBuilder(ExecManager::class)
       ->disableOriginalConstructor()
@@ -73,9 +67,16 @@ class ContainerCommandTest extends DrupalCITestCase {
       ->method('find')
       ->will($this->returnValue($exec_command));
 
-    $command = new ContainerCommand();
-    $command->inject($this->getContainer());
-    $command->run($build, $cmd);
+    $environment = $this->getMockBuilder(Environment::class)
+      ->setMethods(['getExecContainers'])
+      ->getMockForAbstractClass();
+
+    $environment->expects($this->once())
+      ->method('getExecContainers')
+      ->will($this->returnValue(['php' => [['id' => 'drupalci/php-5.4']]]));
+
+    $environment->inject($this->getContainer(['docker' => $docker]));
+    $environment->executeCommands([$cmd]);
   }
 
 }

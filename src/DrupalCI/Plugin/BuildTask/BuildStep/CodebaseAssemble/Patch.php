@@ -6,6 +6,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
+use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
@@ -24,6 +25,20 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   use FileHandlerTrait;
 
   /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
+
+  public function inject(Container $container) {
+    parent::inject($container);
+    $this->codebase = $container['codebase'];
+    $this->build = $container['build'];
+
+  }
+
+  /**
    * @inheritDoc
    */
   public function configure() {
@@ -37,32 +52,35 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $files = $this->configuration['patches'];
 
-    $codebase = $build->getCodebase();
     if (empty($files)) {
       $this->io->writeln('No patches to apply.');
     }
     foreach ($files as $key => $details) {
-      if (empty($details['from'])) {
-        $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
+      try {
+        if (empty($details['from'])) {
+          $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
+          throw new BuildTaskException('No valid patch file provided for the patch command.');
 
-        return 2;
+        }
+        // Create a new patch object
+        $patch = new PatchFile($details, $this->build->getSourceDirectory());
+        $patch->inject($this->container);
+        $this->codebase->addPatch($patch);
+        // Validate our patch's source file and target directory
+        if (!$patch->validate()) {
+          throw new BuildTaskException('Failed to validate the patch source and/or target directory.');
+        }
+
+        // Apply the patch
+        if ($patch->apply() !== 0) {
+          throw new BuildTaskException('Unable to apply the patch.');
+        }
       }
-      // Create a new patch object
-      $patch = new PatchFile($details, $codebase);
-      $patch->inject($this->container);
-      // Validate our patch's source file and target directory
-      if (!$patch->validate()) {
-
-        return 2;
-      }
-
-      // Apply the patch
-      $result = $patch->apply();
-      if ($result !== 0) {
+      catch (BuildTaskException $e) {
 
         // Hack to create a xml file for processing by Jenkins.
         // TODO: Remove once proper build failure processing is in place
@@ -70,12 +88,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-        $source_dir = $build->getCodebase()->getWorkingDir();
-        // TODO: Temporary hack.  Strip /checkout off the directory
-        $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
-
-        // Set up output directory (inside working directory)
-        $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . 'xml';
+        $output_directory = $this->build->getXmlDirectory();
 
         if (!is_dir($output_directory)) {
           mkdir($output_directory, 0777, TRUE);
@@ -91,13 +104,12 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
                         </testcase>
                         <system-out><![CDATA[' . $output . ']]></system-out>
                       </testsuite>';
-        // ENVIRONMENT - junit xml output directory
         file_put_contents($output_directory . "/patchfailure.xml", $xml_error);
 
-        return $result;
+        throw $e;
       };
       // Update our list of modified files
-      $codebase->addModifiedFiles($patch->getModifiedFiles());
+      $this->codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }
 

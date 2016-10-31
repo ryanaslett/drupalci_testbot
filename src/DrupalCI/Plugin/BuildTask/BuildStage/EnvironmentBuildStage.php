@@ -18,8 +18,12 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
 
   use BuildTaskTrait;
 
-  // @TODO: DCI_WorkingDir - need to make working dir configurable and not on
-  // the Codebase. It should be here in the Environment.
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
+  protected $build;
 
   /**
    * @var \DrupalCI\Build\Environment\DatabaseInterface
@@ -29,6 +33,7 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
   public function inject(Container $container) {
     parent::inject($container);
     $this->database = $container['db.system'];
+    $this->build = $container['build'];
   }
   /**
    * @inheritDoc
@@ -61,10 +66,10 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     $this->database->setVersion($this->configuration['db_version']);
     $this->database->setDbType($this->configuration['db_type']);
-    $db_name = str_replace('-', '_', $build->getBuildId());
+    $db_name = str_replace('-', '_', $this->build->getBuildId());
     $db_name = preg_replace('/[^0-9_A-Za-z]/', '', $db_name);
     $this->database->setDbname($db_name);
     $this->database->setPassword($this->configuration['dbpassword']);

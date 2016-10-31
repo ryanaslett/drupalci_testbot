@@ -3,7 +3,6 @@
 namespace DrupalCI\Plugin\BuildTask\BuildStep\StartContainers;
 
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
@@ -26,7 +25,7 @@ class DockerCompose extends PluginBase implements BuildStepInterface, BuildTaskI
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 
