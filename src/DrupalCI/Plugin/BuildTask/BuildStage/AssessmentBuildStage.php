@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Plugin\BuildTask\BuildStage;
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTask\BuildStage\BuildStageInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
@@ -25,7 +24,7 @@ class AssessmentBuildStage extends PluginBase  implements BuildStageInterface, B
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

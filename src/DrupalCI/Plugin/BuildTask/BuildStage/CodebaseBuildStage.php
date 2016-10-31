@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Plugin\BuildTask\BuildStage;
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTask\BuildStage\BuildStageInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
@@ -15,11 +14,6 @@ use DrupalCI\Plugin\PluginBase;
 class CodebaseBuildStage extends PluginBase  implements BuildStageInterface, BuildTaskInterface  {
 
   use BuildTaskTrait;
-  // VARS DCI_WorkingDir
-  //  DCI_CoreProject
-  //  DCI_CoreVersion
-  //  DCI_CoreBranch
-  //  DCI_BuildId
   /**
    * @inheritDoc
    */
@@ -30,7 +24,7 @@ class CodebaseBuildStage extends PluginBase  implements BuildStageInterface, Bui
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO: Implement run() method.
   }
 

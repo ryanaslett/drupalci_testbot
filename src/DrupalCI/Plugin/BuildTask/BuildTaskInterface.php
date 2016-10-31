@@ -2,8 +2,6 @@
 
 namespace DrupalCI\Plugin\BuildTask;
 
-use DrupalCI\Build\BuildInterface;
-
 /**
  * Interface BuildTaskInterface
  *
@@ -25,10 +23,10 @@ interface BuildTaskInterface {
   /**
    * Decorator for run functions to allow all of them to be timed.
    */
-  public function start(BuildInterface $build);
+  public function start();
 
   /**
-   * @param \DrupalCI\Build\BuildInterface $build
+   *   The build override configuration as defined in the yml file.
    *
    * @return int
    *   returns the status code of this BuildTask's execution. 0 = pass,
@@ -36,7 +34,7 @@ interface BuildTaskInterface {
    *   execution of the build, it should throw a BuildTaskException rather than
    *   return a 2.
    */
-  public function run(BuildInterface $build);
+  public function run();
 
   /**
    * Decorator for complete functions to stop their timer.

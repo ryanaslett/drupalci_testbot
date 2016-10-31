@@ -12,15 +12,6 @@ use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 trait BuildTaskTrait {
 
   /**
-   * Build variables service.
-   *
-   * Your class must set this from the container.
-   *
-   * @var \DrupalCI\Build\BuildVariablesInterface
-   */
-  protected $buildVars;
-
-  /**
    * @var float
    */
   protected $startTime;
@@ -50,11 +41,10 @@ trait BuildTaskTrait {
   /**
    * Decorator for run functions to allow all of them to be timed.
    *
-   * @param \DrupalCI\Build\BuildInterface $build
    */
-  public function start(BuildInterface $build) {
+  public function start() {
     $this->startTime = microtime(true);
-    $statuscode = $this->run($build);
+    $statuscode = $this->run();
     if (!isset($statuscode)) {
       return 0;
     } else {

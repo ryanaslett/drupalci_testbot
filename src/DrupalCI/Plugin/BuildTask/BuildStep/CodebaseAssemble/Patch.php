@@ -24,12 +24,12 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   use BuildTaskTrait;
   use FileHandlerTrait;
 
-  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
-  protected $codebase;
-
-  /* @var \DrupalCI\Build\BuildInterface */
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
   protected $build;
-
 
   public function inject(Container $container) {
     parent::inject($container);
@@ -52,7 +52,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $files = $this->configuration['patches'];
 

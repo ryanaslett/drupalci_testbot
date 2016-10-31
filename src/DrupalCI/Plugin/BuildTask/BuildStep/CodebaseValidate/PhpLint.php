@@ -6,6 +6,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseValidate;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Environment\EnvironmentInterface;
 use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
@@ -25,7 +26,11 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
   protected $codebase;
 
-  /* @var \DrupalCI\Build\BuildInterface */
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
   protected $build;
 
 
@@ -48,7 +53,7 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
     // TODO Throw a BuildException if there are syntax errors.
     $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 

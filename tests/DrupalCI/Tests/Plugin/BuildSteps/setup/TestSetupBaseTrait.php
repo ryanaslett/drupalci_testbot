@@ -7,8 +7,6 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Build\BuildInterface;
-
 trait TestSetupBaseTrait {
 
   protected $validate;
