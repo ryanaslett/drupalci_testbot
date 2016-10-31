@@ -33,53 +33,50 @@ interface BuildInterface {
   public function getBuildFile();
 
   /**
-   * @param $buildfile
-   */
-  public function setBuildFile($buildfile);
-  /**
    * @param string
    */
   public function generateBuild($arg);
 
   /**
-   * @return \DrupalCI\Build\Codebase\Codebase
-   */
-  // CODEBASE
-  public function getCodebase();
-
-  /**
-   * @param \DrupalCI\Build\Codebase\Codebase $codebase
-   */
-  // CODEBASE
-  public function setCodebase(Codebase $codebase);
-
-  /**
-   * @return \Docker\Docker
-   */
-  public function getDocker();
-
-  /**
-   * Get a list of containers to run Docker exec in.
+   * Executes a configured build.
    *
-   * @return array
-   *  An array of container IDs. The first key is the type, can be 'php' or
-   *  'web'. Web has everything php plus Apache.
+   * @return mixed
    */
-  public function getExecContainers();
+  public function executeBuild();
 
-  public function setExecContainers(array $containers);
+  /**
+   * This is the directory where we place everything specific to this build
+   * The primary exception of something that is needed that does not live
+   * under the build directory is the Database.
+   *
+   * @return mixed
+   */
+  public function getBuildDirectory();
 
-  public function startContainer(&$container);
+  /**
+   * This is the directory where we place all of our artifacts.
+   *
+   * @return mixed
+   */
+  public function getArtifactDirectory();
 
-  public function getContainerConfiguration($image = NULL);
+  /**
+   * This is the directory where we place artifacts that can be parsed
+   * by jenkins xml parsing. It is usually located *under* the artifacts
+   * directory
+   *
+   * @return mixed
+   */
+  public function getXmlDirectory();
 
-  public function startServiceContainerDaemons($type);
+  /**
+   * This is where we checkout the code to. It should be volume mounted over
+   * to /var/www/html inside the docker containers.
+   *
+   * @return mixed
+   */
+  public function getSourceDirectory();
 
-  public function getServiceContainers();
-
-  public function setServiceContainers(array $service_containers);
-
-  public function getDefaultDefinitionTemplate($build_type);
 
   public function generateBuildId();
 }

@@ -4,7 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\Filesystem;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
+use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
@@ -27,21 +27,17 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
   use BuildTaskTrait;
   use FileHandlerTrait;
 
-  /**
-   * The current build.
-   *
-   * @var \DrupalCI\Build\BuildInterface
-   */
-  protected $build;
-
   /* @var \DrupalCI\Build\Environment\DatabaseInterface */
   protected $system_database;
 
-  // Results database goes here.
+  /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
+  protected $environment;
+
   public function inject(Container $container) {
     parent::inject($container);
     $this->system_database = $container['db.system'];
-    $this->build = $container['build'];
+    $this->environment = $container['environment'];
+
   }
 
   /**
@@ -60,11 +56,10 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
    */
   public function run() {
    $setup_commands = [
-      'mkdir -p /var/www/html/results',
       'mkdir -p /var/www/html/artifacts',
       'mkdir -p /var/www/html/sites/simpletest/xml',
       'ln -s /var/www/html /var/www/html/checkout',
-      'chown -fR www-data:www-data /var/www/html/sites /var/www/html/results',
+      'chown -fR www-data:www-data /var/www/html/sites',
       'chmod 0777 /var/www/html/artifacts',
       'chmod 0777 /tmp',
       'supervisorctl start phantomjs',
@@ -72,9 +67,7 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
       # TODO: figure out what to do with this.
       'sudo bash -c "/opt/phpenv/shims/pecl list | grep -q yaml && cd /opt/phpenv/versions/ && ls | xargs -I {} -i bash -c \'echo extension=yaml.so > ./{}/etc/conf.d/yaml.ini\' || echo -n"',
     ];
-    $command = new ContainerCommand();
-    $command->inject($this->container);
-    $command->run($this->build, $setup_commands);
+    $this->environment->executeCommands($setup_commands);
 
   }
 

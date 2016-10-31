@@ -16,7 +16,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 class DockerRemoveCommand extends DrupalCICommandBase {
-  // DOCKER
   /**
    * {@inheritdoc}
    */

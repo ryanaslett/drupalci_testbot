@@ -30,20 +30,11 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
    */
   protected $build;
 
-  /**
-   * @var \Pimple\Container
-   */
-  protected $container;
-
-  /**
-   * @var \DrupalCI\Console\DrupalCIStyle
-   */
-  protected $io;
-
   public function inject(Container $container) {
-    $this->container = $container;
+    parent::inject($container);
+    $this->codebase = $container['codebase'];
     $this->build = $container['build'];
-    $this->io = $container['console.io'];
+
   }
 
   /**
@@ -64,7 +55,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
 
     $files = $this->configuration['patches'];
 
-    $codebase = $this->build->getCodebase();
+
     if (empty($files)) {
       $this->io->writeln('No patches to apply.');
     }
@@ -75,8 +66,9 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return 2;
       }
       // Create a new patch object
-      $patch = new PatchFile($details, $codebase);
+      $patch = new PatchFile($details, $this->build->getSourceDirectory());
       $patch->inject($this->container);
+      $this->codebase->addPatch($patch);
       // Validate our patch's source file and target directory
       if (!$patch->validate()) {
 
@@ -93,12 +85,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         // Save an xmlfile to the jenkins artifact directory.
         // find jenkins artifact dir
         //
-        $source_dir = $this->build->getCodebase()->getWorkingDir();
-        // TODO: Temporary hack.  Strip /checkout off the directory
-        $artifact_dir = preg_replace('#/checkout$#', '', $source_dir);
-
-        // Set up output directory (inside working directory)
-        $output_directory = $artifact_dir . DIRECTORY_SEPARATOR . 'artifacts' . DIRECTORY_SEPARATOR . 'xml';
+        $output_directory = $this->build->getXmlDirectory();
 
         if (!is_dir($output_directory)) {
           mkdir($output_directory, 0777, TRUE);
@@ -114,13 +101,12 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
                         </testcase>
                         <system-out><![CDATA[' . $output . ']]></system-out>
                       </testsuite>';
-        // ENVIRONMENT - junit xml output directory
         file_put_contents($output_directory . "/patchfailure.xml", $xml_error);
 
         return $result;
       };
       // Update our list of modified files
-      $codebase->addModifiedFiles($patch->getModifiedFiles());
+      $this->codebase->addModifiedFiles($patch->getModifiedFiles());
     }
   }
 

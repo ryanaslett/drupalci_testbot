@@ -25,7 +25,9 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
    */
   protected $build;
 
+
   public function inject(Container $container) {
+    parent::inject($container);
     $this->build = $container['build'];
   }
 
@@ -41,9 +43,9 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
    */
   public function run() {
 
-    $workingdir = $this->build->getCodebase()->getWorkingDir();
+    $source_dir = $this->build->getSourceDirectory();
 
-    $cmd = "./bin/composer " . $this->configuration['options'] . " " . $workingdir;
+    $cmd = "./bin/composer " . $this->configuration['options'] . " " . $source_dir;
     $this->exec($cmd, $cmdoutput, $result);
 
   }

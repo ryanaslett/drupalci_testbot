@@ -4,7 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseValidate;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Build\Environment\ContainerCommand;
+use DrupalCI\Build\Environment\EnvironmentInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
@@ -20,6 +20,12 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
 
   use BuildTaskTrait;
 
+  /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
+  protected $environment;
+
+  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
+  protected $codebase;
+
   /**
    * The current build.
    *
@@ -27,20 +33,12 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
    */
   protected $build;
 
-  /**
-   * @var \DrupalCI\Console\DrupalCIStyle
-   */
-  protected $io;
-
-  /**
-   * @var \Pimple\Container
-   */
-  protected $container;
 
   public function inject(Container $container) {
-    $this->container = $container;
+    parent::inject($container);
+    $this->environment = $container['environment'];
+    $this->codebase = $container['codebase'];
     $this->build = $container['build'];
-    $this->io = $container['console.io'];
   }
 
   /**
@@ -58,39 +56,33 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   public function run() {
     $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
-    // CODEBASE
-    $codebase = $this->build->getCodebase();
-    $modified_files = $codebase->getModifiedFiles();
+    $modified_files = $this->codebase->getModifiedFiles();
 
     if (empty($modified_files)) {
       return;
     }
 
-    // ENVIRONMENT - codebase working dir
-    $workingdir = $codebase->getWorkingDir();
+    $workingdir = $this->build->getSourceDirectory();
     $concurrency = $this->configuration['concurrency'];
     $bash_array = "";
     foreach ($modified_files as $file) {
       $file_path = $workingdir . "/" . $file;
-      // Checking for: if in a vendor dir, if the file still exists, or if the first 32 (length - 1) bytes of the file contain <?php
+      // Checking for: if not in a vendor dir, if the file still exists, and if the first 32 (length - 1) bytes of the file contain <?php
       if ((strpos($file, '/vendor/') === FALSE) && file_exists($file_path) && (strpos(fgets(fopen($file_path, 'r'), 33), '<?php') !== FALSE)) {
         $bash_array .= "$file\n";
       }
     }
 
-    // ENVIRONMENT - artifact directory.
-    $lintable_files = 'artifacts/lintable_files.txt';
-    $this->io->writeln("<info>" . $workingdir . "/" . $lintable_files . "</info>");
-    file_put_contents($workingdir . "/" . $lintable_files, $bash_array);
+    $lintable_files = $this->build->getArtifactDirectory() .'/lintable_files.txt';
+    $this->io->writeln("<info>" . $lintable_files . "</info>");
+    file_put_contents($lintable_files, $bash_array);
     // Make sure
-    if (0 < filesize($workingdir . "/" . $lintable_files)) {
+    if (0 < filesize($lintable_files)) {
       // TODO: Remove hardcoded /var/www/html.
       // This should be come Codebase->getLocalDir() or similar
       // Use xargs to concurrently run linting on file.
       $cmd = "cd /var/www/html && xargs -P $concurrency -a $lintable_files -I {} php -l '{}'";
-      $command = new ContainerCommand();
-      $command->inject($this->container);
-      $command->run($this->build, $cmd);
+      $this->environment->executeCommands($cmd);
     }
   }
 

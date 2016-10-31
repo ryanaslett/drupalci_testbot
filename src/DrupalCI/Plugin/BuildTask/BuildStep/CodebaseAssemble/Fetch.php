@@ -28,14 +28,10 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
    */
   protected $build;
 
-  /**
-   * @var \DrupalCI\Console\DrupalCIStyle
-   */
-  protected $io;
 
   public function inject(Container $container) {
+    parent::inject($container);
     $this->build = $container['build'];
-    $this->io = $container['console.io'];
   }
 
   /**
@@ -68,9 +64,9 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
         return;
       }
       $url = $details['from'];
-      $workingdir = $this->build->getCodebase()->getWorkingDir();
-      $fetchdir = (!empty($details['to'])) ? $details['to'] : $workingdir;
-      if (!($directory = $this->validateDirectory($this->build, $fetchdir))) {
+      $source_dir = $this->build->getSourceDirectory();
+      $fetchdir = (!empty($details['to'])) ? $details['to'] : $source_dir;
+      if (!($directory = $this->validateDirectory($source_dir, $fetchdir))) {
         // Invalid checkout directory
         $this->io->drupalCIError("Fetch error", "The fetch directory <info>$directory</info> is invalid.");
 

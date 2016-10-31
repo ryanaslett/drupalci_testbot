@@ -28,25 +28,14 @@ class RunCommand extends DrupalCICommandBase  {
   protected $build;
 
   /**
-   * The build type plugin manager.
-   *
-   * @var \DrupalCI\Plugin\PluginManagerInterface
-   */
-  protected $buildTypePluginManager;
-
-  /**
- * The build step plugin manager.
- *
- * @var \DrupalCI\Plugin\PluginManagerInterface
- */
-  protected $buildStepPluginManager;
-
-  /**
    * The build task plugin manager.
    *
    * @var \DrupalCI\Plugin\PluginManagerInterface
    */
   protected $buildTaskPluginManager;
+
+  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
+  protected $codebase;
 
   /**
    * Gets the build from the RunCommand.
@@ -81,12 +70,11 @@ class RunCommand extends DrupalCICommandBase  {
 
   protected function initialize(InputInterface $input, OutputInterface $output) {
     parent::initialize($input, $output);
-    $this->buildStepPluginManager = $this->container['plugin.manager.factory']->create('BuildSteps');
-    $this->buildTypePluginManager = $this->container['plugin.manager.factory']->create('BuildTypes');
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
     // Yeah, a build isnt really a service, but for now it is.
     /* @var \DrupalCI\Build\BuildInterface */
     $this->build = $this->container['build'];
+    $this->codebase = $this->container['codebase'];
 
   }
 
@@ -96,25 +84,9 @@ class RunCommand extends DrupalCICommandBase  {
   public function execute(InputInterface $input, OutputInterface $output) {
 
     $arg = $input->getArgument('definition');
-    $this->build->inject($this->container);
     $this->build->generateBuild($arg);
 
-    // Create our build Codebase object and attach it to the build.
-    // CODEBASE
-    $codebase = new Codebase();
-    $codebase->inject($this->container);
-    $this->build->setCodebase($codebase);
     $this->io->writeln("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");
-
-    // Set up the local working directory
-    // CODEBASE
-    $result = $codebase->setupWorkingDirectory($this->build->getBuildId());
-    if ($result === FALSE) {
-      // Error encountered while setting up the working directory. Error output
-      // has already been generated and displayed during execution of the
-      // setupWorkingDirectory method.
-      return;
-    }
 
     // Execute the build.
     $this->build->executeBuild();

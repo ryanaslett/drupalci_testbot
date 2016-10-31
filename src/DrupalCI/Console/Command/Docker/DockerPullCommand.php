@@ -20,7 +20,7 @@ use Docker\API\Model\CreateImageInfo;
 
 
 class DockerPullCommand extends DrupalCICommandBase {
-  // DOCKER
+
   /**
    * {@inheritdoc}
    */

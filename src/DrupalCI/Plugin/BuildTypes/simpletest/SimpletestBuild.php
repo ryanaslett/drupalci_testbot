@@ -105,7 +105,7 @@ class SimpletestBuild extends Build {
     'DCI_WorkingDir' => 'Defines the location to be used in creating the local copy of the codebase, to be mapped into the container as a container volume.  Default: /tmp/simpletest-[random string]',
     'DCI_BuildId' => 'Specifies a unique build ID assigned to this build from an upstream server',
     'DCI_JobType' => 'Specifies a default build type to assume for a "drupalci run" command',
-    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',  //TODO: Check logic, may be reversed.
+    'DCI_EXCLUDE' => 'Specifies whether to exclude the .git directory during a clone of a local codebase.',
 
      // ***** Default Variables defined for every simpletest build *****
     'DCI_DBVersion' => 'Defines the database version for this particular simpletest run. May map to a required service container. Default: mysql-5.5',

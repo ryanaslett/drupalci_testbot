@@ -19,7 +19,20 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
 
   use BuildTaskTrait;
   use FileHandlerTrait;
+  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
+  protected $codebase;
 
+  /* @var \DrupalCI\Build\BuildInterface */
+  protected $build;
+
+
+  public function inject(Container $container) {
+    parent::inject($container);
+    // TODO: not using the codebase in here, but we might want to in order to
+    // add whatever repositories we checkout to the codebase object
+    $this->codebase = $container['codebase'];
+    $this->build = $container['build'];
+  }
   /**
    * The current build.
    *
@@ -170,7 +183,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
 
   protected function setupCheckoutLocal(BuildInterface $build, $repository) {
     $source_dir = isset($repository['source_dir']) ? $repository['source_dir'] : './';
-    $checkout_dir = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $build->getCodebase()->getWorkingDir();
+    $checkout_dir = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $this->build->getSourceDirectory();
     // TODO: Ensure we don't end up with double slashes
     // Validate source directory
     if (!is_dir($source_dir)) {
@@ -179,7 +192,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
       return;
     }
     // Validate target directory.  Must be within workingdir.
-    if (!($directory = $this->validateDirectory($build, $checkout_dir))) {
+    if (!($directory = $this->validateDirectory($this->build->getSourceDirectory(), $checkout_dir))) {
       // Invalidate checkout directory
       $this->io->drupalCIError("Directory error", "The checkout directory <info>$directory</info> is invalid.");
 
@@ -204,10 +217,10 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     $repo = isset($repository['repo']) ? $repository['repo'] : 'git://drupalcode.org/project/drupal.git';
 
     $git_branch = isset($repository['branch']) ? $repository['branch'] : 'master';
-    $checkout_directory = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $build->getCodebase()->getWorkingDir();
+    $checkout_directory = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $this->build->getSourceDirectory();
     // TODO: Ensure we don't end up with double slashes
     // Validate target directory.  Must be within workingdir.
-    if (!($directory = $this->validateDirectory($build, $checkout_directory))) {
+    if (!($directory = $this->validateDirectory($this->build->getSourceDirectory(), $checkout_directory))) {
       // Invalid checkout directory
       $this->io->drupalCIError("Directory Error", "The checkout directory <info>$directory</info> is invalid.");
       return;
