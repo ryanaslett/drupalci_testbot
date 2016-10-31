@@ -218,7 +218,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
    * @param \DrupalCI\Build\BuildInterface $build
    */
   protected function generateTestGroups() {
-    $cmd = "php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
+    $cmd = "sudo -u www-data php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
     $status = $this->environment->executeCommands($cmd);
     return $status;
   }
