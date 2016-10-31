@@ -29,10 +29,12 @@ interface BuildTaskInterface {
 
   /**
    * @param \DrupalCI\Build\BuildInterface $build
-   * @param $configuration
-   *   The build override configuration as defined in the yml file.
    *
-   * @return mixed
+   * @return int
+   *   returns the status code of this BuildTask's execution. 0 = pass,
+   *   1 = fail, and 2 = exception.  Note that if this BuildTask needs to halt
+   *   execution of the build, it should throw a BuildTaskException rather than
+   *   return a 2.
    */
   public function run(BuildInterface $build);
 

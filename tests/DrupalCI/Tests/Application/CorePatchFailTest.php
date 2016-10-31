@@ -48,7 +48,7 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
 
     // Currently the result code of the failed patch does not bubble up to the exit code of the
     // drupalci run command.
-    $this->markTestIncomplete('Currently the result code of the failed patch does not bubble up to the exit code of the run command.');
+    //$this->markTestIncomplete('Currently the result code of the failed patch does not bubble up to the exit code of the run command.');
 
     $this->assertNotEquals(0, $app_tester->getStatusCode());
   }

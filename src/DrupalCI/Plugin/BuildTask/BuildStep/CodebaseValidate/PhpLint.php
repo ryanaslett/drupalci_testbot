@@ -49,12 +49,13 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
    * @inheritDoc
    */
   public function run(BuildInterface $build) {
+    // TODO Throw a BuildException if there are syntax errors.
     $this->io->writeln('<info>SyntaxCheck checking for php syntax errors.</info>');
 
     $modified_files = $this->codebase->getModifiedFiles();
 
     if (empty($modified_files)) {
-      return;
+      return 0;
     }
 
     $workingdir = $this->build->getSourceDirectory();

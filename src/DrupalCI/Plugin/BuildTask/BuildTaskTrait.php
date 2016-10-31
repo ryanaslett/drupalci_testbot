@@ -54,7 +54,12 @@ trait BuildTaskTrait {
    */
   public function start(BuildInterface $build) {
     $this->startTime = microtime(true);
-    $this->run($build);
+    $statuscode = $this->run($build);
+    if (!isset($statuscode)) {
+      return 0;
+    } else {
+      return $statuscode;
+    }
   }
 
   /**

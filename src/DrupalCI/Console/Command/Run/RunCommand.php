@@ -89,7 +89,9 @@ class RunCommand extends DrupalCICommandBase  {
     $this->io->writeln("<info>Using build definition template: <options=bold>" . $this->build->getBuildFile() ."</options></options=bold></info>");
 
     // Execute the build.
-    $this->build->executeBuild();
+    $statuscode = $this->build->executeBuild();
+
+    return $statuscode;
 
   }
 }
