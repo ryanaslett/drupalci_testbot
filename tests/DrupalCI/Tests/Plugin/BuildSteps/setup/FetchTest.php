@@ -7,12 +7,15 @@
 
 namespace DrupalCI\Tests\Plugin\BuildSteps\setup;
 
-use DrupalCI\Plugin\BuildSteps\setup\Fetch;
+use DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch;
 use DrupalCI\Tests\DrupalCITestCase;
 use GuzzleHttp\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use DrupalCI\Build\Codebase\Codebase;
+use DrupalCI\Build\BuildInterface;
 
 /**
- * @coversDefaultClass DrupalCI\Plugin\BuildSteps\setup\Fetch
+ * @coversDefaultClass DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble\Fetch
  */
 class FetchTest extends DrupalCITestCase {
 
@@ -24,26 +27,27 @@ class FetchTest extends DrupalCITestCase {
     $url = 'http://example.com/site/dir/' . $file;
     $dir = 'test/dir';
 
-    $request = $this->getMock('GuzzleHttp\Message\RequestInterface');
+    $request = $this->getMock(RequestInterface::class);
 
-    $http_client = $this->getMock('GuzzleHttp\ClientInterface');
+    $http_client = $this->getMock(ClientInterface::class, array('get','send','sendAsync','request','requestAsync','getConfig'));
     $http_client->expects($this->once())
       ->method('get')
       ->with($url, ['save_to' => "$dir/$file"])
       ->will($this->returnValue($request));
 
-    $job_codebase = $this->getMock('DrupalCI\Job\CodeBase\JobCodebase');
-    $job = $this->getMockBuilder('DrupalCI\Plugin\JobTypes\JobInterface')
-      ->setMethods(['getJobCodebase'])
+    $codebase = $this->getMock(Codebase::class);
+    $build = $this->getMockBuilder(BuildInterface::class)
       ->getMockForAbstractClass();
-    $job->expects($this->once())
-      ->method('getJobCodebase')
-      ->will($this->returnValue($job_codebase));
 
-    $fetch = new TestFetch();
+    $data = [
+      'files' => [['from' => "$url",'to' => "."]]
+    ];
+    $fetch = new TestFetch($data);
+    $fetch->inject($this->getContainer());
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
-    $fetch->run($job, [['url' => $url]]);
+
+    $fetch->run($build);
   }
 }
 
