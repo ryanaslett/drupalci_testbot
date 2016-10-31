@@ -3,7 +3,6 @@
 namespace DrupalCI\Plugin\BuildTask\BuildStep\Filesystem;
 
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;

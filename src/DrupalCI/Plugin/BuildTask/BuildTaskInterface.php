@@ -2,8 +2,6 @@
 
 namespace DrupalCI\Plugin\BuildTask;
 
-use DrupalCI\Build\BuildInterface;
-
 /**
  * Interface BuildTaskInterface
  *
@@ -28,8 +26,6 @@ interface BuildTaskInterface {
   public function start();
 
   /**
-   * @param \DrupalCI\Build\BuildInterface $build
-   * @param $configuration
    *   The build override configuration as defined in the yml file.
    *
    * @return mixed

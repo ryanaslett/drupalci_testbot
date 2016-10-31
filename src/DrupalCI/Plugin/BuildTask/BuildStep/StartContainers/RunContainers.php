@@ -4,7 +4,6 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\StartContainers;
 
 
 use Docker\DockerClient;
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;

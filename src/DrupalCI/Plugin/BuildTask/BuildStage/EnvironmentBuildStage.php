@@ -25,9 +25,6 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
    */
   protected $build;
 
-  // @TODO: DCI_WorkingDir - need to make working dir configurable and not on
-  // the Codebase. It should be here in the Environment.
-
   /**
    * @var \DrupalCI\Build\Environment\DatabaseInterface
    */

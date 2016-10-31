@@ -47,7 +47,7 @@ class FetchTest extends DrupalCITestCase {
     $fetch->setValidate($dir);
     $fetch->setHttpClient($http_client);
 
-    $fetch->run($build);
+    $fetch->run();
   }
 }
 

@@ -71,8 +71,6 @@ class RunCommand extends DrupalCICommandBase  {
   protected function initialize(InputInterface $input, OutputInterface $output) {
     parent::initialize($input, $output);
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
-    // Yeah, a build isnt really a service, but for now it is.
-    /* @var \DrupalCI\Build\BuildInterface */
     $this->build = $this->container['build'];
     $this->codebase = $this->container['codebase'];
 

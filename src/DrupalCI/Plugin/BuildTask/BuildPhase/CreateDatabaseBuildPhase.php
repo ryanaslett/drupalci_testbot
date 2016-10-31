@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Plugin\BuildTask\BuildPhase;
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTask\BuildPhase\BuildPhaseInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;

@@ -37,8 +37,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   public function inject(Container $container) {
     parent::inject($container);
     $this->system_database = $container['db.system'];
-    /* @var \DrupalCI\Build\Environment\DatabaseInterface */
-    // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
     $this->environment = $container['environment'];
     $this->build = $container['build'];
@@ -215,9 +213,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     $this->results_database->setDbType('sqlite');
   }
 
-  /**
-   * @param \DrupalCI\Build\BuildInterface $build
-   */
   protected function generateTestGroups() {
     $cmd = "php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
     $status = $this->environment->executeCommands($cmd);
