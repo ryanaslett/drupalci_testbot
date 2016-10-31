@@ -25,7 +25,7 @@ interface BuildTaskInterface {
   /**
    * Decorator for run functions to allow all of them to be timed.
    */
-  public function start(BuildInterface $build);
+  public function start();
 
   /**
    * @param \DrupalCI\Build\BuildInterface $build

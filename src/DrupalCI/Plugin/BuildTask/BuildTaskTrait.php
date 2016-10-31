@@ -52,7 +52,7 @@ trait BuildTaskTrait {
    *
    * @param \DrupalCI\Build\BuildInterface $build
    */
-  public function start(BuildInterface $build) {
+  public function start() {
     $this->startTime = microtime(true);
     $this->run();
   }
