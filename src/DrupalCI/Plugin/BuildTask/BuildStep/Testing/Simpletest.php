@@ -26,18 +26,17 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /* @var  \DrupalCI\Build\Environment\DatabaseInterface */
   protected $results_database;
 
-  /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
-  protected $environment;
-
-  /* @var \DrupalCI\Build\BuildInterface */
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
   protected $build;
 
   // Results database goes here.
   public function inject(Container $container) {
     parent::inject($container);
     $this->system_database = $container['db.system'];
-    /* @var \DrupalCI\Build\Environment\DatabaseInterface */
-    // @TODO move this to the simpletest execution class
     $this->results_database = $container['db.results'];
     $this->environment = $container['environment'];
     $this->build = $container['build'];
@@ -96,9 +95,9 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
-    $this->setupSimpletestDB($build);
+    $this->setupSimpletestDB($this->build);
     $status = $this->generateTestGroups();
     if ($status > 0) {
       return $status;
@@ -113,7 +112,7 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
 
     $result = $this->environment->executeCommands($command_line);
 
-    $this->generateJunitXml($build);
+    $this->generateJunitXml($this->build);
     // Last thing. JunitFormat the output.
 
   }
@@ -214,9 +213,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
     $this->results_database->setDbType('sqlite');
   }
 
-  /**
-   * @param \DrupalCI\Build\BuildInterface $build
-   */
   protected function generateTestGroups() {
     $cmd = "sudo -u www-data php " . $this->configuration['runscript'] . " --list --php " . $this->configuration['php'] . " > /var/www/html/artifacts/testgroups.txt";
     $status = $this->environment->executeCommands($cmd);

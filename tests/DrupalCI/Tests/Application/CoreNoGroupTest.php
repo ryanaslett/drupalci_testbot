@@ -45,6 +45,6 @@ class CoreNoGroupTest extends DrupalCIFunctionalTestBase {
     ], $options);
     $this->assertRegExp('/.*Error.*/', $app_tester->getDisplay());
     $this->assertRegExp('/.*Return status: 2*/', $app_tester->getDisplay());
-    $this->assertEquals(0, $app_tester->getStatusCode());
+    $this->assertEquals(2, $app_tester->getStatusCode());
   }
 }

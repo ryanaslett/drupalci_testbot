@@ -13,6 +13,7 @@ use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
 use DrupalCI\Build\Codebase\Codebase;
+use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
 use Symfony\Component\Process\Process;
@@ -279,7 +280,13 @@ class Build implements BuildInterface, Injectable {
    * processes the build.
    */
   public function executeBuild() {
-    $something = $this->processTask($this->computedBuildDefinition);
+    try {
+      $statuscode = $this->processTask($this->computedBuildDefinition);
+      return $statuscode;
+    }
+    catch (BuildTaskException $e) {
+      return 2;
+    }
 
   }
 
@@ -327,14 +334,17 @@ class Build implements BuildInterface, Injectable {
         // an Object.
         /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
         $plugin = $iteration['#plugin'];
+        $child_status = 0;
         // start also implies run();
-        $plugin->start($this);
+        $task_status = $plugin->start($this);
         if (isset($iteration['#children'])) {
-          $this->processTask($iteration['#children']);
+          $child_status = $this->processTask($iteration['#children']);
         }
         $plugin->finish();
+        $total_status = max($task_status, $child_status);
       }
     }
+    return $total_status;
   }
 
   protected function has_string_keys(array $array) {

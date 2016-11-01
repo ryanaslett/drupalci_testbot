@@ -6,7 +6,6 @@
 
 namespace DrupalCI\Plugin;
 
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use Pimple\Container;

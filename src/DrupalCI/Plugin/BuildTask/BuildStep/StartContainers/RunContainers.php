@@ -4,7 +4,6 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\StartContainers;
 
 
 use Docker\DockerClient;
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
@@ -49,7 +48,8 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   /**
    * {@inheritdoc}
    */
-  public function run(BuildInterface $build, &$config = []) {
+  public function run() {
+
     $this->io->writeln("<info>Parsing required Web container image names ...</info>");
     // 2. generates a container image name from the php version -
     //  drupalci/web-<phpversion>

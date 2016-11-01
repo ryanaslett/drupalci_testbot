@@ -4,7 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
@@ -15,7 +15,7 @@ use Pimple\Container;
 /**
  * @PluginID("checkout")
  */
-class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterface {
+class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
   use FileHandlerTrait;
@@ -33,6 +33,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     $this->codebase = $container['codebase'];
     $this->build = $container['build'];
   }
+
   /**
    * @inheritDoc
    */
@@ -81,16 +82,15 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
-    // TODO: Implement run() method.
+  public function run() {
     $this->io->writeln("<info>Populating container codebase data volume.</info>");
     foreach ($this->configuration['repositories'] as $repository ) {
       switch ($repository['protocol']) {
         case 'local':
-          $this->setupCheckoutLocal($build, $repository);
+          $this->setupCheckoutLocal($repository);
           break;
         case 'git':
-          $this->setupCheckoutGit($build, $repository);
+          $this->setupCheckoutGit($repository);
           break;
       }
     }
@@ -165,7 +165,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     // TODO: Implement getArtifacts() method.
   }
 
-  protected function setupCheckoutLocal(BuildInterface $build, $repository) {
+  protected function setupCheckoutLocal($repository) {
     $source_dir = isset($repository['source_dir']) ? $repository['source_dir'] : './';
     $checkout_dir = isset($repository['checkout_dir']) ? $repository['checkout_dir'] : $this->build->getSourceDirectory();
     // TODO: Ensure we don't end up with double slashes
@@ -195,7 +195,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     $this->io->writeln("<comment>DONE</comment>");
   }
 
-  protected function setupCheckoutGit(BuildInterface $build, $repository) {
+  protected function setupCheckoutGit($repository) {
     $this->io->writeln("<info>Entering setup_checkout_git().</info>");
     // @TODO: these should always have a default. no sense in setting them here.
     $repo = isset($repository['repo']) ? $repository['repo'] : 'git://drupalcode.org/project/drupal.git';
@@ -259,7 +259,8 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
     }
     if ($result !==0) {
       // Git threw an error.
-      $build->errorOutput("Checkout failed", "The git checkout returned an error.");
+      // TODO Throw a BuildTaskException
+      //$build->errorOutput("Checkout failed", "The git checkout returned an error.");
       // TODO: Pass on the actual return value for the git checkout
       return;
     }
