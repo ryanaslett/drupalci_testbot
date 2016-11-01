@@ -251,8 +251,6 @@ class Environment implements Injectable, EnvironmentInterface {
 
   public function startServiceContainerDaemons($container_type) {
     // $container_type is *always* 'db'
-    $needs_sleep = FALSE;
-
     $manager = $this->docker->getContainerManager();
     $instances = [];
 
