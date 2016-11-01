@@ -7,9 +7,7 @@
 
 namespace DrupalCI\Build\Codebase;
 
-use DrupalCI\Console\Output;
 use DrupalCI\Build\Codebase\Patch;
-use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use Pimple\Container;
 
@@ -22,12 +20,8 @@ class Codebase implements CodebaseInterface, Injectable {
    */
   protected $io;
 
-  /* @var \DrupalCI\Build\BuildInterface */
-  protected $build;
-
   public function inject(Container $container) {
     $this->io = $container['console.io'];
-    $this->build = $container['build'];
   }
 
   /**

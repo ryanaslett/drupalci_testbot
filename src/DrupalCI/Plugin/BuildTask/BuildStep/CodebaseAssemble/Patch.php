@@ -6,6 +6,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
+use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
@@ -23,12 +24,12 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   use BuildTaskTrait;
   use FileHandlerTrait;
 
-  /* @var \DrupalCI\Build\Codebase\CodebaseInterface */
-  protected $codebase;
-
-  /* @var \DrupalCI\Build\BuildInterface */
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
   protected $build;
-
 
   public function inject(Container $container) {
     parent::inject($container);
@@ -51,33 +52,35 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $files = $this->configuration['patches'];
-
 
     if (empty($files)) {
       $this->io->writeln('No patches to apply.');
     }
     foreach ($files as $key => $details) {
-      if (empty($details['from'])) {
-        $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
+      try {
+        if (empty($details['from'])) {
+          $this->io->drupalCIError("Patch error", "No valid patch file provided for the patch command.");
+          throw new BuildTaskException('No valid patch file provided for the patch command.');
 
-        return 2;
+        }
+        // Create a new patch object
+        $patch = new PatchFile($details, $this->build->getSourceDirectory());
+        $patch->inject($this->container);
+        $this->codebase->addPatch($patch);
+        // Validate our patch's source file and target directory
+        if (!$patch->validate()) {
+          throw new BuildTaskException('Failed to validate the patch source and/or target directory.');
+        }
+
+        // Apply the patch
+        if ($patch->apply() !== 0) {
+          throw new BuildTaskException('Unable to apply the patch.');
+        }
       }
-      // Create a new patch object
-      $patch = new PatchFile($details, $this->build->getSourceDirectory());
-      $patch->inject($this->container);
-      $this->codebase->addPatch($patch);
-      // Validate our patch's source file and target directory
-      if (!$patch->validate()) {
-
-        return 2;
-      }
-
-      // Apply the patch
-      $result = $patch->apply();
-      if ($result !== 0) {
+      catch (BuildTaskException $e) {
 
         // Hack to create a xml file for processing by Jenkins.
         // TODO: Remove once proper build failure processing is in place
@@ -103,7 +106,7 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
                       </testsuite>';
         file_put_contents($output_directory . "/patchfailure.xml", $xml_error);
 
-        return $result;
+        throw $e;
       };
       // Update our list of modified files
       $this->codebase->addModifiedFiles($patch->getModifiedFiles());

@@ -4,6 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
@@ -17,7 +18,11 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
 
   use BuildTaskTrait;
 
-  /* @var \DrupalCI\Build\BuildInterface */
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
   protected $build;
 
 
@@ -36,7 +41,7 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $source_dir = $this->build->getSourceDirectory();
 

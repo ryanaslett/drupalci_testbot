@@ -4,7 +4,7 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 
 
 use DrupalCI\Build\BuildInterface;
-use DrupalCI\Console\Output;
+use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
@@ -16,12 +16,16 @@ use Pimple\Container;
 /**
  * @PluginID("fetch")
  */
-class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface {
+class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable {
 
   use BuildTaskTrait;
   use FileHandlerTrait;
 
-  /* @var \DrupalCI\Build\BuildInterface */
+  /**
+   * The current build.
+   *
+   * @var \DrupalCI\Build\BuildInterface
+   */
   protected $build;
 
 
@@ -44,7 +48,7 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
   /**
    * @inheritDoc
    */
-  public function run(BuildInterface $build) {
+  public function run() {
 
     $files = $this->configuration['files'];
 

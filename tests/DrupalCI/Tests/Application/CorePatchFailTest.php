@@ -42,15 +42,10 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
     ], $options);
 
     $this->assertRegExp('/.*The patch attempt returned an error.*/', $app_tester->getDisplay());
-    // The testbot should not return 0 if there was an error.
+    // The testbot should return 2 if there was an error.
+    $this->assertEquals(2, $app_tester->getStatusCode());
     // @todo: Poke around in artifacts to verify that the testbot is telling
     //   d.o or other consumers that this is a failed test.
-
-    // Currently the result code of the failed patch does not bubble up to the exit code of the
-    // drupalci run command.
-    $this->markTestIncomplete('Currently the result code of the failed patch does not bubble up to the exit code of the run command.');
-
-    $this->assertNotEquals(0, $app_tester->getStatusCode());
   }
 
 }
