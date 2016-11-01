@@ -74,10 +74,7 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
     $containers['db'] = $this->buildDbImageNames();
     // confirms that the service container we want to create is valid.
     if ($valid = $this->environment->validateImageNames($containers['db'])) {
-      // 1. inexplicably looks for containers already "logged".
-      $service_containers = $this->environment->getServiceContainers();
-      $service_containers['db'] = $containers['db'];
-      $this->environment->setServiceContainers($service_containers);
+      $this->environment->setServiceContainers($containers);
       $this->environment->startServiceContainerDaemons('db');
     }
   }
