@@ -416,7 +416,11 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
               $fail_output .= $assertion_result;
             }
             elseif (($assertion['status'] == 'debug')) {
-              $test_output .= $assertion_result;
+              if ($assertion['type'] == 'Duration') {
+                $test_case->setAttribute('time', $assertion['message']);
+              } else {
+                $test_output .= $assertion_result;
+              }
             }
 
             $test_case_assertions++;
