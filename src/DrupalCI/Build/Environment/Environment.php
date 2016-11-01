@@ -170,23 +170,7 @@ class Environment implements Injectable, EnvironmentInterface {
     // Add volumes
     $this->createContainerVolumes($config);
 
-    // Instantiate container
-    $container_config = new ContainerConfig();
-    $container_config->setImage($config['Image']);
-    $container_config->setCmd($config['Cmd']);
-    $host_config = new HostConfig();
-    $host_config->setBinds($config['HostConfig']['Binds']);
-    if (!empty($config['HostConfig']['Links'])) {
-      $host_config->setLinks($config['HostConfig']['Links']);
-    }
-    $container_config->setHostConfig($host_config);
-    $parameters = [];
-    if (!empty($config['name'])) {
-      $parameters = ['name' => $config['name']];
-    }
-
-    $create_result = $manager->create($container_config, $parameters);
-    $container_id = $create_result->getId();
+    $container_id = $this->createContainer($config);
 
     // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
     $response = $manager->start($container_id);
@@ -283,22 +267,8 @@ class Environment implements Injectable, EnvironmentInterface {
       // Get container configuration, which defines parameters such as exposed ports, etc.
       $configs = $this->getContainerConfiguration($image['image']);
       $config = $configs[$image['image']];
-      // TODO: Allow classes to modify the default configuration before processing
-      // Instantiate container
 
-      // TODO: Use a normalizer
-      $container_config = new ContainerConfig();
-      $container_config->setImage($config['Image']);
-      $host_config = new HostConfig();
-      $host_config->setBinds($config['HostConfig']['Binds']);
-      $container_config->setHostConfig($host_config);
-      $parameters = [];
-      if (!empty($config['name'])) {
-        $parameters = ['name' => $config['name']];
-      }
-
-      $create_result = $manager->create($container_config, $parameters);
-      $container_id = $create_result->getId();
+      $container_id = $this->createContainer($config);
 
       // Create the docker container instance, running as a daemon.
       // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
@@ -344,6 +314,27 @@ class Environment implements Injectable, EnvironmentInterface {
       $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
     }
     return TRUE;
+  }
+
+
+  /**
+   * @param $config
+   * @return mixed
+   */
+  protected function createContainer($config) {
+    $manager = $this->docker->getContainerManager();
+    $container_config = new ContainerConfig();
+    $container_config->setImage($config['Image']);
+    $host_config = new HostConfig();
+    $host_config->setBinds($config['HostConfig']['Binds']);
+    $container_config->setHostConfig($host_config);
+    $parameters = [];
+    if (!empty($config['name'])) {
+      $parameters = ['name' => $config['name']];
+    }
+    $create_result = $manager->create($container_config, $parameters);
+    $container_id = $create_result->getId();
+    return $container_id;
   }
 
 
