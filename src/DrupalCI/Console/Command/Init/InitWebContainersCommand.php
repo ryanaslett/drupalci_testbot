@@ -8,13 +8,13 @@
 namespace DrupalCI\Console\Command\Init;
 
 //use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use DrupalCI\Console\Helpers\ContainerHelper;
+use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class InitWebContainersCommand extends DrupalCICommandBase {
@@ -28,6 +28,7 @@ class InitWebContainersCommand extends DrupalCICommandBase {
       ->setDescription('Build initial DrupalCI web containers')
       ->addArgument('container_name', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Docker container image(s) to build.')
       ->addOption('forcebuild', null, InputOption::VALUE_NONE, 'Force Building Environments locally rather than pulling the fslayers')
+      ->addOption('all', null, InputOption::VALUE_NONE, 'Pull/Build all web containers')
     ;
   }
 
@@ -70,6 +71,9 @@ class InitWebContainersCommand extends DrupalCICommandBase {
         {
           $names = array($this->default_build['web']);
         }
+      }
+      else if ($input->getOption('all')) {
+        $names = $container_names;
       }
       else {
         $names = $this->getWebContainerNames($container_names, $input, $output);

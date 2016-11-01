@@ -1,8 +1,8 @@
-# SAMPLE .drupal.ci.yml job definition
+# SAMPLE .drupal.ci.yml build definition
 # To use:
 # - Drupal checkout in /tmp/drupal
 # - drupalci config:load blank
-# - drupalci config:set DCI_CodeBase=/tmp/drupal
+# - drupalci config:set DCI_UseLocalCodeBase=/tmp/drupal
 # - drupalci run simpletest
 # Must have php-5.4 container image
 environment:
