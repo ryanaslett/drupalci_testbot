@@ -336,7 +336,7 @@ class Build implements BuildInterface, Injectable {
         $plugin = $iteration['#plugin'];
         $child_status = 0;
         // start also implies run();
-        $task_status = $plugin->start($this);
+        $task_status = $plugin->start();
         if (isset($iteration['#children'])) {
           $child_status = $this->processTask($iteration['#children']);
         }
