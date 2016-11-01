@@ -167,14 +167,8 @@ class Environment implements Injectable, EnvironmentInterface {
     // Get container configuration, which defines parameters such as exposed ports, etc.
     $configs = $this->getContainerConfiguration($container['image']);
     $config = $configs[$container['image']];
-    // Add service container links
-    $this->createContainerLinks($config);
     // Add volumes
     $this->createContainerVolumes($config);
-    // Set a default CMD in case the container config does not set one.
-    if (empty($config['Cmd'])) {
-      $this->setDefaultCommand($config);
-    }
 
     // Instantiate container
     $container_config = new ContainerConfig();
@@ -205,23 +199,6 @@ class Environment implements Injectable, EnvironmentInterface {
     $container['created'] = TRUE;
     $short_id = substr($container['id'], 0, 8);
     $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
-  }
-
-  protected function setDefaultCommand(&$config) {
-    $config['Cmd'] = ['/bin/bash', '-c', '/daemon.sh'];
-  }
-
-  protected function createContainerLinks(&$config) {
-    $links = [];
-    if (empty($this->serviceContainers)) {
-      return;
-    }
-    $targets = $this->serviceContainers;
-    foreach ($targets as $type => $containers) {
-      foreach ($containers as $key => $container) {
-        $config['HostConfig']['Links'][] = "${container['name']}:${container['name']}";
-      }
-    }
   }
 
   protected function createContainerVolumes(&$config) {
