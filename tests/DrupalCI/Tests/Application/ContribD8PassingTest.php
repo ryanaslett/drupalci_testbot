@@ -23,9 +23,10 @@ class ContribD8PassingTest extends DrupalCIFunctionalTestBase {
   protected $dciConfig = [
     'DCI_AdditionalRepositories=git,git://git.drupal.org/project/token.git,8.x-1.x,modules/token,1;',
     'DCI_ComposerInstall=true',
-    'DCI_CoreRepository=file:///tmp/drupal',
+    'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
     'DCI_CoreBranch=8.3.x',
-    'DCI_DBVersion=mysql-5.5',
+    'DCI_DBType=mysql',
+    'DCI_DBVersion=5.5',
     'DCI_GitCommitHash=24343f9',
     'DCI_JobType=simpletest',
     'DCI_PHPVersion=7',

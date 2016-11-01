@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use Docker\Exception\ImageNotFoundException;
 use DrupalCI\Tests\Console\Command\CommandTestBase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -26,7 +25,7 @@ class PullCommandTest extends CommandTestBase {
 
     $display = $commandTester->getDisplay(TRUE);
     $this->assertRegExp('`Executing pull ...`', $display);
-    $this->assertRegExp('`Pulling foof:latest container`', $display);
+    $this->assertRegExp('`Pulling foof container`', $display);
     return;
   }
 

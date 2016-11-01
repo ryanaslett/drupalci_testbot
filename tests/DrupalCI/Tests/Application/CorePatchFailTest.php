@@ -21,11 +21,11 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
    */
   protected $dciConfig = [
     'DCI_CoreBranch=8.1.x',
-    'DCI_CoreRepository=file:///tmp/drupal',
-    'DCI_DBVersion=mysql-5.5',
+    'DCI_CoreRepository=file:///var/lib/drupalci/drupal-checkout',
+    'DCI_DBType=mysql',
+    'DCI_DBVersion=5.5',
     'DCI_Fetch=http://drupal.org/files/issues/does_not_apply.patch',
     'DCI_JobType=simpletest',
-    'DCI_JunitXml=xml',
     'DCI_PHPVersion=7',
     'DCI_Patch=does_not_apply.patch',
     'DCI_TestGroups=ban',
@@ -42,13 +42,10 @@ class CorePatchFailTest extends DrupalCIFunctionalTestBase {
     ], $options);
 
     $this->assertRegExp('/.*The patch attempt returned an error.*/', $app_tester->getDisplay());
-    // The testbot should not return 0 if there was an error.
+    // The testbot should return 2 if there was an error.
+    $this->assertEquals(2, $app_tester->getStatusCode());
     // @todo: Poke around in artifacts to verify that the testbot is telling
     //   d.o or other consumers that this is a failed test.
-
-    // Currently the result code of the failed patch does not bubble up to the exit code of the
-    // drupalci run command.
-    //$this->assertNotEquals(0, $app_tester->getStatusCode());
   }
 
 }
