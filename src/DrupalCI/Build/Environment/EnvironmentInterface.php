@@ -15,8 +15,6 @@ interface EnvironmentInterface {
 
   public function setExecContainers(array $containers);
 
-  public function getServiceContainers();
-
   public function setServiceContainers(array $service_containers);
 
   public function startServiceContainerDaemons($container_type);

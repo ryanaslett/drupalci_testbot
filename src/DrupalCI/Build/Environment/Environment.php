@@ -225,10 +225,6 @@ class Environment implements Injectable, EnvironmentInterface {
     return $configs;
   }
 
-  public function getServiceContainers() {
-    return $this->serviceContainers;
-  }
-
   public function setServiceContainers(array $service_containers) {
     $this->serviceContainers = $service_containers;
   }
