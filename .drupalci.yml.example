@@ -1,4 +1,4 @@
-# SAMPLE .drupal.ci.yml job definition
+# SAMPLE .drupal.ci.yml build definition
 # To use:
 # - Drupal checkout in /tmp/drupal
 # - drupalci config:load blank
