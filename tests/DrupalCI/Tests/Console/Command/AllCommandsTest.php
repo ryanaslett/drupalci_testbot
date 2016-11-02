@@ -14,8 +14,6 @@ class AllCommandsPresentTest extends CommandTestBase {
 
   public function provideCommandNames() {
     return [
-      ['build'],
-
       ['docker-rm'],
       ['init'],
       ['init:base'],

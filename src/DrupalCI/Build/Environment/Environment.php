@@ -9,6 +9,7 @@
 namespace DrupalCI\Build\Environment;
 
 use Docker\API\Model\ContainerConfig;
+use Docker\API\Model\CreateImageInfo;
 use Docker\API\Model\ExecConfig;
 use Docker\API\Model\ExecStartConfig;
 use Docker\API\Model\HostConfig;
@@ -19,6 +20,7 @@ use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use DrupalCI\Plugin\PluginBase;
 use Http\Client\Common\Exception\ClientErrorException;
 use Pimple\Container;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Yaml\Yaml;
 
 
@@ -54,7 +56,6 @@ class Environment implements Injectable, EnvironmentInterface {
 
   /* @var \DrupalCI\Build\BuildInterface */
   protected $build;
-
 
 
   public function inject(Container $container) {
@@ -133,7 +134,7 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
   protected function checkCommandStatus($signal) {
-    if ($signal !==0) {
+    if ($signal !== 0) {
       $this->io->drupalCIError('Error', "Received a non-zero return code from the last command executed on the container.  (Return status: " . $signal . ")");
       return 1;
     }
@@ -161,16 +162,18 @@ class Environment implements Injectable, EnvironmentInterface {
 
 
   public function startServiceContainerDaemons($db_container) {
-  if (strpos($this->database->getDbType(), 'sqlite') === 0) {
-    return;
+    if (strpos($this->database->getDbType(), 'sqlite') === 0) {
+      return;
+    }
+    $db_container['HostConfig']['Binds'][0] = $this->build->getDBDirectory() . ':' . $this->database->getDataDir();
+    //$db_container['HostConfig']['Binds'][0] = '/var/lib/drupalci/database/' . $this->database->getDbType() . '-' . $this->database->getVersion() . ':' . $this->database->getDataDir();
+
+
+    $this->databaseContainer = $this->startContainer($db_container);
+    $this->database->setHost($this->databaseContainer['ip']);
+
+
   }
-  $db_container['HostConfig']['Binds'][0] = $this->build->getDBDirectory() . ':' . $this->database->getDataDir();
-
-
-  $this->databaseContainer = $this->startContainer($db_container);
-  $this->database->setHost($this->databaseContainer['ip']);
-  // @TODO: probably create the database connection some other time?
-}
 
 
   protected function validateImageName($image_name) {
@@ -182,49 +185,80 @@ class Environment implements Injectable, EnvironmentInterface {
     $name = $image_name['Image'];
     try {
       $image = $manager->find($name);
+      $id = substr($image->getID(), 0, 8);
+      $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
     }
     catch (ClientErrorException $e) {
       // @TODO this is where we go ahead and pull the image if it doesnt exist.
       $this->io->drupalCIError("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
-      return FALSE;
+      $this->pull($name);
     }
-    $id = substr($image->getID(), 0, 8);
-    $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
+
 
     return TRUE;
   }
 
-  protected function startContainer($config){
+  protected function startContainer($config) {
 
-      $valid = $this->validateImageName($config);
-      if (!empty($valid)) {
+    $valid = $this->validateImageName($config);
+    if (!empty($valid)) {
 
-        $manager = $this->docker->getContainerManager();
-        $container_config = new ContainerConfig();
-        $container_config->setImage($config['Image']);
-        $host_config = new HostConfig();
-        $host_config->setBinds($config['HostConfig']['Binds']);
-        $container_config->setHostConfig($host_config);
-        $parameters = [];
-        $create_result = $manager->create($container_config, $parameters);
-        $container_id = $create_result->getId();
+      $manager = $this->docker->getContainerManager();
+      $container_config = new ContainerConfig();
+      $container_config->setImage($config['Image']);
+      $host_config = new HostConfig();
+      $host_config->setBinds($config['HostConfig']['Binds']);
+      $container_config->setHostConfig($host_config);
+      $parameters = [];
+      $create_result = $manager->create($container_config, $parameters);
+      $container_id = $create_result->getId();
 
-        $response = $manager->start($container_id);
-        // TODO: Catch and exception if doesn't return 204.
+      $response = $manager->start($container_id);
+      // TODO: Catch and exception if doesn't return 204.
 
-        $executable_container = $manager->find($container_id);
+      $executable_container = $manager->find($container_id);
 
-        $container['id'] = $executable_container->getID();
-        $container['name'] = $executable_container->getName();
-        $container['ip'] = $executable_container->getNetworkSettings()
-          ->getIPAddress();
-        $container['image'] = $config['Image'];
+      $container['id'] = $executable_container->getID();
+      $container['name'] = $executable_container->getName();
+      $container['ip'] = $executable_container->getNetworkSettings()
+        ->getIPAddress();
+      $container['image'] = $config['Image'];
 
-        $short_id = substr($container['id'], 0, 8);
-        $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${config['Image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
-        return $container;
+      $short_id = substr($container['id'], 0, 8);
+      $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${config['Image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
+      return $container;
+    }
+    else {
+      throw new BuildTaskException("Starting Container Failed");
+    }
+  }
+
+  /**
+   * (#inheritdoc)
+   *
+   * @param $name
+   */
+  protected function pull($name) {
+    $manager = $this->docker->getImageManager();
+    $progressInformation = null;
+    $response = $manager->create('', ['fromImage' => $name . ':latest'],  $manager::FETCH_STREAM);
+
+    //$response->onFrame(function (CreateImageInfo $createImageInfo) use (&$progressInformation) {
+    $response->onFrame(function (CreateImageInfo $createImageInfo) use (&$progressInformation) {
+      $createImageInfoList[] = $createImageInfo;
+      if ($createImageInfo->getStatus() === "Downloading") {
+        $progress = $createImageInfo->getProgress();
+        preg_match("/\]\s+(?P<current>(?:[0-9\.]+)?)\s[kM]*B\/(?P<total>(?:[0-9\.]+)?)\s/",$progress,$status);
+        // OPUT
+//        $progressbar = new ProgressBar($this->io, $status['total']);
+//        $progressbar->start();
+//        $progressbar->advance($status['current']);
       } else {
-        throw new BuildTaskException("Starting Container Failed");
+        $this->io->writeln("<comment>" . $createImageInfo->getStatus() . "</comment>");
       }
+    });
+    $response->wait();
+
+    $this->io->writeln("");
   }
 }
