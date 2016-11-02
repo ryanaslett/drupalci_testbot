@@ -35,11 +35,11 @@ class Environment implements Injectable, EnvironmentInterface {
    */
   protected $docker;
 
-  // Holds the name and Docker IDs of our executable containers.
-  public $executableContainers = [];
+  // Holds the name and Docker IDs of our executable container.
+  public $executableContainer = [];
 
-  // Holds the name and Docker IDs of our service containers.
-  public $serviceContainers;
+  // Holds the name and Docker IDs of our service container.
+  public $serviceContainer;
 
   /* @var DatabaseInterface */
   protected $database;
@@ -78,55 +78,54 @@ class Environment implements Injectable, EnvironmentInterface {
 
     if (!empty($commands)) {
       // Check that we have a container to execute on
-      $configs = $this->getExecContainers();
-      foreach ($configs as $type => $containers) {
-        foreach ($containers as $container) {
-          $id = $container['id'];
-          $short_id = substr($id, 0, 8);
-          $this->io->writeLn("<info>Executing on container instance $short_id:</info>");
-          foreach ($commands as $cmd) {
-            $this->io->writeLn("<fg=magenta>$cmd</fg=magenta>");
+      $container = $this->getExecContainer();
 
-            $exec_config = new ExecConfig();
-            $exec_config->setTty(FALSE);
-            $exec_config->setAttachStderr(TRUE);
-            $exec_config->setAttachStdout(TRUE);
-            $exec_config->setAttachStdin(FALSE);
-            $command = ["/bin/bash", "-c", $cmd];
-            $exec_config->setCmd($command);
+      $id = $container['id'];
+      $short_id = substr($id, 0, 8);
+      $this->io->writeLn("<info>Executing on container instance $short_id:</info>");
+      foreach ($commands as $cmd) {
+        $this->io->writeLn("<fg=magenta>$cmd</fg=magenta>");
 
-            $exec_manager = $this->docker->getExecManager();
-            $response = $exec_manager->create($id, $exec_config);
+        $exec_config = new ExecConfig();
+        $exec_config->setTty(FALSE);
+        $exec_config->setAttachStderr(TRUE);
+        $exec_config->setAttachStdout(TRUE);
+        $exec_config->setAttachStdin(FALSE);
+        $command = ["/bin/bash", "-c", $cmd];
+        $exec_config->setCmd($command);
 
-            $exec_id = $response->getId();
-            $this->io->writeLn("<info>Command created as exec id " . substr($exec_id, 0, 8) . "</info>");
+        $exec_manager = $this->docker->getExecManager();
+        $response = $exec_manager->create($id, $exec_config);
 
-            $exec_start_config = new ExecStartConfig();
-            $exec_start_config->setTty(FALSE);
-            $exec_start_config->setDetach(FALSE);
+        $exec_id = $response->getId();
+        $this->io->writeLn("<info>Command created as exec id " . substr($exec_id, 0, 8) . "</info>");
 
-            $stream = $exec_manager->start($exec_id, $exec_start_config, [], ExecManager::FETCH_STREAM);
+        $exec_start_config = new ExecStartConfig();
+        $exec_start_config->setTty(FALSE);
+        $exec_start_config->setDetach(FALSE);
 
-            $stdoutFull = "";
-            $stderrFull = "";
-            $stream->onStdout(function ($stdout) use (&$stdoutFull) {
-              $stdoutFull .= $stdout;
-              $this->io->write($stdout);
-            });
-            $stream->onStderr(function ($stderr) use (&$stderrFull) {
-              $stderrFull .= $stderr;
-              $this->io->write($stderr);
-            });
-            $stream->wait();
+        $stream = $exec_manager->start($exec_id, $exec_start_config, [], ExecManager::FETCH_STREAM);
 
-            $exec_command_exit_code = $exec_manager->find($exec_id)->getExitCode();
+        $stdoutFull = "";
+        $stderrFull = "";
+        $stream->onStdout(function ($stdout) use (&$stdoutFull) {
+          $stdoutFull .= $stdout;
+          $this->io->write($stdout);
+        });
+        $stream->onStderr(function ($stderr) use (&$stderrFull) {
+          $stderrFull .= $stderr;
+          $this->io->write($stderr);
+        });
+        $stream->wait();
 
-            if ($this->checkCommandStatus($exec_command_exit_code) !==0) {
-              return $exec_command_exit_code;
-            }
-          }
+        $exec_command_exit_code = $exec_manager->find($exec_id)->getExitCode();
+
+        if ($this->checkCommandStatus($exec_command_exit_code) !== 0) {
+          return $exec_command_exit_code;
         }
       }
+
+
     }
   }
 
@@ -141,48 +140,45 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
 
-  public function getExecContainers() {
+  public function getExecContainer() {
+    return $this->executableContainer;
+  }
 
-    $configs = $this->executableContainers;
-    foreach ($configs as $type => $containers) {
-      foreach ($containers as $key => $container) {
-        // Check if container is created.  If not, create it
-        if (empty($container['created'])) {
-          // TODO: This may be causing duplicate containers to be created
-          // due to a race condition during short-running exec calls.
-          $this->startContainer($container);
-          $this->executableContainers[$type][$key] = $container;
-        }
-      }
+  public function setExecContainer($container) {
+    $this->executableContainer = $container;
+  }
+
+  /**
+   * @param array $container
+   */
+  public function startExecContainer($container) {
+    $valid = $this->validateImageName($container);
+    // 4. If we find a valid container, then we setExecContainers it.
+    if (!empty($valid)) {
+
+      $manager = $this->docker->getContainerManager();
+      // Get container configuration, which defines parameters such as exposed ports, etc.
+      $configs = $this->getContainerConfiguration($container['image']);
+      $config = $configs[$container['image']];
+      // Add volumes
+      $this->createContainerVolumes($config);
+
+      $container_id = $this->createContainer($config);
+
+      // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
+      $response = $manager->start($container_id);
+      // TODO: Catch and exception if doesn't return 204.
+
+      $executable_container = $manager->find($container_id);
+      $container['id'] = $executable_container->getID();
+      $container['name'] = $executable_container->getName();
+      $container['ip'] = $executable_container->getNetworkSettings()
+        ->getIPAddress();
+      $container['created'] = TRUE;
+      $short_id = substr($container['id'], 0, 8);
+      $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
+      $this->executableContainer = $container;
     }
-    return $this->executableContainers;
-  }
-
-  public function setExecContainers(array $containers) {
-    $this->executableContainers = $containers;
-  }
-
-  protected function startContainer(&$container) {
-    $manager = $this->docker->getContainerManager();
-    // Get container configuration, which defines parameters such as exposed ports, etc.
-    $configs = $this->getContainerConfiguration($container['image']);
-    $config = $configs[$container['image']];
-    // Add volumes
-    $this->createContainerVolumes($config);
-
-    $container_id = $this->createContainer($config);
-
-    // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
-    $response = $manager->start($container_id);
-    // TODO: Catch and exception if doesn't return 204.
-
-    $service_container = $manager->find($container_id);
-    $container['id'] = $service_container->getID();
-    $container['name'] = $service_container->getName();
-    $container['ip'] = $service_container->getNetworkSettings()->getIPAddress();
-    $container['created'] = TRUE;
-    $short_id = substr($container['id'], 0, 8);
-    $this->io->writeln("<comment>Container <options=bold>${container['name']}</options=bold> created from image <options=bold>${container['image']}</options=bold> with ID <options=bold>$short_id</options=bold></comment>");
   }
 
   protected function createContainerVolumes(&$config) {
@@ -225,90 +221,100 @@ class Environment implements Injectable, EnvironmentInterface {
     return $configs;
   }
 
-  public function setServiceContainers(array $service_containers) {
-    $this->serviceContainers = $service_containers;
+  public function setServiceContainer($service_containers) {
+    $this->serviceContainer = $service_containers;
   }
 
-  public function startServiceContainerDaemons($container_type) {
-    // $container_type is *always* 'db'
-    $manager = $this->docker->getContainerManager();
-    $instances = [];
+  public function startServiceContainerDaemons($db_container) {
+    $valid = $this->validateImageName($db_container);
+    // 4. If we find a valid container, then we setExecContainers it.
+    if (!empty($valid)) {
+      // $container_type is *always* 'db'
+      // We don't need to initialize any service container for SQLite.
+      if (strpos($this->database->getDbType(), 'sqlite') === 0) {
+        return;
+      }
+      $manager = $this->docker->getContainerManager();
+      $instances = [];
 
-    $images = $manager->findAll();
+      $images = $manager->findAll();
 
-    // Inexplicably loop through the data and reassign it to an array.
-    foreach ($images as $running) {
-      $running_container_name = explode(':', $running->getImage());
-      $id = substr($running->getID(), 0, 8);
-      $instances[$running_container_name[0]] = $id;
-    };
-    foreach ($this->serviceContainers[$container_type] as $key => $image) {
+      // Inexplicably loop through the data and reassign it to an array.
+      foreach ($images as $running) {
+        $running_container_name = explode(':', $running->getImage());
+        $id = substr($running->getID(), 0, 8);
+        $instances[$running_container_name[0]] = $id;
+      };
+
+
       // look for the 'service container' that we want to start.
-      if (in_array($image['image'], array_keys($instances))) {
+      if (in_array($db_container['image'], array_keys($instances))) {
         // TODO: Determine service container ports, id, etc, and save it to the build.
-        $this->io->writeln("<comment>Found existing <options=bold>${image['image']}</options=bold> service container instance.</comment>");
+        $this->io->writeln("<comment>Found existing <options=bold>${db_container['image']}</options=bold> service container instance.</comment>");
         // TODO: Load up container parameters
-        $container = $manager->find($instances[$image['image']]);
+        $container = $manager->find($instances[$db_container['image']]);
         $container_id = $container->getID();
         $container_name = $container->getName();
         $container_ip = $container->getNetworkSettings()->getIPAddress();
-        $this->serviceContainers[$container_type][$key]['id'] = $container_id;
-        $this->serviceContainers[$container_type][$key]['name'] = $container_name;
-        $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
-        continue;
+        $this->serviceContainer['id'] = $container_id;
+        $this->serviceContainer['name'] = $container_name;
+        $this->serviceContainer['ip'] = $container_ip;
       }
-      // Container not running, so we'll need to create it.
-      $this->io->writeln("<comment>No active <options=bold>${image['image']}</options=bold> service container instances found. Generating new service container.</comment>");
+      else {
+        // Container not running, so we'll need to create it.
+        $this->io->writeln("<comment>No active <options=bold>${db_container['image']}</options=bold> service container instances found. Generating new service container.</comment>");
 
-      // Get container configuration, which defines parameters such as exposed ports, etc.
-      $configs = $this->getContainerConfiguration($image['image']);
-      $config = $configs[$image['image']];
+        // Get container configuration, which defines parameters such as exposed ports, etc.
+        $configs = $this->getContainerConfiguration($db_container['image']);
+        $config = $configs[$db_container['image']];
 
-      $container_id = $this->createContainer($config);
+        $container_id = $this->createContainer($config);
 
-      // Create the docker container instance, running as a daemon.
-      // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
-      $response = $manager->start($container_id);
-      // TODO: Catch and exception if doesn't return 204.
+        // Create the docker container instance, running as a daemon.
+        // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
+        $response = $manager->start($container_id);
+        // TODO: Catch and exception if doesn't return 204.
 
-      $container = $manager->find($container_id);
+        $container = $manager->find($container_id);
 
-      $container_id = $container->getID();
-      $container_name = $container->getName();
-      $container_ip = $container->getNetworkSettings()->getIPAddress();
+        $container_id = $container->getID();
+        $container_name = $container->getName();
+        $container_ip = $container->getNetworkSettings()->getIPAddress();
 
-      $this->serviceContainers[$container_type][$key]['id'] = $container_id;
-      $this->serviceContainers[$container_type][$key]['name'] = $container_name;
-      $this->serviceContainers[$container_type][$key]['ip'] = $container_ip;
-      $short_id = substr($container_id, 0, 8);
-      $this->io->writeln("<comment>Created new <options=bold>${image['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
+        $this->serviceContainer['id'] = $container_id;
+        $this->serviceContainer['name'] = $container_name;
+        $this->serviceContainer['ip'] = $container_ip;
+        $short_id = substr($container_id, 0, 8);
+        $this->io->writeln("<comment>Created new <options=bold>${db_container['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
+      }
+      // @TODO: should probably add the container environment as a service
+      $this->database->setHost($container_ip);
+      // @TODO: all of this should probably live inside of the database
+      $this->database->connect();
     }
-    // @TODO: should probably add the container environment as a service
-    $this->database->setHost($container_ip);
-    // @TODO: all of this should probably live inside of the database
-    $this->database->connect();
+
 
   }
 
-  public function validateImageNames($containers) {
+  public function validateImageName($image_name) {
     // Verify that the appropriate container images exist
     $this->io->writeln("<comment>Validating container images exist</comment>");
 
     $manager = $this->docker->getImageManager();
-    foreach ($containers as $key => $image_name) {
-      $container_string = explode(':', $image_name['image']);
-      $name = $container_string[0];
 
-      try {
-        $image = $manager->find($name);
-      }
-      catch (ClientErrorException $e) {
-        $this->io->drupalCIError("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
-        return FALSE;
-      }
-      $id = substr($image->getID (), 0, 8);
-      $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
+    $container_string = explode(':', $image_name['image']);
+    $name = $container_string[0];
+
+    try {
+      $image = $manager->find($name);
     }
+    catch (ClientErrorException $e) {
+      $this->io->drupalCIError("Missing Image", "Required container image <options=bold>'$name'</options=bold> not found.");
+      return FALSE;
+    }
+    $id = substr($image->getID(), 0, 8);
+    $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
+
     return TRUE;
   }
 

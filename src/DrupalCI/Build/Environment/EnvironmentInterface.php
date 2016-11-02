@@ -11,13 +11,15 @@ interface EnvironmentInterface {
    */
   public function executeCommands($commands);
 
-  public function getExecContainers();
+  public function getExecContainer();
 
-  public function setExecContainers(array $containers);
+  public function setExecContainer($container);
 
-  public function setServiceContainers(array $service_containers);
+  public function startExecContainer($container);
 
-  public function startServiceContainerDaemons($container_type);
+  public function setServiceContainer($container);
 
-  public function validateImageNames($containers);
+  public function startServiceContainerDaemons($container);
+
+  public function validateImageName($containers);
 }
