@@ -1,0 +1,14 @@
+/.vagrant
+drupalci.vdi
+ubuntu-xenial-16.04-cloudimg-console.log
+www/
+.idea
+/vendor
+/bin
+PROVISIONED
+.buildpath
+.project
+.settings
+./vendor
+drupalci.phar
+*~
