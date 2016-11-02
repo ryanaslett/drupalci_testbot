@@ -263,7 +263,7 @@ class Database implements DatabaseInterface, Injectable {
    */
   public function createDB() {
     try {
-      $this->connection->exec('CREATE DATABASE ' . $this->dbname);
+      $this->connect()->exec('CREATE DATABASE ' . $this->dbname);
     } catch (\PDOException $e) {
       $this->io->writeln("<comment>Could not create database $this->dbname.</comment>");
       return FALSE;

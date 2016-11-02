@@ -52,13 +52,14 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
 
     $this->io->writeln("<info>Parsing required Web container image names ...</info>");
     $php_version = $this->configuration['phpversion'];
-    $images['web']['image'] = "drupalci/web-$php_version";
+   // $images['web']['image'] = "drupalci/web-$php_version";
+    $images['web'] = ["Image" => "drupalci/web-$php_version"];
     $this->io->writeln("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
     $this->environment->startExecContainer($images['web']);
 
     $this->io->writeln("<info>Parsing required database container image names ...</info>");
     $db_version = $this->database->getDbType() . '-' . $this->database->getVersion();
-    $images['db']['image'] = "drupalci/$db_version";
+    $images['db'] = ["Image" => "drupalci/$db_version"];
     $this->io->writeln("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
     $this->environment->startServiceContainerDaemons($images['db']);
 
