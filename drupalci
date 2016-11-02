@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+/**
+ * @file
+ * Drupal CI's console.
+ */
+
+use DrupalCI\Providers\DrupalCIServiceProvider;
+use Pimple\Container;
+
+// Configure php
+require_once  __DIR__ . '/app/bootstrap.php';
+
+// Autoload vendor classes
+$loader = require_once __DIR__ . '/vendor/autoload.php';
+
+$container = new Container();
+$container->register(new DrupalCIServiceProvider());
+$container['console']->run();
