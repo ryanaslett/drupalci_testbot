@@ -76,6 +76,13 @@ interface BuildInterface {
    * @return mixed
    */
   public function getSourceDirectory();
+  /**
+   * This is where we put the database It should be volume mounted over
+   * to /var/www/html inside the docker containers.
+   *
+   * @return mixed
+   */
+  public function getDBDirectory();
 
 
   public function generateBuildId();

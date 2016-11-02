@@ -191,64 +191,39 @@ class Environment implements Injectable, EnvironmentInterface {
         return;
       }
       $manager = $this->docker->getContainerManager();
-      $instances = [];
 
-      $images = $manager->findAll();
+      // Container not running, so we'll need to create it.
+      $this->io->writeln("<comment>No active <options=bold>${db_container['image']}</options=bold> service container instances found. Generating new service container.</comment>");
 
-      // Inexplicably loop through the data and reassign it to an array.
-      foreach ($images as $running) {
-        $running_container_name = explode(':', $running->getImage());
-        $id = substr($running->getID(), 0, 8);
-        $instances[$running_container_name[0]] = $id;
-      };
+      // Get container configuration, which defines parameters such as exposed ports, etc.
+      $configs = $this->getContainerConfiguration($db_container['image']);
+      $config = $configs[$db_container['image']];
 
+      $config['HostConfig']['Binds'][0] = $this->build->getDBDirectory() . ':' . $this->database->getDataDir();
+      $container_id = $this->createContainer($config);
 
-      // look for the 'service container' that we want to start.
-      if (in_array($db_container['image'], array_keys($instances))) {
-        // TODO: Determine service container ports, id, etc, and save it to the build.
-        $this->io->writeln("<comment>Found existing <options=bold>${db_container['image']}</options=bold> service container instance.</comment>");
-        // TODO: Load up container parameters
-        $container = $manager->find($instances[$db_container['image']]);
-        $container_id = $container->getID();
-        $container_name = $container->getName();
-        $container_ip = $container->getNetworkSettings()->getIPAddress();
-        $this->serviceContainer['id'] = $container_id;
-        $this->serviceContainer['name'] = $container_name;
-        $this->serviceContainer['ip'] = $container_ip;
-      }
-      else {
-        // Container not running, so we'll need to create it.
-        $this->io->writeln("<comment>No active <options=bold>${db_container['image']}</options=bold> service container instances found. Generating new service container.</comment>");
+      // Create the docker container instance, running as a daemon.
+      // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
+      $response = $manager->start($container_id);
+      // TODO: Catch and exception if doesn't return 204.
 
-        // Get container configuration, which defines parameters such as exposed ports, etc.
-        $configs = $this->getContainerConfiguration($db_container['image']);
-        $config = $configs[$db_container['image']];
+      $container = $manager->find($container_id);
 
-        $container_id = $this->createContainer($config);
+      $container_id = $container->getID();
+      $container_name = $container->getName();
+      $container_ip = $container->getNetworkSettings()->getIPAddress();
 
-        // Create the docker container instance, running as a daemon.
-        // TODO: Ensure there are no stopped containers with the same name (currently throws fatal)
-        $response = $manager->start($container_id);
-        // TODO: Catch and exception if doesn't return 204.
+      $this->serviceContainer['id'] = $container_id;
+      $this->serviceContainer['name'] = $container_name;
+      $this->serviceContainer['ip'] = $container_ip;
+      $short_id = substr($container_id, 0, 8);
+      $this->io->writeln("<comment>Created new <options=bold>${db_container['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
 
-        $container = $manager->find($container_id);
-
-        $container_id = $container->getID();
-        $container_name = $container->getName();
-        $container_ip = $container->getNetworkSettings()->getIPAddress();
-
-        $this->serviceContainer['id'] = $container_id;
-        $this->serviceContainer['name'] = $container_name;
-        $this->serviceContainer['ip'] = $container_ip;
-        $short_id = substr($container_id, 0, 8);
-        $this->io->writeln("<comment>Created new <options=bold>${db_container['image']}</options> container instance with ID <options=bold>$short_id</options=bold></comment>");
-      }
       // @TODO: should probably add the container environment as a service
       $this->database->setHost($container_ip);
       // @TODO: all of this should probably live inside of the database
       $this->database->connect();
     }
-
 
   }
 

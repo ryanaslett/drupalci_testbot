@@ -319,6 +319,27 @@ class Database implements DatabaseInterface, Injectable {
    // }
   }
 
+  /**
+   * @inheritDoc
+   */
+  public function getDataDir() {
+
+    $type = $this->dbtype;
+    // @TODO find out what happens if we percona?
+    switch ($type) {
+      case 'pgsql':
+        $dir = "/var/lib/postgresql/" . $this->version;
+        break;
+      case 'mysql':
+      case 'mariadb':
+        $dir = "/var/lib/mysql";
+        break;
+      default:
+        $scheme = "/var/lib/" . $this->dbtype;
+    }
+    return $dir;
+  }
+
 
   protected function establishDBConnection($database = NULL)
   {
