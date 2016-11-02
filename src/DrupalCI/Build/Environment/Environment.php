@@ -71,7 +71,7 @@ class Environment implements Injectable, EnvironmentInterface {
   /**
    * {@inheritdoc}
    */
-  public function executeCommands($commands) {
+  public function executeCommands($commands, $container_id = '') {
     // @TODO someday we may have more than one container. This currently assumes
     // just the single Exec container.
 
@@ -82,10 +82,13 @@ class Environment implements Injectable, EnvironmentInterface {
 
 
     if (!empty($commands)) {
-      // Check that we have a container to execute on
-      $container = $this->getExecContainer();
+      if (!empty($container_id)){
+        $id = $container_id;
+      } else {
+        $container = $this->getExecContainer();
+        $id = $container['id'];
+      }
 
-      $id = $container['id'];
       $short_id = substr($id, 0, 8);
       $this->io->writeLn("<info>Executing on container instance $short_id:</info>");
       foreach ($commands as $cmd) {
@@ -142,9 +145,14 @@ class Environment implements Injectable, EnvironmentInterface {
       return 0;
     }
   }
+  /**
+   * @return mixed
+   */
+  public function getDatabaseContainer() {
+    return $this->databaseContainer;
+  }
 
-
-  protected function getExecContainer() {
+  public function getExecContainer() {
     return $this->executableContainer;
   }
 
@@ -166,7 +174,7 @@ class Environment implements Injectable, EnvironmentInterface {
       return;
     }
     $db_container['HostConfig']['Binds'][0] = $this->build->getDBDirectory() . ':' . $this->database->getDataDir();
-    //$db_container['HostConfig']['Binds'][0] = '/var/lib/drupalci/database/' . $this->database->getDbType() . '-' . $this->database->getVersion() . ':' . $this->database->getDataDir();
+
 
 
     $this->databaseContainer = $this->startContainer($db_container);
@@ -175,6 +183,17 @@ class Environment implements Injectable, EnvironmentInterface {
 
   }
 
+  public function terminateContainers() {
+
+    $manager = $this->docker->getContainerManager();
+
+    // Kill the containers we started.
+    $manager->remove($this->executableContainer['id'], ['force' => TRUE]);
+
+    if ($this->database->getDbType() !== 'sqlite') {
+      $manager->remove($this->databaseContainer['id'],['force' => TRUE]);
+    }
+  }
 
   protected function validateImageName($image_name) {
     // Verify that the appropriate container images exist

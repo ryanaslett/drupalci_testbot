@@ -334,8 +334,11 @@ class Database implements DatabaseInterface, Injectable {
       case 'mariadb':
         $dir = "/var/lib/mysql";
         break;
+      case 'sqlite':
+        $dir = "/var/www/html/sites/default/files/db.sqlite";
+        break;
       default:
-        $scheme = "/var/lib/" . $this->dbtype;
+        $dir = "/var/lib/" . $this->dbtype;
     }
     return $dir;
   }

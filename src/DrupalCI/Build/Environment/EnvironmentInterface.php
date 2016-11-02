@@ -14,4 +14,10 @@ interface EnvironmentInterface {
   public function startExecContainer($container);
 
   public function startServiceContainerDaemons($container);
+
+  public function terminateContainers();
+
+  public function getDatabaseContainer();
+
+  public function getExecContainer();
 }

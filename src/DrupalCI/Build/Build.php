@@ -16,6 +16,8 @@ use DrupalCI\Build\Codebase\Codebase;
 use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Output\ConsoleOutputTest;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Docker\Docker;
 use Docker\DockerClient as Client;
@@ -85,6 +87,9 @@ class Build implements BuildInterface, Injectable {
   protected $io;
 
   protected $buildDirectory;
+
+  // @TODO: build should do something with configuration values in the build.yml
+  protected $configuration;
 
 
 
@@ -286,6 +291,16 @@ class Build implements BuildInterface, Injectable {
     }
     catch (BuildTaskException $e) {
       return 2;
+    } finally {
+      try {
+        // If we set DCI_Debug, we keep the databases n stuff.
+        if (FALSE === (getenv('DCI_Debug'))){
+            $this->cleanupBuild();
+        }
+      }
+      catch (\Exception $e) {
+        $this->io->drupalCIError('Failure in build cleanup', $e->getMessage());
+      }
     }
 
   }
@@ -324,7 +339,7 @@ class Build implements BuildInterface, Injectable {
          *
          * $buildtask->
          */
-
+    $total_status = 0;
     foreach ($taskConfig as $task) {
       // Each task is an array, so that we can support running the same task
       // multiple times.
@@ -341,7 +356,7 @@ class Build implements BuildInterface, Injectable {
           $child_status = $this->processTask($iteration['#children']);
         }
         $plugin->finish();
-        $total_status = max($task_status, $child_status);
+        $total_status = max($task_status, $child_status, $total_status);
       }
     }
     return $total_status;
@@ -520,4 +535,34 @@ class Build implements BuildInterface, Injectable {
     }
     return TRUE;
   }
+
+  protected function cleanupBuild() {
+
+    /* @var $environment \DrupalCI\Build\Environment\Environment */
+
+    // Open up permissions on containers.
+    $uid = posix_getuid();
+    $environment = $this->container['environment'];
+    $commands = [
+                 'chown -R '. $uid . ' /var/www/html',
+                 'chmod -R 777 /var/www/html',
+                ];
+    $environment->executeCommands($commands);
+    $db_container = $environment->getDatabaseContainer();
+    $db_dir = $this->container['db.system']->getDataDir();
+    $commands = [
+      'chown -R '. $uid . ' ' . $db_dir,
+      'chmod -R 777 ' . $db_dir,
+    ];
+    $environment->executeCommands($commands, $db_container['id']);
+
+    // Shut off the containers
+    $this->container['environment']->terminateContainers();
+
+    // Delete the source code and database files
+    $fs = new Filesystem();
+    $fs->remove($this->getSourceDirectory());
+    $fs->remove($this->getDBDirectory());
+  }
+
 }
