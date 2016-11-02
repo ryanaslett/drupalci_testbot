@@ -11,15 +11,7 @@ interface EnvironmentInterface {
    */
   public function executeCommands($commands);
 
-  public function getExecContainer();
-
-  public function setExecContainer($container);
-
   public function startExecContainer($container);
 
-  public function setServiceContainer($container);
-
   public function startServiceContainerDaemons($container);
-
-  public function validateImageName($containers);
 }

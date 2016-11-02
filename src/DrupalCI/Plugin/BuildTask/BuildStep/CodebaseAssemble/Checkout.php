@@ -220,6 +220,7 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
       $this->exec($cmd, $cmdoutput, $result);
 
       if ($result !== 0) {
+        // @TODO: thrown an exception.
         // Git threw an error.
         $this->io->drupalCIError("Checkout Error", "The rsync returned an error.  Error Code: $result");
 

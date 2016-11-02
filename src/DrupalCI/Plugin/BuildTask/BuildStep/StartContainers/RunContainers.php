@@ -50,47 +50,20 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
    */
   public function run() {
 
-
-
-    $containers = $this->buildImageNames();
-    $this->environment->startExecContainer($containers['web']);
-    $this->environment->startServiceContainerDaemons($containers['db']);
-    // 3. confirms that the image name that we want to make a container out of
-    // has been pulled down.
-    $valid = $this->environment->validateImageName($containers['web']);
-    // 4. If we find a valid container, then we setExecContainers it.
-    if (!empty($valid)) {
-      //$this->environment->setExecContainer($containers['web']);
-
-      // Actual creation and configuration of the executable containers occurs
-      // during the 'getExecContainers()' method call.
-    }
-
-    $valid = $this->environment->validateImageName($containers['db']);
-
-    // confirms that the service container we want to create is valid.
-    if (!empty($valid)) {
-      // $this->environment->setServiceContainer();
-
-    }
-  }
-
-  protected function buildImageNames() {
-
-    // 2. generates a container image name from the php version -
-    //  drupalci/web-<phpversion>
     $this->io->writeln("<info>Parsing required Web container image names ...</info>");
     $php_version = $this->configuration['phpversion'];
     $images['web']['image'] = "drupalci/web-$php_version";
     $this->io->writeln("<comment>Adding image: <options=bold>drupalci/web-$php_version</options=bold></comment>");
+    $this->environment->startExecContainer($images['web']);
 
-    // Generates the drupalci/<dbtype>-<dbverison> image name
     $this->io->writeln("<info>Parsing required database container image names ...</info>");
     $db_version = $this->database->getDbType() . '-' . $this->database->getVersion();
     $images['db']['image'] = "drupalci/$db_version";
     $this->io->writeln("<comment>Adding image: <options=bold>drupalci/$db_version</options=bold></comment>");
-    return $images;
+    $this->environment->startServiceContainerDaemons($images['db']);
+
   }
+
 
 
   /**

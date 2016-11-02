@@ -36,10 +36,10 @@ class Environment implements Injectable, EnvironmentInterface {
   protected $docker;
 
   // Holds the name and Docker IDs of our executable container.
-  public $executableContainer = [];
+  protected $executableContainer = [];
 
   // Holds the name and Docker IDs of our service container.
-  public $serviceContainer;
+  protected $serviceContainer;
 
   /* @var DatabaseInterface */
   protected $database;
@@ -70,6 +70,9 @@ class Environment implements Injectable, EnvironmentInterface {
    * {@inheritdoc}
    */
   public function executeCommands($commands) {
+    // @TODO someday we may have more than one container. This currently assumes
+    // just the single Exec container.
+
     // Data format: 'command [arguments]' or array('command [arguments]', 'command [arguments]')
     // $data May be a string if one version required, or array if multiple
     // Normalize data to the array format, if necessary
@@ -124,9 +127,8 @@ class Environment implements Injectable, EnvironmentInterface {
           return $exec_command_exit_code;
         }
       }
-
-
     }
+    return 0;
   }
 
   protected function checkCommandStatus($signal) {
@@ -140,12 +142,8 @@ class Environment implements Injectable, EnvironmentInterface {
   }
 
 
-  public function getExecContainer() {
+  protected function getExecContainer() {
     return $this->executableContainer;
-  }
-
-  public function setExecContainer($container) {
-    $this->executableContainer = $container;
   }
 
   /**
@@ -181,49 +179,7 @@ class Environment implements Injectable, EnvironmentInterface {
     }
   }
 
-  protected function createContainerVolumes(&$config) {
-    $volumes = [];
-    // Map working directory
-    $working = $this->build->getSourceDirectory();
-    // TODO: Change this into defaults, and remove the configuration
-    // options.
-    // CREATE One for the artifacts directory as well.
-    $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
-    $config['HostConfig']['Binds'][] = "$working:$mount_point";
-  }
 
-  protected function getContainerConfiguration($image = NULL) {
-    // TODO Remove the need for this entirely
-    $path = __DIR__ . '/../../Containers';
-    // RecursiveDirectoryIterator recurses into directories and returns an
-    // iterator for each directory. RecursiveIteratorIterator then iterates over
-    // each of the directory iterators, which consecutively return the files in
-    // each directory.
-    $directory = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS));
-    $configs = [];
-    foreach ($directory as $file) {
-      if (!$file->isDir() && $file->isReadable() && $file->getExtension() === 'yml') {
-        $container_name = $file->getBasename('.yml');
-        $dev_suffix = '-dev';
-        $isdev = strpos($container_name, $dev_suffix);
-        if (!$isdev == 0) {
-          $container_name = str_replace('-dev', ':dev', $container_name);
-        }
-        $image_name = 'drupalci/' . $container_name;
-        if (!empty($image) && $image_name != $image) {
-          continue;
-        }
-        // Get the default configuration.
-        $container_config = $this->yamlparser->parse(file_get_contents($file->getPathname()));
-        $configs[$image_name] = $container_config;
-      }
-    }
-    return $configs;
-  }
-
-  public function setServiceContainer($service_containers) {
-    $this->serviceContainer = $service_containers;
-  }
 
   public function startServiceContainerDaemons($db_container) {
     $valid = $this->validateImageName($db_container);
@@ -296,7 +252,7 @@ class Environment implements Injectable, EnvironmentInterface {
 
   }
 
-  public function validateImageName($image_name) {
+  protected function validateImageName($image_name) {
     // Verify that the appropriate container images exist
     $this->io->writeln("<comment>Validating container images exist</comment>");
 
@@ -316,6 +272,46 @@ class Environment implements Injectable, EnvironmentInterface {
     $this->io->writeln("<comment>Found image <options=bold>$name/options=bold> with ID <options=bold>$id</options=bold></comment>");
 
     return TRUE;
+  }
+
+  protected function createContainerVolumes(&$config) {
+    $volumes = [];
+    // Map working directory
+    $working = $this->build->getSourceDirectory();
+    // TODO: Change this into defaults, and remove the configuration
+    // options.
+    // CREATE One for the artifacts directory as well.
+    $mount_point = (empty($config['Mountpoint'])) ? "/data" : $config['Mountpoint'];
+    $config['HostConfig']['Binds'][] = "$working:$mount_point";
+  }
+
+  protected function getContainerConfiguration($image = NULL) {
+    // TODO Remove the need for this entirely
+    $path = __DIR__ . '/../../Containers';
+    // RecursiveDirectoryIterator recurses into directories and returns an
+    // iterator for each directory. RecursiveIteratorIterator then iterates over
+    // each of the directory iterators, which consecutively return the files in
+    // each directory.
+    $directory = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS));
+    $configs = [];
+    foreach ($directory as $file) {
+      if (!$file->isDir() && $file->isReadable() && $file->getExtension() === 'yml') {
+        $container_name = $file->getBasename('.yml');
+        $dev_suffix = '-dev';
+        $isdev = strpos($container_name, $dev_suffix);
+        if (!$isdev == 0) {
+          $container_name = str_replace('-dev', ':dev', $container_name);
+        }
+        $image_name = 'drupalci/' . $container_name;
+        if (!empty($image) && $image_name != $image) {
+          continue;
+        }
+        // Get the default configuration.
+        $container_config = $this->yamlparser->parse(file_get_contents($file->getPathname()));
+        $configs[$image_name] = $container_config;
+      }
+    }
+    return $configs;
   }
 
 

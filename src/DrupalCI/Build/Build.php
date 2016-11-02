@@ -396,6 +396,13 @@ class Build implements BuildInterface, Injectable {
     return $this->buildDirectory . '/source';
   }
 
+  /**
+   * @inheritDoc
+   */
+  public function getDBDirectory() {
+    return $this->buildDirectory . '/database';
+  }
+
 
 
   /**
@@ -478,6 +485,10 @@ class Build implements BuildInterface, Injectable {
       return FALSE;
     }
     $result =  $this->setupDirectory($this->getSourceDirectory());
+    if (!$result) {
+      return FALSE;
+    }
+    $result =  $this->setupDirectory($this->getDBDirectory());
     if (!$result) {
       return FALSE;
     }
