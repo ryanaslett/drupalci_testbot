@@ -1,2 +1,0 @@
-# Docker image to use for this container
-Image:            "drupalci/pgsql-9.4"

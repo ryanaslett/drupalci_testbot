@@ -1,2 +1,0 @@
-# Docker image to use for this container
-Image:            "drupalci/mysql-5.7"
