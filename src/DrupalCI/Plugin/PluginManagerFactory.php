@@ -7,8 +7,8 @@ use Pimple\Container;
 class PluginManagerFactory {
   protected $container;
 
-  public function __construct(Container $c) {
-    $this->container = $c;
+  public function __construct(Container $container) {
+    $this->container = $container;
   }
 
   public function create($plugin_type) {

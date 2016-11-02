@@ -14,8 +14,9 @@ interface Injectable {
   /**
    * The container object.
    *
-   * @param Pimple\Container $container
+   * @param \Pimple\Container $container
    */
-  public function setContainer(Container $container);
+  public function inject(Container $container);
 
 }
+

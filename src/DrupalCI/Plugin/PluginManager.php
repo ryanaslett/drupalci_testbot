@@ -7,12 +7,12 @@
 namespace DrupalCI\Plugin;
 
 use Drupal\Component\Annotation\Plugin\Discovery\AnnotatedClassDiscovery;
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use DrupalCI\Injectable;
 use DrupalCI\InjectableTrait;
 use Pimple\Container;
+use DrupalCI\Plugin\PluginManagerInterface;
 
-class PluginManager implements Injectable {
+class PluginManager implements PluginManagerInterface, Injectable {
 
   use InjectableTrait;
 
@@ -76,11 +76,10 @@ class PluginManager implements Injectable {
         $this->pluginDefinitions['generic'][$plugin_id];
       $plugin = new $plugin_definition['class']($configuration, $plugin_id, $plugin_definition);
       if ($plugin instanceof Injectable) {
-        $plugin->setContainer($this->container);
+        $plugin->inject($this->container);
       }
       $this->plugins[$type][$plugin_id] = $plugin;
     }
     return $this->plugins[$type][$plugin_id];
   }
-
 }
