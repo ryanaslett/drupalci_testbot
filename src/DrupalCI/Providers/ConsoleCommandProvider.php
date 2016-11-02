@@ -35,9 +35,6 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
     $container['command.status'] = function ($container) {
       return new StatusCommand();
     };
-    $container['command.build'] = function ($container) {
-      return new DockerBuildCommand();
-    };
     $container['command.pull'] = function ($container) {
       return new DockerPullCommand();
     };
@@ -69,7 +66,6 @@ class ConsoleCommandProvider implements ServiceProviderInterface {
     $container['commands'] = function ($container) {
       return array(
         $container['command.status'],
-        $container['command.build'],
         $container['command.pull'],
         $container['command.docker.remove'],
         $container['command.init.all'],
