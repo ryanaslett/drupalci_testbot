@@ -3,6 +3,7 @@
 namespace DrupalCI\Tests\Console\Command;
 
 use DrupalCI\Tests\Console\Command\CommandTestBase;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Tests dealing with all of the expected commands.
@@ -14,21 +15,13 @@ class AllCommandsPresentTest extends CommandTestBase {
   public function provideCommandNames() {
     return [
       ['build'],
-      ['config:clear'],
-      ['config:list'],
-      ['config:load'],
-      ['config:reset'],
-      ['config:save'],
-      ['config:set'],
-      ['config:show'],
+
       ['docker-rm'],
       ['init'],
       ['init:base'],
-      ['init:config'],
       ['init:database'],
       ['init:dependencies'],
       ['init:docker'],
-      ['init:php'],
       ['init:web'],
       ['pull'],
       ['run'],
@@ -46,7 +39,7 @@ class AllCommandsPresentTest extends CommandTestBase {
     $c = $this->getConsoleApp();
     // find() throws an exception if the name can't be found.
     $command = $c->find($command_name);
-    $this->assertInstanceOf('Symfony\Component\Console\Command\Command', $command);
+    $this->assertInstanceOf(Command::class, $command);
   }
 
 }
