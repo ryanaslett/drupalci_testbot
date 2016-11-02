@@ -7,16 +7,14 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
+//use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Lcobucci\DependencyInjection\ContainerInjector;
 
 class InitDependenciesCommand extends DrupalCICommandBase {
-
-  use ContainerInjector;
 
   /**
    * {@inheritdoc}

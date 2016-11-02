@@ -7,70 +7,35 @@
 
 namespace DrupalCI\Console;
 
-use Lcobucci\DependencyInjection\ContainerConfig;
-use LuisMulinari\Consoleful\Command\ContainerAwareCommand;
-use LuisMulinari\Consoleful\Application;
-use Lcobucci\DependencyInjection\ContainerInjector;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DrupalCI\Injectable;
+use DrupalCI\Providers\ConsoleCommandProvider;
+use Symfony\Component\Console\Application;
+use Pimple\Container;
 
-use DrupalCI\Console\Command\Init\InitBaseContainersCommand;
-use DrupalCI\Console\Command\Init\InitDatabaseContainersCommand;
-use DrupalCI\Console\Command\Init\InitDependenciesCommand;
-use DrupalCI\Console\Command\Init\InitDockerCommand;
-use DrupalCI\Console\Command\Init\InitWebContainersCommand;
-use DrupalCI\Console\Command\Init\InitPhpContainersCommand;
-use DrupalCI\Console\Command\Init\InitAllCommand;
-use DrupalCI\Console\Command\Init\InitConfigCommand;
-use DrupalCI\Console\Command\BuildCommand;
-use DrupalCI\Console\Command\PullCommand;
-use DrupalCI\Console\Command\DockerRemoveCommand;
-use DrupalCI\Console\Command\RunCommand;
-use DrupalCI\Console\Command\Config\ConfigListCommand;
-use DrupalCI\Console\Command\Config\ConfigLoadCommand;
-use DrupalCI\Console\Command\Config\ConfigResetCommand;
-use DrupalCI\Console\Command\Config\ConfigSaveCommand;
-use DrupalCI\Console\Command\Config\ConfigSetCommand;
-use DrupalCI\Console\Command\Config\ConfigShowCommand;
-use DrupalCI\Console\Command\Config\ConfigClearCommand;
-use DrupalCI\Console\Command\Status\StatusCommand;
-use PrivateTravis\PrivateTravisCommand;
-
-class DrupalCIConsoleApp extends Application {
+class DrupalCIConsoleApp extends Application implements Injectable {
 
   /**
-   * Constructor.
+   * The service container.
    *
-   * We just add our commands here. We don't do any discovery or a container/
-   * service model for simplicity.
-   * TODO: Add a container/service model.
+   * @var \Pimple\Container
    */
-  public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN', $containerConfig) {
-    parent::__construct($name, $version, $containerConfig);
-    $commands = [
-      new BuildCommand(),
-      new PullCommand(),
-      new ConfigListCommand(),
-      new ConfigLoadCommand(),
-      new ConfigResetCommand(),
-      new ConfigSaveCommand(),
-      new ConfigSetCommand(),
-      new ConfigShowCommand(),
-      new ConfigClearCommand(),
-      new DockerRemoveCommand(),
-      new InitAllCommand(),
-      new InitBaseContainersCommand(),
-      new InitDatabaseContainersCommand(),
-      new InitDependenciesCommand(),
-      new InitDockerCommand(),
-      new InitConfigCommand(),
-      new InitWebContainersCommand(),
-      new InitPhpContainersCommand(),
-      new RunCommand(),
-      new StatusCommand(),
-      new PrivateTravisCommand('travis'),
-    ];
-    $this->addCommands($commands);
+  protected $container;
+
+  public function inject(Container $container) {
+    $this->container = $container;
+    $container->register(new ConsoleCommandProvider());
+    $this->addCommands($container['commands']);
+    // Explicitly catch exceptions.
+    $this->setCatchExceptions(TRUE);
+  }
+
+  /**
+   * Access the application object's container.
+   *
+   * @return \Pimple\Container
+   */
+  public function getContainer() {
+    return $this->container;
   }
 
 }

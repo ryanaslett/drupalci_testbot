@@ -7,17 +7,15 @@
 
 namespace DrupalCI\Console\Command\Status;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\DockerHelper;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
+use DrupalCI\Helpers\DrupalCIHelperBase;
+use DrupalCI\Helpers\DockerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Lcobucci\DependencyInjection\ContainerInjector;
 
 class StatusCommand extends DrupalCICommandBase {
-
-  use ContainerInjector;
 
   protected $errors = array();
 
@@ -34,7 +32,6 @@ class StatusCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-
     $output->writeln("<info>Running Status Checks ... </info>");
     # Check whether Docker is installed
     $docker = new DockerHelper();

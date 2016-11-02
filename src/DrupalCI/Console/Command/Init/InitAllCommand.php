@@ -7,17 +7,15 @@
 
 namespace DrupalCI\Console\Command\Init;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
+//use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArrayInput;
-use Lcobucci\DependencyInjection\ContainerInjector;
 
 class InitAllCommand extends DrupalCICommandBase {
-
-  use ContainerInjector;
 
   /**
    * {@inheritdoc}
@@ -92,30 +90,7 @@ class InitAllCommand extends DrupalCICommandBase {
 
     $cmdinput = new ArrayInput($arguments + $options + $options_force);
     $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
 
-
-    // # Generate PHP Containers
-    // $cmd = $this->getApplication()->find('init:php');
-    //
-    // $arguments = array(
-    //   'command' => 'init:php',
-    // );
-    //
-    // $phptype = $input->getOption('phptype');
-    // if(isset($phptype)) {
-    //   $arguments['container_name'] = array($phptype);
-    // }
-    //
-    // $cmdinput = new ArrayInput($arguments + $options + $options_force);
-    // $returnCode = $cmd->run($cmdinput, $output);
-    // # TODO: Error Handling
-
-    # Generate Base Config
-    $cmd = $this->getApplication()->find('init:config');
-    $cmdinput = new ArrayInput(array('command' => 'init:config') + $options);
-    $returnCode = $cmd->run($cmdinput, $output);
-    # TODO: Error Handling
 
   }
 }
