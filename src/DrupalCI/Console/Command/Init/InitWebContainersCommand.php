@@ -8,13 +8,13 @@
 namespace DrupalCI\Console\Command\Init;
 
 //use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use DrupalCI\Console\Helpers\ContainerHelper;
+use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class InitWebContainersCommand extends DrupalCICommandBase {
@@ -36,7 +36,7 @@ class InitWebContainersCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    $this->logger->info("<info>Executing init:web</info>");
+    $output->writeln("<info>Executing init:web</info>");
 
     # Generate array of general arguments to pass downstream
     $options = array();
@@ -57,7 +57,7 @@ class InitWebContainersCommand extends DrupalCICommandBase {
         if (!in_array($name, $container_names)) {
           // Not a valid web container.  Remove it and warn the user
           unset($names[$key]);
-          $this->logger->error("<error>Received an invalid web container name. Skipping build of the $name container.");
+          $output->writeln("<error>Received an invalid web container name. Skipping build of the $name container.");
         }
       }
     }
@@ -84,7 +84,7 @@ class InitWebContainersCommand extends DrupalCICommandBase {
     }
 
     if (empty($names)) {
-      $this->logger->error("<error>No valid web container names provided. Aborting.");
+      $output->writeln("<error>No valid web container names provided. Aborting.");
       return;
     }
     else {

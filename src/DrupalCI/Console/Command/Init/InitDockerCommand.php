@@ -8,8 +8,8 @@
 namespace DrupalCI\Console\Command\Init;
 
 //use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\DockerHelper;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
+use DrupalCI\Helpers\DockerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -33,15 +33,15 @@ class InitDockerCommand extends DrupalCICommandBase {
    */
   public function execute(InputInterface $input, OutputInterface $output) {
     # Check if Docker is installed
-    $this->logger->info("<info>Executing init:docker</info>");
+    $output->writeln("<info>Executing init:docker</info>");
     $docker = new DockerHelper();
     if ($bin = $docker->locateBinary()) {
-      $this->logger->info("<comment>Docker binary located at $bin</comment>");
+      $output->writeln("<comment>Docker binary located at $bin</comment>");
       $docker->getStatus($input, $output);
     }
     else {
       # If not, attempt to install docker
-      $this->logger->info('<comment>Docker binary not found.</comment>');
+      $output->writeln('<comment>Docker binary not found.</comment>');
       $helper = $this->getHelperSet()->get('question');
       $question = new ConfirmationQuestion('<fg=cyan;bg=blue>DrupalCI will now attempt to install Docker on your system.  Continue (y/n)?</fg=cyan;bg=blue>', FALSE);
       if (!$helper->ask($input, $output, $question)) {

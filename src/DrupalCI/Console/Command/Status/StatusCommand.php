@@ -7,9 +7,9 @@
 
 namespace DrupalCI\Console\Command\Status;
 
-use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\DrupalCIHelperBase;
-use DrupalCI\Console\Helpers\DockerHelper;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
+use DrupalCI\Helpers\DrupalCIHelperBase;
+use DrupalCI\Helpers\DockerHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,45 +32,46 @@ class StatusCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    $this->logger->info("Running Status Checks ...");
-
+    $output->writeln("<info>Running Status Checks ... </info>");
     # Check whether Docker is installed
     $docker = new DockerHelper();
     $docker->getStatus($input, $output);
 
     # Check whether base containers have been built and output list of available containers
-    $this->containerStatus();
+    $this->containerStatus($input, $output);
 
     # Check whether configuration sets have been created and output list of available config sets
-    $this->configStatus();
+    $this->configStatus($input, $output);
 
     # Check whether testing dependencies (phpunit, etc) have been installed
-    $this->dependencyStatus();
+    $this->dependencyStatus($input, $output);
 
     # Output error counts and final status result
-    $this->statusOutput();
+    $this->statusOutput($output);
 
   }
 
-  protected function containerStatus() {
+
+
+  protected function containerStatus(InputInterface $input, OutputInterface $output) {
     # TODO: Check whether base containers have been built and output list of available containers
   }
 
-  protected function configStatus() {
+  protected function configStatus(InputInterface $input, OutputInterface $output) {
     # TODO: Check whether configuration sets have been created and output list of available config sets
   }
 
-  protected function dependencyStatus() {
+  protected function dependencyStatus(InputInterface $input, OutputInterface $output) {
     # TODO: Check whether testing dependencies (phpunit, etc) have been installed
   }
 
-  protected function statusOutput() {
+  protected function statusOutput(OutputInterface $output) {
     if (!empty($this->errors)) {
-      $this->logger->error("Found " . count($this->errors) . " errors.");
+      $output->writeln("<error>Found " . count($this->errors) . " errors.");
       # TODO: Output count by error type.
     }
     else {
-      $this->logger->info("No errors found!");
+      $output->writeln("<info>No errors found!</info>");
     }
 
   }

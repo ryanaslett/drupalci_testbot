@@ -8,13 +8,13 @@
 namespace DrupalCI\Console\Command\Init;
 
 //use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use DrupalCI\Console\Command\DrupalCICommandBase;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use DrupalCI\Console\Helpers\ContainerHelper;
+use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class InitBaseContainersCommand extends DrupalCICommandBase {
@@ -57,7 +57,7 @@ class InitBaseContainersCommand extends DrupalCICommandBase {
         if (!in_array($name, $container_names)) {
           // Not a valid base container.  Remove it and warn the user
           unset($names[$key]);
-          $this->logger->error("<error>Received an invalid base container name. Skipping build of the $name container.");
+          $output->writeln("<error>Received an invalid base container name. Skipping build of the $name container.");
         }
       }
     }
@@ -84,7 +84,7 @@ class InitBaseContainersCommand extends DrupalCICommandBase {
     }
 
     if (empty($names)) {
-      $this->logger->error("<error>No valid base container names provided. Aborting.</error>");
+      $output->writeln("<error>No valid base container names provided. Aborting.");
       return;
     }
     else {
@@ -103,7 +103,7 @@ class InitBaseContainersCommand extends DrupalCICommandBase {
       $returnCode = $cmd->run($cmdinput, $output);
       // TODO: Error handling
     }
-    $this->logger->info('');
+    $output->writeln('');
   }
 
   protected function getBaseContainerNames($containers, InputInterface $input, OutputInterface $output) {

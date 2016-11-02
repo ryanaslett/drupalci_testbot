@@ -8,8 +8,8 @@
 namespace DrupalCI\Console\Command\Init;
 
 //use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use DrupalCI\Console\Command\DrupalCICommandBase;
-use DrupalCI\Console\Helpers\ContainerHelper;
+use DrupalCI\Console\Command\Drupal\DrupalCICommandBase;
+use DrupalCI\Helpers\ContainerHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,7 +36,7 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
    * {@inheritdoc}
    */
   public function execute(InputInterface $input, OutputInterface $output) {
-    $this->logger->info("<info>Executing init:database</info>");
+    $output->writeln("<info>Executing init:database</info>");
 
     # Generate array of general arguments to pass downstream
     $options = array();
@@ -57,7 +57,7 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
         if (!in_array($name, $container_names)) {
           // Not a valid db container.  Remove it and warn the user
           unset($names[$key]);
-          $this->logger->error("<error>Received an invalid db container name. Skipping build of the $name container.");
+          $output->writeln("<error>Received an invalid db container name. Skipping build of the $name container.");
         }
       }
     }
@@ -83,7 +83,7 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
     }
 
     if (empty($names)) {
-      $this->logger->error("<error>No valid database container names provided. Aborting.");
+      $output->writeln("<error>No valid database container names provided. Aborting.");
       return;
     }
     else {
@@ -101,7 +101,7 @@ class InitDatabaseContainersCommand extends DrupalCICommandBase {
       $returnCode = $cmd->run($cmdinput, $output);
       // TODO: Error handling
     }
-    $this->logger->info('');
+    $output->writeln('');
   }
 
   protected function getDbContainerNames($containers, InputInterface $input, OutputInterface $output) {

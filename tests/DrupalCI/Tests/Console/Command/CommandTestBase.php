@@ -2,7 +2,6 @@
 
 namespace DrupalCI\Tests\Console\Command;
 
-use DrupalCI\Providers\LoggerProvider;
 use Pimple\Container;
 use DrupalCI\Providers\DrupalCIServiceProvider;
 
@@ -22,7 +21,6 @@ abstract class CommandTestBase extends \PHPUnit_Framework_TestCase {
     if (empty($this->container)) {
       $this->container = new Container();
       $this->container->register(new DrupalCIServiceProvider());
-      $this->container->register(new LoggerProvider());
     }
     return $this->container;
   }
