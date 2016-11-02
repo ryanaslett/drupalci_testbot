@@ -16,7 +16,7 @@ trait InjectableTrait {
    */
   protected $container;
 
-  public function setContainer(Container $container) {
+  public function inject(Container $container) {
     $this->container = $container;
   }
 
