@@ -8,9 +8,11 @@
 namespace DrupalCI\Tests;
 
 use DrupalCI\Console\Output;
-use DrupalCI\Providers\ConsoleOutputServiceProvider;
+use DrupalCI\Providers\ConsoleIOServiceProvider;
+use DrupalCI\Providers\DrupalCIServiceProvider;
 use Pimple\Container;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
 
@@ -20,31 +22,24 @@ class DrupalCITestCase extends \PHPUnit_Framework_TestCase {
   protected $output;
 
   /**
-   * @var \DrupalCI\Plugin\JobTypes\JobInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \DrupalCI\Build\BuildInterface|\PHPUnit_Framework_MockObject_MockObject
    */
-  protected $job;
+  protected $build;
 
-  /**
-   * {@inheritdoc}
-   */
   public function setUp() {
-    $this->output = $this->getMock(OutputInterface::class);
+    $this->output = $this->getMock('Symfony\Component\Console\Output\OutputInterface');
     Output::setOutput($this->output);
-    $this->job = $this->getMock('DrupalCI\Plugin\JobTypes\JobInterface');
+    $this->build = $this->getMock('DrupalCI\Build\BuildInterface');
   }
 
-  /**
-   * Get a fixture container for use in tests.
-   *
-   * @param array $values
-   *   (optional) Values to place in the container on initialization.
-   *
-   * @return \Pimple\Container
-   *   The container.
-   */
-  protected function fixtureContainer($values = []) {
-    $container = new Container($values);
-    $container->register(new ConsoleOutputServiceProvider($this->output));
+  protected function getContainer($services = []) {
+    $container = new Container();
+    $container->register(new DrupalCIServiceProvider());
+    $io_provider = new ConsoleIOServiceProvider(new ArrayInput([]), new NullOutput());
+    $container->register($io_provider);
+    foreach ($services as $name => $service) {
+      $container[$name] = $service;
+    }
     return $container;
   }
 
