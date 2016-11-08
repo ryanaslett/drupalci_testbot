@@ -98,13 +98,6 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getArtifacts() {
     // TODO: Implement getArtifacts() method.
   }

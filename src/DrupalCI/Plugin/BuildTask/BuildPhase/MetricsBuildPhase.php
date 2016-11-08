@@ -38,13 +38,6 @@ class MetricsBuildPhase extends PluginBase implements BuildPhaseInterface, Build
   /**
    * @inheritDoc
    */
-  public function getDefaultConfiguration() {
-    // TODO: Implement getDefaultConfiguration() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getChildTasks() {
     // TODO: Implement getChildTasks() method.
   }
@@ -68,13 +61,6 @@ class MetricsBuildPhase extends PluginBase implements BuildPhaseInterface, Build
    */
   public function getErrorDetails() {
     // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

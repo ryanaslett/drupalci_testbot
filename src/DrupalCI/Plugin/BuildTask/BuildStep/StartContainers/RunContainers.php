@@ -114,13 +114,6 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
   /**
    * @inheritDoc
    */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getArtifacts() {
     // TODO: Implement getArtifacts() method.
   }

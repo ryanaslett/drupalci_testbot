@@ -39,13 +39,6 @@ class StartContainersBuildPhase extends PluginBase implements BuildPhaseInterfac
   /**
    * @inheritDoc
    */
-  public function getDefaultConfiguration() {
-    // TODO: Implement getDefaultConfiguration() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getChildTasks() {
     // TODO: Implement getChildTasks() method.
   }
@@ -69,13 +62,6 @@ class StartContainersBuildPhase extends PluginBase implements BuildPhaseInterfac
    */
   public function getErrorDetails() {
     // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

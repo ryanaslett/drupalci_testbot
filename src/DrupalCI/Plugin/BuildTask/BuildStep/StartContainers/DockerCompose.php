@@ -39,13 +39,6 @@ class DockerCompose extends PluginBase implements BuildStepInterface, BuildTaskI
   /**
    * @inheritDoc
    */
-  public function getDefaultConfiguration() {
-    // TODO: Implement getDefaultConfiguration() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getChildTasks() {
     // TODO: Implement getChildTasks() method.
   }
@@ -63,10 +56,6 @@ class DockerCompose extends PluginBase implements BuildStepInterface, BuildTaskI
 
   public function getErrorDetails() {
     // TODO: Implement getErrorDetails() method.
-  }
-
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   public function getArtifacts() {

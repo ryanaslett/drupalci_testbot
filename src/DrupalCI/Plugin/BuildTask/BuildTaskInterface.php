@@ -103,13 +103,6 @@ interface BuildTaskInterface {
   public function getErrorDetails();
 
   /**
-   * @return int
-   *   Returns the integer status code of this BuildTask (0 = success, 1 =
-   *   failure, 2 = exception, > 2 is abnormal)
-   */
-  public function getResultCode();
-
-  /**
    * @return array
    *
    *   Returns an array of artifact paths that this buildtask creates.

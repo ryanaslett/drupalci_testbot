@@ -80,14 +80,6 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
   /**
    * @inheritDoc
    */
-  public function getDefaultConfiguration() {
-    // TODO: Implement getDefaultConfiguration() method.
-
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getChildTasks() {
     // TODO: Implement getChildTasks() method.
   }
@@ -111,13 +103,6 @@ class PrepareFilesystem extends PluginBase implements BuildStepInterface, BuildT
    */
   public function getErrorDetails() {
     // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

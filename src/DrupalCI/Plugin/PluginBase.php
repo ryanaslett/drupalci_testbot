@@ -33,7 +33,7 @@ abstract class PluginBase implements Injectable, BuildTaskInterface {
    * @var array
    *
    */
-  protected $configuration;
+  protected $configuration = [];
 
   /**
    * Configuration overrides passed into the plugin.
@@ -109,6 +109,27 @@ abstract class PluginBase implements Injectable, BuildTaskInterface {
       }
       $this->configuration = array_merge($this->configuration, array_intersect_key($this->configuration_overrides, $this->configuration));
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getDefaultConfiguration() {
+    return [];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getShortError() {
+    return 'No short error defined';
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getErrorDetails() {
+    return 'Error Details undefined';
   }
 
 }
