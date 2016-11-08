@@ -362,6 +362,12 @@ class Build implements BuildInterface, Injectable {
     return $total_status;
   }
 
+  /**
+   * Checks if an array has string keys.
+   * @param array $array
+   *
+   * @return bool
+   */
   protected function has_string_keys(array $array) {
     return count(array_filter(array_keys($array), 'is_string')) > 0;
   }
@@ -536,6 +542,20 @@ class Build implements BuildInterface, Injectable {
     return TRUE;
   }
 
+
+  /**
+   * This function removes any databases, cleans up any source files, and stops
+   * any running containers.
+   *
+   * @TODO: this needs some reworking, because ideally none of this code
+   * should live here in the build, and the build objects themselves
+   * ought to know how to clean up after themselves.
+   *
+   * Probably what needs to happen in the build needs to be an iterable tree,
+   * and that tree gets iterated over several times, once to run the start and
+   * finish callbacks, and perhaps once to run the cleanup callbacks.
+   *
+   */
   protected function cleanupBuild() {
 
     /* @var $environment \DrupalCI\Build\Environment\Environment */
