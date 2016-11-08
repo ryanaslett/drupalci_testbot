@@ -18,11 +18,6 @@ class PluginManager implements PluginManagerInterface, Injectable {
   use InjectableTrait;
 
   /**
-   * @var array
-   */
-  protected $plugins;
-
-  /**
    * @var string
    */
   protected $superPluginType;
@@ -68,7 +63,6 @@ class PluginManager implements PluginManagerInterface, Injectable {
    * {@inheritdoc}
    */
   public function getPlugin($type, $plugin_id, $configuration = []) {
-    if (!isset($this->plugins[$type][$plugin_id])) {
       if (!$this->hasPlugin($type, $plugin_id)) {
         throw new PluginNotFoundException("Plugin type $type plugin id $plugin_id not found.");
       }
@@ -79,8 +73,6 @@ class PluginManager implements PluginManagerInterface, Injectable {
       if ($plugin instanceof Injectable) {
         $plugin->inject($this->container);
       }
-      $this->plugins[$type][$plugin_id] = $plugin;
-    }
-    return $this->plugins[$type][$plugin_id];
+    return $plugin;
   }
 }
