@@ -7,13 +7,14 @@
 namespace DrupalCI\Plugin;
 
 use DrupalCI\Injectable;
+use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use Pimple\Container;
 
 /**
  * Base class for plugins.
  */
-abstract class PluginBase implements Injectable {
+abstract class PluginBase implements Injectable, BuildTaskInterface {
 
   // TODO: Perhaps this isnt BuildTaskTrait, but a PluginTrait that figures out
   // configuration?
@@ -24,6 +25,22 @@ abstract class PluginBase implements Injectable {
    * @var string
    */
   protected $pluginId;
+
+  /**
+   * Any variables that can affect the behavior of this plugin, that are
+   * specific to this plugin, reside in a configuration array within the plugin.
+   *
+   * @var array
+   *
+   */
+  protected $configuration;
+
+  /**
+   * Configuration overrides passed into the plugin.
+   *
+   * @var array
+   */
+  protected $configuration_overrides;
 
   /**
    * The plugin implementation definition.
@@ -75,6 +92,23 @@ abstract class PluginBase implements Injectable {
   public function inject(Container $container) {
     $this->io = $container['console.io'];
     $this->container = $container;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getComputedConfiguration() {
+    return $this->configuration;
+  }
+
+  protected function override_config() {
+
+    if (!empty($this->configuration_overrides)) {
+      if ($invalid_overrides = array_diff_key($this->configuration_overrides, $this->configuration)){
+        // @TODO: somebody is trying to override a non-existant configuration value. Throw an exception? print a warning?
+      }
+      $this->configuration = array_merge($this->configuration, array_intersect_key($this->configuration_overrides, $this->configuration));
+    }
   }
 
 }

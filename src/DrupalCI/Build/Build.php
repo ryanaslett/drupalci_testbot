@@ -65,6 +65,13 @@ class Build implements BuildInterface, Injectable {
   protected $computedBuildDefinition;
 
   /**
+   * @var array
+   *
+   *   Hierarchical array of configured plugins
+   */
+  protected $computedBuildPlugins;
+
+  /**
    * The build task plugin manager.
    *
    * @var \DrupalCI\Plugin\PluginManagerInterface
@@ -199,7 +206,8 @@ class Build implements BuildInterface, Injectable {
 
     $this->initialBuildDefinition = $this->loadYaml($this->buildFile);
     // After we load the config, we separate the workflow from the config:
-    $this->computedBuildDefinition = $this->processBuildConfig($this->initialBuildDefinition['build']);
+    $this->computedBuildDefinition = $this->initialBuildDefinition['build'];
+    $this->computedBuildPlugins = $this->processBuildConfig($this->computedBuildDefinition);
     $this->generateBuildId();
     $this->setupWorkSpace();
 
@@ -224,7 +232,7 @@ class Build implements BuildInterface, Injectable {
    * RecursiveIteratorIterator would be handy too. But this proves it can work.
    *
    */
-  protected function processBuildConfig($config, &$transformed_config = [], $depth = 0) {
+  protected function processBuildConfig(&$config, &$transformed_config = [], $depth = 0) {
     // $depth determines which type of plugin we're after.
     // There is no BuildStepConfig, but if we're at depth 3, thats what we
     // fake ourselves into believing, because everything at that level is
@@ -248,6 +256,8 @@ class Build implements BuildInterface, Injectable {
             $processed_config = $this->processBuildConfig($configuration, $transformed_config[$config_key][$index], $depth);
             // Also, perhaps we check if $depth = 3 and go ahead and redo the else
             // below?
+            // Bubble the configuration change back up.
+            $config[$config_key] = $configuration;
             $depth--;
             // If it has configuration, lets remove it from the array and use it
             // later to create our plugin.
@@ -270,6 +280,7 @@ class Build implements BuildInterface, Injectable {
           }
         } else {
           $transformed_config[$config_key][0]['#plugin'] = $this->buildTaskPluginManager->getPlugin($task_type[$depth],$config_key);
+          $config[$config_key] = $transformed_config[$config_key][0]['#plugin']->getComputedConfiguration();
         }
       } else {
         // The key is not a plugin, therefore it is a configuration directive for the plugin above it.
@@ -285,7 +296,7 @@ class Build implements BuildInterface, Injectable {
    */
   public function executeBuild() {
     try {
-      $statuscode = $this->processTask($this->computedBuildDefinition);
+      $statuscode = $this->processTask($this->computedBuildPlugins);
       return $statuscode;
     }
     catch (BuildTaskException $e) {

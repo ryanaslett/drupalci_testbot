@@ -68,6 +68,15 @@ interface BuildTaskInterface {
   public function getDefaultConfiguration();
 
   /**
+   * Returns the computed configuration array for this plugin
+   *
+   * @return array
+   *   An array of configuration values this buildtask will use. Used primarily
+   *   to generate a build template for repeatability.
+   */
+  public function getComputedConfiguration();
+
+  /**
    * @return array
    *   This returns any child tasks as strings.
    */
