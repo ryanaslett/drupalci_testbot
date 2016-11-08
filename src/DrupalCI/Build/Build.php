@@ -239,49 +239,51 @@ class Build implements BuildInterface, Injectable {
     // configuration for the level above.
     $task_type = ['BuildStage','BuildPhase','BuildStep','BuildStepConfig'];
     foreach ($config as $config_key => $task_configurations) {
-
-      if ($this->buildTaskPluginManager->hasPlugin($task_type[$depth], $config_key)) {
+      $plugin_key = preg_replace('/\..*/', '', $config_key);
+      if ($this->buildTaskPluginManager->hasPlugin($task_type[$depth], $plugin_key)) {
         // This $config_key is a BuildTask plugin, therefore it may have some
         // configuration definedor may have child BuildTask plugins.
         $transformed_config[$config_key] = [];
         // If a task_configuration is null, that indicates that this BuildTask
         // has no configuration overrides, or subordinate children.
         if (!is_null($task_configurations)) {
-          if ($this->has_string_keys($task_configurations)) {
-            // Convert non-array configs into an array of config
-            $task_configurations = [0 => $task_configurations];
+          $depth++;
+          $processed_config = $this->processBuildConfig($task_configurations, $transformed_config[$config_key], $depth);
+          // Also, perhaps we check if $depth = 3 and go ahead and redo the else
+          // below?
+          // Bubble the configuration change back up.
+          $config[$config_key] = $task_configurations;
+          $depth--;
+          // If it has configuration, lets remove it from the array and use it
+          // later to create our plugin.
+          if (isset($processed_config['#configuration'])) {
+            $overrides = $processed_config['#configuration'];
+            unset($transformed_config[$config_key]['#configuration']);
           }
-          foreach ($task_configurations as $index => $configuration) {
-            $depth++;
-            $processed_config = $this->processBuildConfig($configuration, $transformed_config[$config_key][$index], $depth);
-            // Also, perhaps we check if $depth = 3 and go ahead and redo the else
-            // below?
-            // Bubble the configuration change back up.
-            $config[$config_key] = $configuration;
-            $depth--;
-            // If it has configuration, lets remove it from the array and use it
-            // later to create our plugin.
-            if (isset($processed_config['#configuration'])) {
-              $overrides = $processed_config['#configuration'];
-              unset($transformed_config[$config_key][$index]['#configuration']);
-            }
-            else {
-              $overrides = [];
-            }
-            $children = $transformed_config[$config_key][$index];
-            unset($transformed_config[$config_key][$index]);
-            $transformed_config[$config_key][$index]['#children'] = $children;
-            /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
-            $plugin = $this->buildTaskPluginManager->getPlugin($task_type[$depth], $config_key, $overrides);
-            // TODO: setChildTasks should probably be set on the BuildTaskTrait.
-            // But lets wait until we're sure we need it for something.
-            // $plugin->setChildTasks($children);
-            $transformed_config[$config_key][$index]['#plugin'] = $plugin;
+          else {
+            $overrides = [];
           }
+          $children = $transformed_config[$config_key];
+          unset($transformed_config[$config_key]);
+          $transformed_config[$config_key]['#children'] = $children;
+          /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
+          $plugin = $this->buildTaskPluginManager->getPlugin($task_type[$depth], $plugin_key, $overrides);
+          // TODO: setChildTasks should probably be set on the BuildTaskTrait.
+          // But lets wait until we're sure we need it for something.
+          // $plugin->setChildTasks($children);
+          $transformed_config[$config_key]['#plugin'] = $plugin;
+
         } else {
-          $transformed_config[$config_key][0]['#plugin'] = $this->buildTaskPluginManager->getPlugin($task_type[$depth],$config_key);
-          $config[$config_key] = $transformed_config[$config_key][0]['#plugin']->getComputedConfiguration();
+          $transformed_config[$config_key]['#plugin'] = $this->buildTaskPluginManager->getPlugin($task_type[$depth],$plugin_key);
+
         }
+        if (!empty($config[$config_key])) {
+          $config[$config_key] = array_merge($config[$config_key], $transformed_config[$config_key]['#plugin']->getComputedConfiguration());
+        } else {
+          $config[$config_key] = $transformed_config[$config_key]['#plugin']->getComputedConfiguration();
+        }
+
+
       } else {
         // The key is not a plugin, therefore it is a configuration directive for the plugin above it.
         $transformed_config['#configuration'][$config_key] = $config[$config_key];
@@ -353,21 +355,21 @@ class Build implements BuildInterface, Injectable {
     foreach ($taskConfig as $task) {
       // Each task is an array, so that we can support running the same task
       // multiple times.
-      foreach ($task as $iteration) {
-        // TODO: okay, this is already a hot mess. Interacting with an
-        // implied array strucuture is not what we want here: this needs to be
-        // an Object.
-        /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
-        $plugin = $iteration['#plugin'];
-        $child_status = 0;
-        // start also implies run();
-        $task_status = $plugin->start();
-        if (isset($iteration['#children'])) {
-          $child_status = $this->processTask($iteration['#children']);
-        }
-        $plugin->finish();
-        $total_status = max($task_status, $child_status, $total_status);
+
+      // TODO: okay, this is already a hot mess. Interacting with an
+      // implied array strucuture is not what we want here: this needs to be
+      // an Object.
+      /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
+      $plugin = $task['#plugin'];
+      $child_status = 0;
+      // start also implies run();
+      $task_status = $plugin->start();
+      if (isset($task['#children'])) {
+        $child_status = $this->processTask($task['#children']);
       }
+      $plugin->finish();
+      $total_status = max($task_status, $child_status, $total_status);
+
     }
     return $total_status;
   }
