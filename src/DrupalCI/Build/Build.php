@@ -22,7 +22,6 @@ use Symfony\Component\Process\Process;
 use Docker\Docker;
 use Docker\DockerClient as Client;
 use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Parser;
 use Pimple\Container;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
@@ -73,11 +72,11 @@ class Build implements BuildInterface, Injectable {
   protected $buildTaskPluginManager;
 
   /**
-   * @var \Symfony\Component\Yaml\Parser
+   * @var \Symfony\Component\Yaml\Yaml
    *
    *   Parsed Yaml of the build definition.
    */
-  protected $yamlparser;
+  protected $yaml;
 
   /**
    * Style object.
@@ -99,7 +98,7 @@ class Build implements BuildInterface, Injectable {
   public function inject(Container $container) {
     $this->container = $container;
     $this->io = $container['console.io'];
-    $this->yamlparser = $container['yaml.parser'];
+    $this->yaml = $container['yaml.parser'];
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
   }
 
@@ -384,7 +383,7 @@ class Build implements BuildInterface, Injectable {
    */
   protected function loadYaml($source) {
     if ($content = file_get_contents($source)) {
-      return $this->yamlparser->parse($content);
+      return $this->yaml->parse($content);
     }
     throw new ParseException("Unable to parse build definition file at $source.");
   }
