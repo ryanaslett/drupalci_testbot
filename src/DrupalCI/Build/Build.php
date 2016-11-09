@@ -208,8 +208,11 @@ class Build implements BuildInterface, Injectable {
     // After we load the config, we separate the workflow from the config:
     $this->computedBuildDefinition = $this->initialBuildDefinition['build'];
     $this->computedBuildPlugins = $this->processBuildConfig($this->computedBuildDefinition);
+    $build_definition['build'] = $this->computedBuildDefinition;
+
     $this->generateBuildId();
     $this->setupWorkSpace();
+    $this->saveYaml($build_definition);
 
   }
 
@@ -401,6 +404,23 @@ class Build implements BuildInterface, Injectable {
     throw new ParseException("Unable to parse build definition file at $source.");
   }
 
+  /**
+   * Given a file, returns an array containing the parsed YAML contents from that file
+   *
+   * @param $config
+   *
+   * @return array an array containing the parsed YAML contents from the source file
+   * an array containing the parsed YAML contents from the source file
+   *
+   * @TODO refactor out the buildfile and pass it as an arg too.
+   */
+  protected function saveYaml($config) {
+
+    $buildfile = $this->getArtifactDirectory() . '/build.' . $this->getBuildId() . '.yml';
+    $yamlstring = $this->yaml->dump($config);
+    file_put_contents($buildfile, $yamlstring);
+
+  }
 
   /**
    * {@inheritdoc}
