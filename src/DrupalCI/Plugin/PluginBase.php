@@ -132,4 +132,11 @@ abstract class PluginBase implements Injectable, BuildTaskInterface {
     return 'Error Details undefined';
   }
 
+  /**
+   * @inheritDoc
+   */
+  public function getArtifacts() {
+    return [];
+  }
+
 }

@@ -61,7 +61,6 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
    * @inheritDoc
    */
   public function getDefaultConfiguration() {
-    // TODO: Implement getDefaultConfiguration() method.
     return [
       'options' => 'install --prefer-dist --working-dir',
     ];
