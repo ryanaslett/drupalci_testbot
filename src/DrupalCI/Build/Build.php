@@ -302,9 +302,11 @@ class Build implements BuildInterface, Injectable {
   public function executeBuild() {
     try {
       $statuscode = $this->processTask($this->computedBuildPlugins);
+      $this->saveBuildState();
       return $statuscode;
     }
     catch (BuildTaskException $e) {
+      $this->saveBuildState($e->getMessage());
       return 2;
     } finally {
       try {
@@ -419,6 +421,24 @@ class Build implements BuildInterface, Injectable {
     $buildfile = $this->getArtifactDirectory() . '/build.' . $this->getBuildId() . '.yml';
     $yamlstring = $this->yaml->dump($config);
     file_put_contents($buildfile, $yamlstring);
+
+  }
+
+  /**
+   * Given a file, returns an array containing the parsed YAML contents from that file
+   *
+   * @param $message
+   *
+   * @return array an array containing the parsed YAML contents from the source file
+   * an array containing the parsed YAML contents from the source file
+   *
+   * @TODO refactor out the buildfile and pass it as an arg too.
+   */
+  protected function saveBuildState($message = 'Build Successful') {
+
+    $buildstate = $this->getArtifactDirectory() . '/buildstate.json';
+    $json = json_encode($message);
+    file_put_contents($buildstate, $json);
 
   }
 
