@@ -39,8 +39,8 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
    */
   public function configure() {
 
-    if (isset($_ENV['DCI_PHPVersion'])) {
-      $this->configuration['phpversion'] = $_ENV['DCI_PHPVersion'];
+    if (false !== getenv('DCI_PHPVersion')) {
+      $this->configuration['phpversion'] = getenv('DCI_PHPVersion');
     }
 
   }

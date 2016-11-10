@@ -39,9 +39,9 @@ class Fetch extends PluginBase implements BuildStepInterface, BuildTaskInterface
    */
   public function configure() {
     // @TODO make into a test
-     // $_ENV['DCI_Fetch']='https://www.drupal.org/files/issues/2796581-region-136.patch,.;https://www.drupal.org/files/issues/another.patch,.';
-    if (isset($_ENV['DCI_Fetch'])) {
-      $this->configuration['files'] = $this->process($_ENV['DCI_Fetch']);
+     // putenv('DCI_Fetch=https://www.drupal.org/files/issues/2796581-region-136.patch,.;https://www.drupal.org/files/issues/another.patch,.');
+    if (false !== getenv('DCI_Fetch')) {
+      $this->configuration['files'] = $this->process(getenv('DCI_Fetch'));
     }
   }
 

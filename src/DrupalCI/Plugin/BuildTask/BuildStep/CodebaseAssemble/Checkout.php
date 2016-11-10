@@ -39,22 +39,23 @@ class Checkout extends PluginBase implements BuildStepInterface, BuildTaskInterf
    */
   public function configure() {
 
-    if (isset($_ENV['DCI_CoreRepository'])) {
-      $this->configuration['repositories'][0]['repo'] = $_ENV['DCI_CoreRepository'];
+    if (false !== getenv('DCI_CoreRepository')) {
+      $this->configuration['repositories'][0]['repo'] = getenv('DCI_CoreRepository');
     }
-    if (isset($_ENV['DCI_CoreBranch'])) {
-      $this->configuration['repositories'][0]['branch'] = $_ENV['DCI_CoreBranch'];
+    if (false !== getenv('DCI_CoreBranch')) {
+      $this->configuration['repositories'][0]['branch'] = getenv('DCI_CoreBranch');
     }
-    if (isset($_ENV['DCI_GitCheckoutDepth'])) {
-      $this->configuration['repositories'][0]['depth'] = $_ENV['DCI_GitCheckoutDepth'];
+    if (false !== getenv('DCI_GitCheckoutDepth')) {
+      $this->configuration['repositories'][0]['depth'] = getenv('DCI_GitCheckoutDepth');
     }
-    if (isset($_ENV['DCI_GitCommitHash'])) {
-      $this->configuration['repositories'][0]['commit_hash'] = $_ENV['DCI_GitCommitHash'];
+    if (false !== getenv('DCI_GitCommitHash')) {
+      $this->configuration['repositories'][0]['commit_hash'] = getenv('DCI_GitCommitHash');
     }
-   // @TODO make a test:  $_ENV['DCI_AdditionalRepositories']='git,git://git.drupal.org/project/panels.git,8.x-3.x,modules/panels,1;git,git://git.drupal.org/project/ctools.git,8.x-3.0-alpha27,modules/ctools,1;git,git://git.drupal.org/project/layout_plugin.git,8.x-1.0-alpha23,modules/layout_plugin,1;git,git://git.drupal.org/project/page_manager.git,8.x-1.0-alpha24,modules/page_manager,1';
-    if (isset($_ENV['DCI_AdditionalRepositories'])) {
+   // @TODO make a test:
+    // putenv('DCI_AdditionalRepositories=git,git://git.drupal.org/project/panels.git,8.x-3.x,modules/panels,1;git,git://git.drupal.org/project/ctools.git,8.x-3.0-alpha27,modules/ctools,1;git,git://git.drupal.org/project/layout_plugin.git,8.x-1.0-alpha23,modules/layout_plugin,1;git,git://git.drupal.org/project/page_manager.git,8.x-1.0-alpha24,modules/page_manager,1');
+    if (false !== getenv('DCI_AdditionalRepositories')) {
       // Parse the provided repository string into it's components
-      $entries = explode(';', $_ENV['DCI_AdditionalRepositories']);
+      $entries = explode(';', getenv('DCI_AdditionalRepositories'));
       foreach ($entries as $entry) {
         if (empty($entry)) { continue; }
         $components = explode(',', $entry);
