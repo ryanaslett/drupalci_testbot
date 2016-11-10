@@ -16,8 +16,8 @@ use Pimple\Container;
  */
 abstract class PluginBase implements Injectable, BuildTaskInterface {
 
-  // TODO: Perhaps this isnt BuildTaskTrait, but a PluginTrait that figures out
-  // configuration?
+  // TODO: Perhaps this isnt BuildTaskTrait, but a TimerTrait that can add
+  // timing information to things?
   use BuildTaskTrait;
   /**
    * The plugin_id.
@@ -135,13 +135,6 @@ abstract class PluginBase implements Injectable, BuildTaskInterface {
   /**
    * @inheritDoc
    */
-  public function complete($childStatus) {
-    // TODO: Implement complete() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getChildTasks() {
     // TODO: Implement getChildTasks() method.
   }
@@ -149,15 +142,15 @@ abstract class PluginBase implements Injectable, BuildTaskInterface {
   /**
    * @inheritDoc
    */
-  public function getShortError() {
-    return 'No short error defined';
+  public function setChildTasks($buildTasks) {
+    // TODO: Implement setChildTasks() method.
   }
 
   /**
    * @inheritDoc
    */
-  public function getErrorDetails() {
-    return 'Error Details undefined';
+  public function getDefaultConfiguration() {
+    return [];
   }
 
   /**

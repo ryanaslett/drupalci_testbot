@@ -40,8 +40,8 @@ trait BuildTaskTrait {
   /**
    * Decorator for complete functions to stop their timer.
    */
-  public function finish() {
-    $this->complete();
+  public function finish($childStatus) {
+    $this->complete($childStatus);
     $elapsed_time = microtime(true) - $this->startTime;
     $this->elapsedTime = $elapsed_time;
   }

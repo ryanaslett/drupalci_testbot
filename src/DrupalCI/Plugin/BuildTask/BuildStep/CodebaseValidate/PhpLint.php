@@ -8,7 +8,6 @@ use DrupalCI\Build\Environment\EnvironmentInterface;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use Pimple\Container;
@@ -17,8 +16,6 @@ use Pimple\Container;
  * @PluginID("phplint")
  */
 class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterface {
-
-  use BuildTaskTrait;
 
   /* @var  \DrupalCI\Build\Environment\EnvironmentInterface */
   protected $environment;
@@ -90,45 +87,10 @@ class PhpLint extends PluginBase implements BuildStepInterface, BuildTaskInterfa
   /**
    * @inheritDoc
    */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getDefaultConfiguration() {
     return [
       'concurrency' => '4',
     ];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
   }
 
   /**

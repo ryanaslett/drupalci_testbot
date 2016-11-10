@@ -6,7 +6,6 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CodebaseAssemble;
 use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use Pimple\Container;
@@ -15,8 +14,6 @@ use Pimple\Container;
  * @PluginID("composer")
  */
 class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterface {
-
-  use BuildTaskTrait;
 
   /**
    * The current build.
@@ -34,13 +31,6 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function configure() {
-    // TODO: Implement configure() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function run() {
 
     $source_dir = $this->build->getSourceDirectory();
@@ -53,45 +43,10 @@ class Composer extends PluginBase implements BuildStepInterface, BuildTaskInterf
   /**
    * @inheritDoc
    */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getDefaultConfiguration() {
     return [
       'options' => 'install --prefer-dist --working-dir',
     ];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
   }
 
   /**

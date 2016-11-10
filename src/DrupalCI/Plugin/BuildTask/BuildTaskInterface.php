@@ -38,13 +38,21 @@ interface BuildTaskInterface {
 
   /**
    * Decorator for complete functions to stop their timer.
+   *
+   * @param $childStatus
+   *   aggregate status code of all child tasks
+   *
    */
-  public function finish();
+  public function finish($childStatus);
 
   /**
    * Called when a Task and all of its children have finished processing.
+   *
+   * @param $childStatus
+   *   aggregate status code of all child tasks
+   *
    */
-  public function complete();
+  public function complete($childStatus);
 
   /**
    * @param boolean $inclusive
@@ -88,19 +96,6 @@ interface BuildTaskInterface {
    *   Sets the subordinate Tasks on this Task
    */
   public function setChildTasks($buildTasks);
-
-  /**
-   * @return string
-   *   This is a short error string to describe the failure
-   */
-  public function getShortError();
-
-  /**
-   * @return string
-   *   Returns the full error details/exception/error message when a BuildTask
-   *   encounters an error.
-   */
-  public function getErrorDetails();
 
   /**
    * @return array

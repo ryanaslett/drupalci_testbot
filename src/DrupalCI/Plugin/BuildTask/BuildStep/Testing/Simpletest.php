@@ -8,7 +8,6 @@ use DrupalCI\Build\Environment\Environment;
 use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use Pimple\Container;
@@ -17,8 +16,6 @@ use Pimple\Container;
  * @PluginID("simpletest")
  */
 class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable  {
-
-  use BuildTaskTrait;
 
   /* @var  \DrupalCI\Build\Environment\DatabaseInterface */
   protected $system_database;
@@ -120,13 +117,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
   /**
    * @inheritDoc
    */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getDefaultConfiguration() {
     return [
       'runscript' => '/var/www/html/core/scripts/run-tests.sh ',
@@ -143,35 +133,6 @@ class Simpletest extends PluginBase implements BuildStepInterface, BuildTaskInte
       'verbose' => FALSE,
     ];
   }
-
-  /**
-   * @inheritDoc
-   */
-  public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
-  }
-
   /**
    * @inheritDoc
    */

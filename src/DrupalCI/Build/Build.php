@@ -412,9 +412,6 @@ class Build implements BuildInterface, Injectable {
    *
    * @param $config
    *
-   * @return array an array containing the parsed YAML contents from the source file
-   * an array containing the parsed YAML contents from the source file
-   *
    * @TODO refactor out the buildfile and pass it as an arg too.
    */
   protected function saveYaml($config) {
@@ -430,8 +427,6 @@ class Build implements BuildInterface, Injectable {
    *
    * @param $message
    *
-   * @return array an array containing the parsed YAML contents from the source file
-   * an array containing the parsed YAML contents from the source file
    *
    * @TODO refactor out the buildfile and pass it as an arg too.
    */
