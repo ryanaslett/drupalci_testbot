@@ -21,7 +21,6 @@ use DrupalCI\Plugin\PluginBase;
 use Http\Client\Common\Exception\ClientErrorException;
 use Pimple\Container;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Yaml\Yaml;
 
 
 class Environment implements Injectable, EnvironmentInterface {
@@ -47,13 +46,6 @@ class Environment implements Injectable, EnvironmentInterface {
   /* @var DatabaseInterface */
   protected $database;
 
-  /**
-   * @var \Symfony\Component\Yaml\Parser
-   *
-   *   Parsed Yaml of the build definition.
-   */
-  protected $yamlparser;
-
   /* @var \DrupalCI\Build\BuildInterface */
   protected $build;
 
@@ -63,7 +55,6 @@ class Environment implements Injectable, EnvironmentInterface {
     $this->io = $container['console.io'];
     $this->docker = $container['docker'];
     $this->database = $container['db.system'];
-    $this->yamlparser = $container['yaml.parser'];
     $this->build = $container['build'];
 
   }

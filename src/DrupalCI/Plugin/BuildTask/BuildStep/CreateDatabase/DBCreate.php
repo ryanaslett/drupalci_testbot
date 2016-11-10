@@ -5,7 +5,6 @@ namespace DrupalCI\Plugin\BuildTask\BuildStep\CreateDatabase;
 
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use Pimple\Container;
@@ -15,7 +14,6 @@ use Pimple\Container;
  */
 class DBCreate extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable {
 
-  use BuildTaskTrait;
   /**
    * @var \DrupalCI\Build\Environment\DatabaseInterface
    */
@@ -43,54 +41,11 @@ class DBCreate extends PluginBase implements BuildStepInterface, BuildTaskInterf
     }
   }
 
-
-  /**
-   * @inheritDoc
-   */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
-
   /**
    * @inheritDoc
    */
   public function getDefaultConfiguration() {
     return [];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

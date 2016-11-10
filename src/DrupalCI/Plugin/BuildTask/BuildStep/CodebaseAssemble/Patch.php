@@ -8,7 +8,6 @@ use DrupalCI\Console\Output;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildTaskException;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\BuildTask\FileHandlerTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
@@ -21,7 +20,6 @@ use Pimple\Container;
  */
 class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable  {
 
-  use BuildTaskTrait;
   use FileHandlerTrait;
 
   /**
@@ -113,12 +111,6 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
     }
   }
 
-  /**
-   * @inheritDoc
-   */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
 
   /**
    * @inheritDoc
@@ -127,41 +119,6 @@ class Patch extends PluginBase implements BuildStepInterface, BuildTaskInterface
     return [
       'patches' => [],
     ];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

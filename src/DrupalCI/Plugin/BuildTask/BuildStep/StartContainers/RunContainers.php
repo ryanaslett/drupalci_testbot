@@ -7,7 +7,6 @@ use Docker\DockerClient;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildStep\BuildStepInterface;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use DrupalCI\Build\Environment\DatabaseInterface;
 use DrupalCI\Console\Output;
@@ -19,8 +18,6 @@ use Pimple\Container;
  * @PluginID("runcontainers")
  */
 class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskInterface, Injectable  {
-
-  use BuildTaskTrait;
 
   /* @var DatabaseInterface */
   protected $database;
@@ -65,15 +62,6 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
 
   }
 
-
-
-  /**
-   * @inheritDoc
-   */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
-
   /**
    * @inheritDoc
    */
@@ -81,41 +69,6 @@ class RunContainers extends PluginBase implements BuildStepInterface, BuildTaskI
     return [
       'phpversion' => '5.5',
     ];
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getChildTasks() {
-    // TODO: Implement getChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function setChildTasks($buildTasks) {
-    // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

@@ -6,7 +6,6 @@ use DrupalCI\Build\BuildInterface;
 use DrupalCI\Injectable;
 use DrupalCI\Plugin\BuildTask\BuildTaskInterface;
 use DrupalCI\Plugin\BuildTask\BuildStage\BuildStageInterface;
-use DrupalCI\Plugin\BuildTask\BuildTaskTrait;
 use DrupalCI\Plugin\PluginBase;
 use Pimple\Container;
 
@@ -15,8 +14,6 @@ use Pimple\Container;
  */
 
 class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, BuildTaskInterface, Injectable   {
-
-  use BuildTaskTrait;
 
   /**
    * The current build.
@@ -81,13 +78,6 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
   /**
    * @inheritDoc
    */
-  public function complete() {
-    // TODO: Implement complete() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
   public function getDefaultConfiguration() {
     return [
       'db_type' => 'mysql',
@@ -109,27 +99,6 @@ class EnvironmentBuildStage extends PluginBase  implements BuildStageInterface, 
    */
   public function setChildTasks($buildTasks) {
     // TODO: Implement setChildTasks() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getShortError() {
-    // TODO: Implement getShortError() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getErrorDetails() {
-    // TODO: Implement getErrorDetails() method.
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function getResultCode() {
-    // TODO: Implement getResultCode() method.
   }
 
   /**

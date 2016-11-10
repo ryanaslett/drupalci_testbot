@@ -22,7 +22,6 @@ use Symfony\Component\Process\Process;
 use Docker\Docker;
 use Docker\DockerClient as Client;
 use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Parser;
 use Pimple\Container;
 use PDO;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
@@ -66,6 +65,13 @@ class Build implements BuildInterface, Injectable {
   protected $computedBuildDefinition;
 
   /**
+   * @var array
+   *
+   *   Hierarchical array of configured plugins
+   */
+  protected $computedBuildPlugins;
+
+  /**
    * The build task plugin manager.
    *
    * @var \DrupalCI\Plugin\PluginManagerInterface
@@ -73,11 +79,11 @@ class Build implements BuildInterface, Injectable {
   protected $buildTaskPluginManager;
 
   /**
-   * @var \Symfony\Component\Yaml\Parser
+   * @var \Symfony\Component\Yaml\Yaml
    *
    *   Parsed Yaml of the build definition.
    */
-  protected $yamlparser;
+  protected $yaml;
 
   /**
    * Style object.
@@ -99,7 +105,7 @@ class Build implements BuildInterface, Injectable {
   public function inject(Container $container) {
     $this->container = $container;
     $this->io = $container['console.io'];
-    $this->yamlparser = $container['yaml.parser'];
+    $this->yaml = $container['yaml.parser'];
     $this->buildTaskPluginManager = $this->container['plugin.manager.factory']->create('BuildTask');
   }
 
@@ -200,9 +206,13 @@ class Build implements BuildInterface, Injectable {
 
     $this->initialBuildDefinition = $this->loadYaml($this->buildFile);
     // After we load the config, we separate the workflow from the config:
-    $this->computedBuildDefinition = $this->processBuildConfig($this->initialBuildDefinition['build']);
+    $this->computedBuildDefinition = $this->initialBuildDefinition['build'];
+    $this->computedBuildPlugins = $this->processBuildConfig($this->computedBuildDefinition);
+    $build_definition['build'] = $this->computedBuildDefinition;
+
     $this->generateBuildId();
     $this->setupWorkSpace();
+    $this->saveYaml($build_definition);
 
   }
 
@@ -225,53 +235,58 @@ class Build implements BuildInterface, Injectable {
    * RecursiveIteratorIterator would be handy too. But this proves it can work.
    *
    */
-  protected function processBuildConfig($config, &$transformed_config = [], $depth = 0) {
+  protected function processBuildConfig(&$config, &$transformed_config = [], $depth = 0) {
     // $depth determines which type of plugin we're after.
     // There is no BuildStepConfig, but if we're at depth 3, thats what we
     // fake ourselves into believing, because everything at that level is
     // configuration for the level above.
     $task_type = ['BuildStage','BuildPhase','BuildStep','BuildStepConfig'];
     foreach ($config as $config_key => $task_configurations) {
-
-      if ($this->buildTaskPluginManager->hasPlugin($task_type[$depth], $config_key)) {
+      $plugin_key = preg_replace('/\..*/', '', $config_key);
+      if ($this->buildTaskPluginManager->hasPlugin($task_type[$depth], $plugin_key)) {
         // This $config_key is a BuildTask plugin, therefore it may have some
         // configuration definedor may have child BuildTask plugins.
         $transformed_config[$config_key] = [];
         // If a task_configuration is null, that indicates that this BuildTask
         // has no configuration overrides, or subordinate children.
         if (!is_null($task_configurations)) {
-          if ($this->has_string_keys($task_configurations)) {
-            // Convert non-array configs into an array of config
-            $task_configurations = [0 => $task_configurations];
+          $depth++;
+          $processed_config = $this->processBuildConfig($task_configurations, $transformed_config[$config_key], $depth);
+          // Also, perhaps we check if $depth = 3 and go ahead and redo the else
+          // below?
+          // Bubble the configuration change back up.
+          $config[$config_key] = $task_configurations;
+          $depth--;
+          // If it has configuration, lets remove it from the array and use it
+          // later to create our plugin.
+          if (isset($processed_config['#configuration'])) {
+            $overrides = $processed_config['#configuration'];
+            unset($transformed_config[$config_key]['#configuration']);
           }
-          foreach ($task_configurations as $index => $configuration) {
-            $depth++;
-            $processed_config = $this->processBuildConfig($configuration, $transformed_config[$config_key][$index], $depth);
-            // Also, perhaps we check if $depth = 3 and go ahead and redo the else
-            // below?
-            $depth--;
-            // If it has configuration, lets remove it from the array and use it
-            // later to create our plugin.
-            if (isset($processed_config['#configuration'])) {
-              $overrides = $processed_config['#configuration'];
-              unset($transformed_config[$config_key][$index]['#configuration']);
-            }
-            else {
-              $overrides = [];
-            }
-            $children = $transformed_config[$config_key][$index];
-            unset($transformed_config[$config_key][$index]);
-            $transformed_config[$config_key][$index]['#children'] = $children;
-            /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
-            $plugin = $this->buildTaskPluginManager->getPlugin($task_type[$depth], $config_key, $overrides);
-            // TODO: setChildTasks should probably be set on the BuildTaskTrait.
-            // But lets wait until we're sure we need it for something.
-            // $plugin->setChildTasks($children);
-            $transformed_config[$config_key][$index]['#plugin'] = $plugin;
+          else {
+            $overrides = [];
           }
+          $children = $transformed_config[$config_key];
+          unset($transformed_config[$config_key]);
+          $transformed_config[$config_key]['#children'] = $children;
+          /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
+          $plugin = $this->buildTaskPluginManager->getPlugin($task_type[$depth], $plugin_key, $overrides);
+          // TODO: setChildTasks should probably be set on the BuildTaskTrait.
+          // But lets wait until we're sure we need it for something.
+          // $plugin->setChildTasks($children);
+          $transformed_config[$config_key]['#plugin'] = $plugin;
+
         } else {
-          $transformed_config[$config_key][0]['#plugin'] = $this->buildTaskPluginManager->getPlugin($task_type[$depth],$config_key);
+          $transformed_config[$config_key]['#plugin'] = $this->buildTaskPluginManager->getPlugin($task_type[$depth],$plugin_key);
+
         }
+        if (!empty($config[$config_key])) {
+          $config[$config_key] = array_merge($config[$config_key], $transformed_config[$config_key]['#plugin']->getComputedConfiguration());
+        } else {
+          $config[$config_key] = $transformed_config[$config_key]['#plugin']->getComputedConfiguration();
+        }
+
+
       } else {
         // The key is not a plugin, therefore it is a configuration directive for the plugin above it.
         $transformed_config['#configuration'][$config_key] = $config[$config_key];
@@ -286,10 +301,12 @@ class Build implements BuildInterface, Injectable {
    */
   public function executeBuild() {
     try {
-      $statuscode = $this->processTask($this->computedBuildDefinition);
+      $statuscode = $this->processTask($this->computedBuildPlugins);
+      $this->saveBuildState();
       return $statuscode;
     }
     catch (BuildTaskException $e) {
+      $this->saveBuildState($e->getMessage());
       return 2;
     } finally {
       try {
@@ -343,25 +360,32 @@ class Build implements BuildInterface, Injectable {
     foreach ($taskConfig as $task) {
       // Each task is an array, so that we can support running the same task
       // multiple times.
-      foreach ($task as $iteration) {
-        // TODO: okay, this is already a hot mess. Interacting with an
-        // implied array strucuture is not what we want here: this needs to be
-        // an Object.
-        /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
-        $plugin = $iteration['#plugin'];
-        $child_status = 0;
-        // start also implies run();
-        $task_status = $plugin->start();
-        if (isset($iteration['#children'])) {
-          $child_status = $this->processTask($iteration['#children']);
-        }
-        $plugin->finish();
-        $total_status = max($task_status, $child_status, $total_status);
+
+      // TODO: okay, this is already a hot mess. Interacting with an
+      // implied array strucuture is not what we want here: this needs to be
+      // an Object.
+      /* @var $plugin \DrupalCI\Plugin\BuildTask\BuildTaskInterface */
+      $plugin = $task['#plugin'];
+      $child_status = 0;
+      // start also implies run();
+      $task_status = $plugin->start();
+      if (isset($task['#children'])) {
+        $child_status = $this->processTask($task['#children']);
       }
+      // Allow plugins to react based on the status of executed children
+      $plugin->finish($child_status);
+      $total_status = max($task_status, $child_status, $total_status);
+
     }
     return $total_status;
   }
 
+  /**
+   * Checks if an array has string keys.
+   * @param array $array
+   *
+   * @return bool
+   */
   protected function has_string_keys(array $array) {
     return count(array_filter(array_keys($array), 'is_string')) > 0;
   }
@@ -378,11 +402,41 @@ class Build implements BuildInterface, Injectable {
    */
   protected function loadYaml($source) {
     if ($content = file_get_contents($source)) {
-      return $this->yamlparser->parse($content);
+      return $this->yaml->parse($content);
     }
     throw new ParseException("Unable to parse build definition file at $source.");
   }
 
+  /**
+   * Given a file, returns an array containing the parsed YAML contents from that file
+   *
+   * @param $config
+   *
+   * @TODO refactor out the buildfile and pass it as an arg too.
+   */
+  protected function saveYaml($config) {
+
+    $buildfile = $this->getArtifactDirectory() . '/build.' . $this->getBuildId() . '.yml';
+    $yamlstring = $this->yaml->dump($config);
+    file_put_contents($buildfile, $yamlstring);
+
+  }
+
+  /**
+   * Given a file, returns an array containing the parsed YAML contents from that file
+   *
+   * @param $message
+   *
+   *
+   * @TODO refactor out the buildfile and pass it as an arg too.
+   */
+  protected function saveBuildState($message = 'Build Successful') {
+
+    $buildstate = $this->getArtifactDirectory() . '/buildstate.json';
+    $json = json_encode($message);
+    file_put_contents($buildstate, $json);
+
+  }
 
   /**
    * {@inheritdoc}
@@ -536,6 +590,20 @@ class Build implements BuildInterface, Injectable {
     return TRUE;
   }
 
+
+  /**
+   * This function removes any databases, cleans up any source files, and stops
+   * any running containers.
+   *
+   * @TODO: this needs some reworking, because ideally none of this code
+   * should live here in the build, and the build objects themselves
+   * ought to know how to clean up after themselves.
+   *
+   * Probably what needs to happen in the build needs to be an iterable tree,
+   * and that tree gets iterated over several times, once to run the start and
+   * finish callbacks, and perhaps once to run the cleanup callbacks.
+   *
+   */
   protected function cleanupBuild() {
 
     /* @var $environment \DrupalCI\Build\Environment\Environment */
