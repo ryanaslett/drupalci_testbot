@@ -372,7 +372,8 @@ class Build implements BuildInterface, Injectable {
       if (isset($task['#children'])) {
         $child_status = $this->processTask($task['#children']);
       }
-      $plugin->finish();
+      // Allow plugins to react based on the status of executed children
+      $plugin->finish($child_status);
       $total_status = max($task_status, $child_status, $total_status);
 
     }

@@ -110,12 +110,40 @@ abstract class PluginBase implements Injectable, BuildTaskInterface {
       $this->configuration = array_merge($this->configuration, array_intersect_key($this->configuration_overrides, $this->configuration));
     }
   }
+  /**
+   * @inheritDoc
+   */
+  public function complete($childStatus) {
+    // TODO: Implement complete() method.
+  }
 
   /**
    * @inheritDoc
    */
-  public function getDefaultConfiguration() {
-    return [];
+  public function configure() {
+    // Interface placeholder for plugins lacking config.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function run() {
+    // Interface placeholder for plugins that have no run phase
+
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function complete($childStatus) {
+    // TODO: Implement complete() method.
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function getChildTasks() {
+    // TODO: Implement getChildTasks() method.
   }
 
   /**
